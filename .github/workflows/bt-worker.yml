@@ -1,5 +1,7 @@
 name: bt-worker
 on:
+  push:
+    branches: [master]
   schedule:
     - cron: "23 */6 * * *"
   workflow_dispatch: {}
@@ -33,6 +35,6 @@ jobs:
           git config user.name "bt-bot"
           git config user.email "bt-bot@users.noreply.github.com"
           git add results reports
-          git commit -m "auto: backtest results update" || echo "nothing to commit"
+          git commit -m "auto: backtest results update [skip ci]" || echo "nothing to commit"
           git pull --rebase origin master || true
           git push || echo "push failed, will retry next run"
