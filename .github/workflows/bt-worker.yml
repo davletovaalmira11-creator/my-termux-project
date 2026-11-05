@@ -1,0 +1,38 @@
+name: bt-worker
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: bt-worker
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: scalp-lab/requirements.txt
+      - run: pip install -r requirements.txt
+        working-directory: scalp-lab
+      - uses: actions/cache@v4
+        with:
+          path: scalp-lab/.cache
+          key: bt-cache-v1
+      - run: python worker.py --budget 40
+        working-directory: scalp-lab
+      - name: Commit results
+        working-directory: scalp-lab
+        run: |
+          git config user.name "bt-bot"
+          git config user.email "bt-bot@users.noreply.github.com"
+          git add results reports
+          git commit -m "auto: backtest results update" || echo "nothing to commit"
+          git pull --rebase origin master || true
+          git push || echo "push failed, will retry next run"

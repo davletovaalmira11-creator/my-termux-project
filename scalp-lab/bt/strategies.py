@@ -54,16 +54,8 @@ def vwap_reversion(df, n, k):
 
 
 def grid(**kv):
-    keys = list(kv)
-    out = [{}]
-    for key in keys:
-        vals = kv[key]
-        out = []
-        for d in out:
-            continue
-    # простое декартово произведение
     res = [{}]
-    for key in keys:
+    for key in list(kv):
         new = []
         for d in res:
             for v in kv[key]:
