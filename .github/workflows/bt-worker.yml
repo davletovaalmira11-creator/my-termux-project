@@ -3,11 +3,12 @@ on:
   push:
     branches: [master]
   schedule:
-    - cron: "23 */6 * * *"
+    - cron: "23 */4 * * *"
   workflow_dispatch: {}
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: bt-worker
@@ -35,6 +36,9 @@ jobs:
           python worker.py --budget 40
         working-directory: scalp-lab
         continue-on-error: true
+      - run: python reporter.py || true
+        working-directory: scalp-lab
+        continue-on-error: true
       - name: Commit results
         if: always()
         working-directory: scalp-lab
@@ -49,4 +53,18 @@ jobs:
             git push || echo "push failed, will retry next run"
           else
             echo "nothing to commit"
+          fi
+      - name: Self-trigger next run if work remains
+        if: always()
+        working-directory: scalp-lab
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PENDING=$(jq -r '.pending // 0' results/progress.json 2>/dev/null || echo 0)
+          echo "pending tasks: $PENDING"
+          if [ "$PENDING" -gt 0 ] 2>/dev/null; then
+            echo "work remains -> triggering next worker run"
+            gh workflow run bt-worker.yml --ref master || echo "self-trigger failed, cron will continue"
+          else
+            echo "queue empty, waiting for cron"
           fi

@@ -1,17 +1,26 @@
 import argparse
+import glob
 import json
 import os
 import time
 
+import config
 from runner import run_task
 
-QUEUE_FILES = ["results/queue.json", "results/queue2.json", "results/queue3.json"]
+MAX_ATTEMPTS = 3
 
 
-def save_progress(all_tasks, start):
-    done = sum(1 for t in all_tasks if t["status"] == "done")
-    err = sum(1 for t in all_tasks if t["status"] == "error")
+def queue_files():
+    files = sorted(glob.glob("results/queue*.json"))
+    return files if files else ["results/queue.json"]
+
+
+def save_progress(all_tasks, start, cycle):
+    done = sum(1 for t in all_tasks if t.get("status") == "done")
+    err = sum(1 for t in all_tasks if t.get("status") == "error")
+    pend = sum(1 for t in all_tasks if t.get("status") == "pending")
     prog = {"total": len(all_tasks), "done": done, "errors": err,
+            "pending": pend, "cycle": cycle,
             "elapsed_min": round((time.time() - start) / 60, 1),
             "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     os.makedirs("results", exist_ok=True)
@@ -32,16 +41,78 @@ def save_progress(all_tasks, start):
 
 def load_queues():
     os.makedirs("results", exist_ok=True)
-    if not os.path.exists(QUEUE_FILES[0]):
+    if not os.path.exists("results/queue.json"):
         from queue_builder import build
-        with open(QUEUE_FILES[0], "w") as f:
-            json.dump(build(), f)
+        with open("results/queue.json", "w") as f:
+            json.dump(build(), f, ensure_ascii=False)
     queues = []
-    for p in QUEUE_FILES:
-        if os.path.exists(p):
-            with open(p) as f:
-                queues.append((p, json.load(f)))
+    for p in queue_files():
+        if not os.path.exists(p):
+            continue
+        with open(p) as f:
+            q = json.load(f)
+        for t in q:
+            # tasks stuck in running (cancelled run) get retried
+            if t.get("status") == "running":
+                t["status"] = "pending"
+        queues.append((p, q))
     return queues
+
+
+def evolve(queues):
+    """All tasks finished: build a new deeper research wave from the
+    best out-of-sample survivors (longer history, stronger validation)."""
+    bts = []
+    for f in glob.glob("results/backtest/*.json"):
+        try:
+            r = json.load(open(f))
+        except Exception:
+            continue
+        if isinstance(r, dict) and "oos" in r:
+            bts.append(r)
+    passed = [r for r in bts
+              if r.get("trades", 0) >= 200
+              and r.get("folds", 0) >= 8
+              and r["oos"].get("pf", 0) > 1.0
+              and r["oos"].get("t", 0) > 1.0]
+    passed.sort(key=lambda r: r["oos"].get("sharpe", 0), reverse=True)
+    ids = set()
+    for _, q in queues:
+        for t in q:
+            ids.add(t["id"])
+    tasks = []
+    seen = set()
+    for r in passed:
+        key = (r["strategy"], r["symbol"], r["tf"])
+        if key in seen:
+            continue
+        seen.add(key)
+        cfg = config.TFS.get(r["tf"])
+        if cfg is None:
+            continue
+        base = "ev-" + r["strategy"] + "-" + r["symbol"] + "-" + r["tf"]
+        for mult in [2, 4]:
+            tid = base + "-v" + str(mult)
+            if tid in ids:
+                continue
+            ids.add(tid)
+            tasks.append({"id": tid, "kind": "backtest",
+                          "symbol": r["symbol"], "tf": r["tf"],
+                          "strategy": r["strategy"],
+                          "days": min(cfg["days"] * mult, 1460),
+                          "train_days": cfg["train_days"] * mult,
+                          "test_days": cfg["test_days"] * mult,
+                          "wave": "deep", "status": "pending"})
+        if len(tasks) >= 30:
+            break
+    if not tasks:
+        return 0
+    n = len(queue_files())
+    path = "results/queue%d.json" % (n + 1)
+    with open(path, "w") as f:
+        json.dump(tasks, f, ensure_ascii=False)
+    print("evolve: new deep wave with %d tasks -> %s" % (len(tasks), path), flush=True)
+    return len(tasks)
 
 
 def main():
@@ -51,35 +122,52 @@ def main():
     start = time.time()
     os.makedirs("reports", exist_ok=True)
     queues = load_queues()
-    all_tasks = [t for _, q in queues for t in q]
     done = 0
-    for path, q in queues:
-        for t in q:
-            if t["status"] != "pending":
-                continue
-            if time.time() - start > args.budget * 60:
+    while time.time() - start < args.budget * 60:
+        task = None
+        for path, q in queues:
+            for t in q:
+                if t.get("status") == "pending":
+                    task = (path, q, t)
+                    break
+            if task:
                 break
-            t["status"] = "running"
-            try:
-                res = run_task(t)
-                out = os.path.join("results", t["kind"], t["id"] + ".json")
-                os.makedirs(os.path.dirname(out), exist_ok=True)
-                with open(out, "w") as f:
-                    json.dump(res, f)
-                t["status"] = "done"
-                t["result"] = out
-                done += 1
-                print("done", t["id"])
-            except Exception as e:
-                t["status"] = "error"
-                t["error"] = str(e)[:300]
-                print("error", t["id"], str(e)[:120])
-            with open(path, "w") as f:
-                json.dump(q, f, ensure_ascii=False)
-            save_progress(all_tasks, start)
-        if time.time() - start > args.budget * 60:
+        if not task:
             break
-    save_progress(all_tasks, start)
+        path, q, t = task
+        t["status"] = "running"
+        with open(path, "w") as f:
+            json.dump(q, f, ensure_ascii=False)
+        try:
+            res = run_task(t)
+            out = os.path.join("results", t["kind"], t["id"] + ".json")
+            os.makedirs(os.path.dirname(out), exist_ok=True)
+            with open(out, "w") as f:
+                json.dump(res, f)
+            t["status"] = "done"
+            t["result"] = out
+            done += 1
+            print("done", t["id"], flush=True)
+        except Exception as e:
+            att = int(t.get("attempts", 0)) + 1
+            t["attempts"] = att
+            t["error"] = str(e)[:300]
+            if att < MAX_ATTEMPTS:
+                t["status"] = "pending"  # auto-retry
+            else:
+                t["status"] = "error"
+            print("error(%d/%d)" % (att, MAX_ATTEMPTS), t["id"], str(e)[:120], flush=True)
+        with open(path, "w") as f:
+            json.dump(q, f, ensure_ascii=False)
+        all_tasks = [x for _, qq in queues for x in qq]
+        save_progress(all_tasks, start, "running")
+    all_tasks = [x for _, qq in queues for x in qq]
+    pend = sum(1 for t in all_tasks if t.get("status") == "pending")
+    if pend == 0:
+        evolve(queues)
+    queues = load_queues()
+    all_tasks = [x for _, qq in queues for x in qq]
+    save_progress(all_tasks, start, "final")
     print("processed", done)
 
 
