@@ -33,6 +33,20 @@ def fmt(x):
     return ("%.4f" % x) if abs(x) < 100 else ("%.1f" % x)
 
 
+def fee_mode(r):
+    return r.get("fee_mode", "taker")
+
+
+def maker_sharpe(r):
+    m = r.get("oos_maker")
+    return m["sharpe"] if isinstance(m, dict) else ""
+
+
+def maker_pf(r):
+    m = r.get("oos_maker")
+    return m["pf"] if isinstance(m, dict) else ""
+
+
 def main():
     os.makedirs("reports", exist_ok=True)
     bts = []
@@ -59,6 +73,7 @@ def main():
     lines.append("# Crypto Scalp Lab - отчет")
     lines.append("")
     lines.append("Все результаты - только out-of-sample (walk-forward), с учетом комиссий и проскальзывания.")
+    lines.append("maker = вход лимитными ордерами (0.02%), taker = по рынку (0.05%).")
     lines.append("")
 
     lines.append("## Прогресс")
@@ -79,14 +94,19 @@ def main():
 
     lines.append("## Лидерборд стратегий (OOS)")
     lines.append("")
-    lines.append("| # | стратегия | пара | TF | Sharpe | PF | WinRate | MaxDD | t | сделок | стабильность |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
+    lines.append("| # | стратегия | пара | TF | Sharpe | PF | WinRate | MaxDD | t | сделок | стаб. | режим | maker Sharpe | maker PF |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
     for i, r in enumerate(passed[:30]):
         o = r["oos"]
         robust = "*" if (r["param_stability"] >= 0.5 and o["t"] > 2.0) else ""
-        lines.append("| %d | %s%s | %s | %s | %.2f | %.2f | %.1f%% | %s | %.1f | %d | %.0f%% |" % (
+        ms = maker_sharpe(r)
+        mp = maker_pf(r)
+        ms_s = ("%.2f" % ms) if ms != "" else "-"
+        mp_s = ("%.2f" % mp) if mp != "" else "-"
+        lines.append("| %d | %s%s | %s | %s | %.2f | %.2f | %.1f%% | %s | %.1f | %d | %.0f%% | %s | %s | %s |" % (
             i + 1, r["strategy"], robust, r["symbol"], r["tf"], o["sharpe"], o["pf"],
-            o["winrate"] * 100, fmt(o["maxdd"]), o["t"], r["trades"], r["param_stability"] * 100))
+            o["winrate"] * 100, fmt(o["maxdd"]), o["t"], r["trades"], r["param_stability"] * 100,
+            fee_mode(r), ms_s, mp_s))
     lines.append("")
     lines.append("Робастные отмечены звездочкой: стабильные параметры между фолдами + t>2.")
     lines.append("")
@@ -95,17 +115,17 @@ def main():
     lines.append("")
     lines.append("Закономерность живет на многих парах; подгонка - обычно на одной.")
     lines.append("")
-    lines.append("| стратегия | TF | пар в лидерборде | медиана Sharpe | медиана PF | пар с Sharpe>0 |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append("| стратегия | TF | пар | медиана Sharpe | медиана PF | пар с Sharpe>0 | режим |")
+    lines.append("|---|---|---|---|---|---|---|")
     groups = defaultdict(list)
     for r in passed:
         groups[(r["strategy"], r["tf"])].append(r)
     for (st, tf), xs in sorted(groups.items()):
         sh = [x["oos"]["sharpe"] for x in xs]
         pf = [x["oos"]["pf"] for x in xs]
-        lines.append("| %s | %s | %d | %.2f | %.2f | %d |" % (
+        lines.append("| %s | %s | %d | %.2f | %.2f | %d | %s |" % (
             st, tf, len(xs), float(np.median(sh)), float(np.median(pf)),
-            sum(1 for s in sh if s > 0)))
+            sum(1 for s in sh if s > 0), fee_mode(xs[0])))
     lines.append("")
 
     if scans:
@@ -132,10 +152,10 @@ def main():
         f.write(chr(10).join(lines))
 
     with open("reports/leaderboard.csv", "w") as f:
-        f.write("strategy,symbol,tf,oos_sharpe,oos_pf,oos_t,trades,param_stability,is_sharpe_avg,folds" + chr(10))
+        f.write("strategy,symbol,tf,oos_sharpe,oos_pf,oos_t,trades,param_stability,is_sharpe_avg,folds,fee_mode,maker_sharpe,maker_pf" + chr(10))
         for r in passed[:200]:
             o = r["oos"]
-            f.write(",".join(str(x) for x in [r["strategy"], r["symbol"], r["tf"], round(o["sharpe"], 3), round(o["pf"], 3), round(o["t"], 2), r["trades"], round(r["param_stability"], 2), round(r["is_sharpe_avg"], 2), r["folds"]]) + chr(10))
+            f.write(",".join(str(x) for x in [r["strategy"], r["symbol"], r["tf"], round(o["sharpe"], 3), round(o["pf"], 3), round(o["t"], 2), r["trades"], round(r["param_stability"], 2), round(r["is_sharpe_avg"], 2), r["folds"], fee_mode(r), maker_sharpe(r), maker_pf(r)]) + chr(10))
 
     print("backtest results:", len(bts), "passed filters:", len(passed), "scan findings:", len(scans))
 
