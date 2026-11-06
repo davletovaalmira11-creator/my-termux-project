@@ -8,56 +8,35 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
     --bg: #070a12; --glass: rgba(22, 27, 38, .55); --border: rgba(255,255,255,.08);
     --text: #e6edf3; --dim: #8b949e; --green: #3fb950; --red: #f85149;
     --yellow: #d29922; --blue: #58a6ff; --violet: #a371f7; --cyan: #39c5cf;
-    --grad: linear-gradient(135deg, #39c5cf, #58a6ff 45%, #a371f7);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
-    min-height: 100vh; overflow-x: hidden;
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: -2;
-    background:
-      radial-gradient(600px 400px at 8% -5%, rgba(88,166,255,.14), transparent 60%),
-      radial-gradient(700px 500px at 95% 10%, rgba(163,113,247,.12), transparent 60%),
-      radial-gradient(500px 400px at 50% 110%, rgba(57,197,207,.08), transparent 60%);
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; z-index: -2;
+    background: radial-gradient(600px 400px at 8% -5%, rgba(88,166,255,.14), transparent 60%),
+    radial-gradient(700px 500px at 95% 10%, rgba(163,113,247,.12), transparent 60%),
+    radial-gradient(500px 400px at 50% 110%, rgba(57,197,207,.08), transparent 60%); }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 20px 60px; }
   header { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; margin-bottom: 26px; }
   h1 { font-size: 26px; font-weight: 800; letter-spacing: -.5px; }
-  h1 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 .grad { background: linear-gradient(135deg, #39c5cf, #58a6ff 45%, #a371f7); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .sub { color: var(--dim); font-size: 13px; margin-top: 2px; }
-  .status-pill {
-    display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
-    border-radius: 100px; border: 1px solid var(--border); background: var(--glass);
-    backdrop-filter: blur(12px); font-size: 13px; font-weight: 600;
-  }
+  .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border); background: var(--glass); backdrop-filter: blur(12px); font-size: 13px; font-weight: 600; }
   .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .dot.on { background: var(--green); box-shadow: 0 0 0 0 rgba(63,185,80,.5); animation: pulse 1.8s infinite; }
+  .dot.on { background: var(--green); animation: pulse 1.8s infinite; }
   .dot.off { background: var(--blue); }
   .dot.bad { background: var(--red); }
   .dot.na { background: var(--dim); }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(63,185,80,.45);} 70% { box-shadow: 0 0 0 10px rgba(63,185,80,0);} 100% { box-shadow: 0 0 0 0 rgba(63,185,80,0);} }
-  .btn {
-    background: var(--glass); border: 1px solid var(--border); color: var(--text);
-    padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600;
-    backdrop-filter: blur(12px); transition: transform .15s, border-color .15s;
-  }
-  .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.25); }
+  .btn { background: var(--glass); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; backdrop-filter: blur(12px); transition: transform .15s; }
+  .btn:hover { transform: translateY(-1px); }
   .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
-  .card {
-    background: var(--glass); border: 1px solid var(--border); border-radius: 18px;
-    padding: 18px; backdrop-filter: blur(14px);
-    box-shadow: 0 8px 24px rgba(0,0,0,.35);
-    animation: rise .5s ease both;
-  }
+  .card { background: var(--glass); border: 1px solid var(--border); border-radius: 18px; padding: 18px; backdrop-filter: blur(14px); box-shadow: 0 8px 24px rgba(0,0,0,.35); animation: rise .5s ease both; }
   @keyframes rise { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: none;} }
   .card .label { color: var(--dim); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
   .card .value { font-size: 30px; font-weight: 800; margin-top: 6px; font-variant-numeric: tabular-nums; }
@@ -74,6 +53,7 @@
   .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 800px) { .charts { grid-template-columns: 1fr; } }
   .chart-box { position: relative; height: 240px; }
+  .chart-fallback { height: 100%; display: flex; align-items: center; justify-content: center; color: var(--dim); font-size: 13px; }
   .heat { overflow-x: auto; padding-bottom: 6px; }
   .heat-grid { display: grid; gap: 3px; font-size: 11px; width: max-content; }
   .cell { padding: 6px 8px; border-radius: 6px; text-align: center; white-space: nowrap; }
@@ -134,11 +114,11 @@
   <div class="charts" style="margin-bottom:18px">
     <div class="panel" style="margin-bottom:0">
       <h2>📈 Прогресс по времени</h2>
-      <div class="chart-box" id="line-box"><canvas id="ch-line"></canvas></div>
+      <div class="chart-box" id="line-box"><div class="chart-fallback">график появится после первых коммитов бота</div></div>
     </div>
     <div class="panel" style="margin-bottom:0">
       <h2>🥧 Статусы задач</h2>
-      <div class="chart-box" id="donut-box"><canvas id="ch-donut"></canvas></div>
+      <div class="chart-box" id="donut-box"><div class="chart-fallback">загрузка…</div></div>
     </div>
   </div>
 
@@ -149,7 +129,7 @@
 
   <div class="panel">
     <h2>🏆 Топ-10 стратегий по OOS Sharpe</h2>
-    <div class="chart-box" id="bar-box"><canvas id="ch-bar"></canvas></div>
+    <div class="chart-box" id="bar-box"><div class="chart-fallback">пока нет данных</div></div>
   </div>
 
   <div class="panel">
@@ -174,104 +154,107 @@
   </footer>
 </div>
 
-<script type="module">
-import Chart from "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/+esm";
-Chart.defaults.color = "#8b949e";
-Chart.defaults.borderColor = "rgba(255,255,255,.07)";
-Chart.defaults.font.family = "'Inter', sans-serif";
+<script>
+var OWNER = "davletovaalmira11-creator";
+var REPO = "my-termux-project";
+var RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/scalp-lab/";
+var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
+var HAS_CHART = typeof Chart !== "undefined";
 
-const OWNER = "davletovaalmira11-creator";
-const REPO = "my-termux-project";
-const RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/scalp-lab/";
-const API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
+var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
+var chLine = null, chDonut = null, chBar = null;
 
-let queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
-let chLine = null, chDonut = null, chBar = null;
+if (!HAS_CHART) {
+  document.getElementById("donut-box").innerHTML = "<div class='chart-fallback'>графики недоступны (CDN заблокирован) — цифры ниже в силе</div>";
+}
 
-async function fetchText(url) {
-  const r = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
-  if (!r.ok) return null;
-  return await r.text();
+function fetchText(url) {
+  return fetch(url + "?t=" + Date.now(), { cache: "no-store" }).then(function (r) {
+    return r.ok ? r.text() : null;
+  }).catch(function () { return null; });
 }
 
 function countUp(el, to, suffix) {
-  const from = parseInt((el.textContent || "0").replace(/D/g, "")) || 0;
+  var from = parseInt((el.textContent || "0").replace(/\D/g, "")) || 0;
   if (from === to) { el.textContent = to + (suffix || ""); return; }
-  const t0 = performance.now(), dur = 700;
-  const step = now => {
-    const p = Math.min((now - t0) / dur, 1);
-    const e = 1 - Math.pow(1 - p, 3);
+  var t0 = performance.now(), dur = 700;
+  (function step(now) {
+    var p = Math.min((now - t0) / dur, 1);
+    var e = 1 - Math.pow(1 - p, 3);
     el.textContent = Math.round(from + (to - from) * e) + (suffix || "");
     if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+  })(t0);
 }
 
-async function loadWorkerStatus() {
-  const dot = document.getElementById("w-dot"), el = document.getElementById("w-status");
-  try {
-    const r = await fetch(API + "/actions/runs?per_page=10", { headers: { "Accept": "application/vnd.github+json" } });
-    if (!r.ok) throw 0;
-    const runs = (await r.json()).workflow_runs || [];
-    const wf = runs.filter(x => x.name === "bt-worker");
-    const running = wf.find(x => x.status !== "completed");
-    if (running) {
-      const mins = Math.round((Date.now() - new Date(running.run_started_at)) / 60000);
-      dot.className = "dot on";
-      el.textContent = "воркер работает · " + mins + " мин";
-    } else if (wf[0] && wf[0].conclusion === "failure") {
-      dot.className = "dot bad";
-      el.innerHTML = "последний прогон упал · <a href='" + wf[0].html_url + "' target='_blank'>логи</a>";
-    } else if (wf[0]) {
-      dot.className = "dot off";
-      el.textContent = "воркер выключен · ожидание запуска";
-    } else { dot.className = "dot na"; el.textContent = "воркеры ещё не запускались"; }
-  } catch (e) { dot.className = "dot na"; el.textContent = "статус недоступен (лимит API)"; }
+function loadWorkerStatus() {
+  var dot = document.getElementById("w-dot"), el = document.getElementById("w-status");
+  fetch(API + "/actions/runs?per_page=10", { headers: { "Accept": "application/vnd.github+json" } })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (data) {
+      var runs = (data.workflow_runs || []).filter(function (x) { return x.name === "bt-worker"; });
+      var running = runs.find(function (x) { return x.status !== "completed"; });
+      if (running) {
+        var mins = Math.round((Date.now() - new Date(running.run_started_at)) / 60000);
+        dot.className = "dot on";
+        el.textContent = "воркер работает · " + mins + " мин";
+      } else if (runs[0] && runs[0].conclusion === "failure") {
+        dot.className = "dot bad";
+        el.innerHTML = "последний прогон упал · <a href='" + runs[0].html_url + "' target='_blank'>логи</a>";
+      } else if (runs[0]) {
+        dot.className = "dot off";
+        el.textContent = "воркер выключен · ожидание запуска";
+      } else { dot.className = "dot na"; el.textContent = "воркеры ещё не запускались"; }
+    })
+    .catch(function () { dot.className = "dot na"; el.textContent = "статус недоступен (лимит API)"; });
 }
 
-async function loadQueue() {
-  const txt = await fetchText(RAW + "results/queue.json");
-  if (!txt) return;
-  queue = JSON.parse(txt);
-  const s = {};
-  queue.forEach(t => s[t.status] = (s[t.status] || 0) + 1);
-  const done = s.done || 0, err = s.error || 0, run = s.running || 0, total = queue.length;
-  countUp(document.getElementById("t-total"), total);
-  countUp(document.getElementById("t-done"), done);
-  countUp(document.getElementById("t-todo"), total - done - err);
-  countUp(document.getElementById("t-err"), err);
-  document.getElementById("t-done-note").textContent = (done * 100 / total).toFixed(1) + "% очереди";
-  const remain = total - done - err;
-  document.getElementById("eta").textContent = remain ? "≈ " + Math.ceil(remain / 36) + " дн. до полного прогона" : "полный прогон завершён 🎉";
-  const pct = f => Math.max(f * 100 / total, 0) + "%";
-  document.getElementById("b-done").style.width = pct(done);
-  document.getElementById("b-err").style.width = pct(err);
-  document.getElementById("b-run").style.width = pct(run);
-  document.getElementById("l-done").textContent = done;
-  document.getElementById("l-run").textContent = run;
-  document.getElementById("l-err").textContent = err;
-  document.getElementById("l-todo").textContent = s.pending || 0;
-  renderHeatmap();
-  renderDonut(done, err, run, s.pending || 0);
+function loadQueue() {
+  return fetchText(RAW + "results/queue.json").then(function (txt) {
+    if (!txt) return;
+    queue = JSON.parse(txt);
+    var s = {};
+    queue.forEach(function (t) { s[t.status] = (s[t.status] || 0) + 1; });
+    var done = s.done || 0, err = s.error || 0, run = s.running || 0, total = queue.length;
+    countUp(document.getElementById("t-total"), total);
+    countUp(document.getElementById("t-done"), done);
+    countUp(document.getElementById("t-todo"), total - done - err);
+    countUp(document.getElementById("t-err"), err);
+    document.getElementById("t-done-note").textContent = (done * 100 / total).toFixed(1) + "% очереди";
+    var remain = total - done - err;
+    document.getElementById("eta").textContent = remain ? "≈ " + Math.ceil(remain / 36) + " дн. до полного прогона" : "полный прогон завершён 🎉";
+    function pct(f) { return Math.max(f * 100 / total, 0) + "%"; }
+    document.getElementById("b-done").style.width = pct(done);
+    document.getElementById("b-err").style.width = pct(err);
+    document.getElementById("b-run").style.width = pct(run);
+    document.getElementById("l-done").textContent = done;
+    document.getElementById("l-run").textContent = run;
+    document.getElementById("l-err").textContent = err;
+    document.getElementById("l-todo").textContent = s.pending || 0;
+    renderHeatmap();
+    renderDonut(done, err, run, s.pending || 0);
+  });
 }
 
-async function loadProgress() {
-  const txt = await fetchText(RAW + "results/progress.json");
-  if (!txt) return;
-  const p = JSON.parse(txt);
-  document.getElementById("last-run").textContent = "последний прогон воркера: " + p.updated + " (" + p.elapsed_min + " мин)";
-  const h = await fetchText(RAW + "results/history.json");
-  if (h) {
-    const hist = JSON.parse(h);
-    if (hist.length > 1) renderLine(hist);
-    else document.getElementById("line-box").innerHTML = "<div class='skel' style='height:100%'></div>";
-  }
+function loadProgress() {
+  return fetchText(RAW + "results/progress.json").then(function (txt) {
+    if (!txt) return;
+    var p = JSON.parse(txt);
+    document.getElementById("last-run").textContent = "последний прогон воркера: " + p.updated + " (" + p.elapsed_min + " мин)";
+    return fetchText(RAW + "results/history.json").then(function (h) {
+      if (h) {
+        var hist = JSON.parse(h);
+        if (hist.length > 1) renderLine(hist);
+      }
+    });
+  });
 }
 
 function renderDonut(done, err, run, todo) {
-  const ctx = document.getElementById("ch-donut");
+  if (!HAS_CHART) return;
+  var el = document.getElementById("donut-box");
+  el.innerHTML = "<canvas id='ch-donut'></canvas>";
   if (chDonut) chDonut.destroy();
-  chDonut = new Chart(ctx, {
+  chDonut = new Chart(document.getElementById("ch-donut"), {
     type: "doughnut",
     data: { labels: ["Готово", "Идёт", "Ошибки", "В очереди"],
       datasets: [{ data: [done, run, err, todo],
@@ -283,12 +266,14 @@ function renderDonut(done, err, run, todo) {
 }
 
 function renderLine(hist) {
-  const ctx = document.getElementById("ch-line");
+  if (!HAS_CHART) return;
+  var el = document.getElementById("line-box");
+  el.innerHTML = "<canvas id='ch-line'></canvas>";
   if (chLine) chLine.destroy();
-  chLine = new Chart(ctx, {
+  chLine = new Chart(document.getElementById("ch-line"), {
     type: "line",
-    data: { labels: hist.map(h => h.updated.slice(5, 16).replace("T", " ")),
-      datasets: [{ label: "готово задач", data: hist.map(h => h.done),
+    data: { labels: hist.map(function (h) { return h.updated.slice(5, 16).replace("T", " "); }),
+      datasets: [{ label: "готово задач", data: hist.map(function (h) { return h.done; }),
         borderColor: "#39c5cf", backgroundColor: "rgba(57,197,207,.12)",
         fill: true, tension: .35, pointRadius: 2.5, borderWidth: 2 }] },
     options: { responsive: true, maintainAspectRatio: false,
@@ -300,80 +285,80 @@ function renderLine(hist) {
 
 function renderHeatmap() {
   if (!queue) return;
-  const symbols = [...new Set(queue.map(t => t.symbol))];
-  const tfs = [...new Set(queue.map(t => t.tf))];
-  const strats = ["scan", ...[...new Set(queue.filter(t => t.kind === "backtest").map(t => t.strategy))]];
-  const short = { bollinger_reversion: "boll", vwap_reversion: "vwap", ema_cross: "ema", donchian: "donch", volume_surge: "vol" };
-  let html = "";
-  tfs.forEach(tf => { html += "<div class='cell dim' style='grid-column: span " + strats.length + "; text-align:center'>" + tf + "</div>"; });
+  var symbols = [], tfs = [], i;
+  queue.forEach(function (t) { if (symbols.indexOf(t.symbol) < 0) symbols.push(t.symbol); });
+  queue.forEach(function (t) { if (tfs.indexOf(t.tf) < 0) tfs.push(t.tf); });
+  var strats = ["scan"];
+  queue.forEach(function (t) { if (t.kind === "backtest" && strats.indexOf(t.strategy) < 0) strats.push(t.strategy); });
+  var short = { bollinger_reversion: "boll", vwap_reversion: "vwap", ema_cross: "ema", donchian: "donch", volume_surge: "vol" };
+  var html = "";
+  tfs.forEach(function (tf) { html += "<div class='cell dim' style='grid-column: span " + strats.length + "; text-align:center'>" + tf + "</div>"; });
   html = "<div class='cell dim'></div>" + html;
-  tfs.forEach(() => strats.forEach(s => { html += "<div class='cell dim' title='" + s + "'>" + (short[s] || s) + "</div>"; }));
-  symbols.forEach(sym => {
+  tfs.forEach(function () { strats.forEach(function (s) { html += "<div class='cell dim' title='" + s + "'>" + (short[s] || s) + "</div>"; }); });
+  symbols.forEach(function (sym) {
     html += "<div class='cell dim' style='text-align:right;padding-right:8px'>" + sym.replace("USDT", "") + "</div>";
-    tfs.forEach(tf => strats.forEach(s => {
-      const id = s === "scan" ? "scan-" + sym + "-" + tf : "bt-" + s + "-" + sym + "-" + tf;
-      const t = queue.find(x => x.id === id);
-      const st = t ? t.status : "pending";
-      const cls = st === "done" ? "st-done" : st === "error" ? "st-error" : st === "running" ? "st-running" : "st-pending";
+    tfs.forEach(function (tf) { strats.forEach(function (s) {
+      var id = s === "scan" ? "scan-" + sym + "-" + tf : "bt-" + s + "-" + sym + "-" + tf;
+      var t = null;
+      for (var j = 0; j < queue.length; j++) if (queue[j].id === id) { t = queue[j]; break; }
+      var st = t ? t.status : "pending";
+      var cls = st === "done" ? "st-done" : st === "error" ? "st-error" : st === "running" ? "st-running" : "st-pending";
       html += "<div class='cell " + cls + "' title='" + id + (t && t.error ? " — " + t.error : "") + "'>" + (st === "done" ? "✓" : st === "error" ? "✕" : st === "running" ? "▶" : "·") + "</div>";
-    }));
+    }); });
   });
-  const cols = 1 + tfs.length * strats.length;
+  var cols = 1 + tfs.length * strats.length;
   document.getElementById("heatmap").innerHTML = "<div class='heat-grid' style='grid-template-columns:80px repeat(" + (cols - 1) + ", 40px)'>" + html + "</div>";
 }
 
 function parseCSV(text) {
-  const lines = text.trim().split(String.fromCharCode(10));
+  var lines = text.trim().split(String.fromCharCode(10));
   if (lines.length < 2) return [];
-  const header = lines[0].split(",");
-  return lines.slice(1).map(l => {
-    const vals = l.split(","), o = {};
-    header.forEach((h, i) => o[h] = vals[i]);
+  var header = lines[0].split(",");
+  return lines.slice(1).map(function (l) {
+    var vals = l.split(","), o = {};
+    header.forEach(function (h, i) { o[h] = vals[i]; });
     return o;
   });
 }
 
-async function loadLeaderboard() {
-  const txt = await fetchText(RAW + "reports/leaderboard.csv");
-  if (!txt) return;
-  lbAll = parseCSV(txt);
-  countUp(document.getElementById("t-lb"), lbAll.length);
-  renderLbTable();
-  const top = lbAll.slice(0, 10);
-  if (top.length) {
-    const ctx = document.getElementById("ch-bar");
-    if (chBar) chBar.destroy();
-    chBar = new Chart(ctx, {
-      type: "bar",
-      data: { labels: top.map(r => r.strategy.replace("bollinger_reversion","boll").replace("vwap_reversion","vwap") + " · " + r.symbol.replace("USDT","") + " · " + r.tf),
-        datasets: [{ data: top.map(r => parseFloat(r.oos_sharpe)),
-          backgroundColor: ctx2 => {
-            const g = ctx2.chart.ctx.createLinearGradient(0, 0, 0, 240);
-            g.addColorStop(0, "rgba(163,113,247,.9)"); g.addColorStop(1, "rgba(88,166,255,.5)");
-            return g;
-          },
-          borderRadius: 8 }] },
-      options: { indexAxis: "y", responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { x: { title: { display: true, text: "OOS Sharpe" } } } }
-    });
-  }
+function loadLeaderboard() {
+  return fetchText(RAW + "reports/leaderboard.csv").then(function (txt) {
+    if (!txt) return;
+    lbAll = parseCSV(txt);
+    countUp(document.getElementById("t-lb"), lbAll.length);
+    renderLbTable();
+    var top = lbAll.slice(0, 10);
+    if (top.length && HAS_CHART) {
+      var el = document.getElementById("bar-box");
+      el.innerHTML = "<canvas id='ch-bar'></canvas>";
+      if (chBar) chBar.destroy();
+      chBar = new Chart(document.getElementById("ch-bar"), {
+        type: "bar",
+        data: { labels: top.map(function (r) { return r.strategy.replace("bollinger_reversion", "boll").replace("vwap_reversion", "vwap") + " · " + r.symbol.replace("USDT", "") + " · " + r.tf; }),
+          datasets: [{ data: top.map(function (r) { return parseFloat(r.oos_sharpe); }),
+            backgroundColor: (function (c) { var g = c.createLinearGradient(0, 0, 0, 240); g.addColorStop(0, "rgba(163,113,247,.9)"); g.addColorStop(1, "rgba(88,166,255,.5)"); return g; })(el.getContext("2d")),
+            borderRadius: 8 }] },
+        options: { indexAxis: "y", responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { title: { display: true, text: "OOS Sharpe" } } } }
+      });
+    }
+  });
 }
 
 function renderLbTable() {
-  const cols = ["strategy", "symbol", "tf", "oos_sharpe", "oos_pf", "oos_t", "trades", "param_stability"];
-  const names = { strategy: "Стратегия", symbol: "Пара", tf: "TF", oos_sharpe: "OOS Sharpe", oos_pf: "PF", oos_t: "t-стат", trades: "Сделок", param_stability: "Стабильность" };
-  const rows = [...lbAll].sort((a, b) => {
-    const va = a[lbSort.col], vb = b[lbSort.col];
-    const na = parseFloat(va), nb = parseFloat(vb);
+  var cols = ["strategy", "symbol", "tf", "oos_sharpe", "oos_pf", "oos_t", "trades", "param_stability"];
+  var names = { strategy: "Стратегия", symbol: "Пара", tf: "TF", oos_sharpe: "OOS Sharpe", oos_pf: "PF", oos_t: "t-стат", trades: "Сделок", param_stability: "Стабильность" };
+  var rows = lbAll.slice().sort(function (a, b) {
+    var na = parseFloat(a[lbSort.col]), nb = parseFloat(b[lbSort.col]);
     if (!isNaN(na) && !isNaN(nb)) return (na - nb) * lbSort.dir;
-    return String(va).localeCompare(String(vb)) * lbSort.dir;
+    return String(a[lbSort.col]).localeCompare(String(b[lbSort.col])) * lbSort.dir;
   });
-  let html = "<tr>" + cols.map(c => "<th onclick='sortLb("" + c + "")'>" + names[c] + (lbSort.col === c ? (lbSort.dir < 0 ? " ↓" : " ↑") : "") + "</th>").join("") + "</tr>";
-  rows.slice(0, 60).forEach(r => {
-    const robust = parseFloat(r.oos_t) > 2 && parseFloat(r.param_stability) >= 0.5;
-    html += "<tr>" + cols.map(c => {
-      let v = r[c] || "—";
+  var html = "<tr>" + cols.map(function (c) { return "<th onclick=\"sortLb('" + c + "')\">" + names[c] + (lbSort.col === c ? (lbSort.dir < 0 ? " ↓" : " ↑") : "") + "</th>"; }).join("") + "</tr>";
+  rows.slice(0, 60).forEach(function (r) {
+    var robust = parseFloat(r.oos_t) > 2 && parseFloat(r.param_stability) >= 0.5;
+    html += "<tr>" + cols.map(function (c) {
+      var v = r[c] || "—";
       if (c === "strategy" && robust) v = "★ " + v;
       if (c === "symbol") v = v.replace("USDT", "");
       if (c === "oos_sharpe" && parseFloat(v) > 0) return "<td class='pos'>" + v + "</td>";
@@ -383,31 +368,39 @@ function renderLbTable() {
   document.getElementById("lb-table").innerHTML = html;
 }
 
-window.sortLb = c => {
+function sortLb(c) {
   if (lbSort.col === c) lbSort.dir *= -1; else lbSort = { col: c, dir: -1 };
   renderLbTable();
-};
+}
 
-async function loadReport() {
-  const txt = await fetchText(RAW + "reports/REPORT.md");
-  if (!txt) { document.getElementById("report-body").textContent = "Отчёт появится после первого ежедневного обновления (05:40 UTC)."; return; }
-  const patSection = (txt.split("## Паттерны")[1] || "");
-  const rows = [...patSection.matchAll(/| ([^|]+) | (d+) | (d+) | ([^|]+) | ([^|]+) |/g)];
-  if (rows.length) {
-    let html = "<tr><th>Событие</th><th>Горизонт (баров)</th><th>Пар</th><th>Средний форвард</th><th>Медиана t</th></tr>";
-    rows.forEach(m => { html += "<tr><td>" + m[1].trim() + "</td><td>" + m[2] + "</td><td>" + m[3] + "</td><td class='pos'>" + m[4].trim() + "</td><td>" + m[5].trim() + "</td></tr>"; });
-    document.getElementById("pat-table").innerHTML = html;
-    countUp(document.getElementById("t-pat"), rows.length);
-  } else {
-    document.getElementById("pat-wrap").innerHTML = "<div class='dim' style='font-size:13px;padding:6px'>Пока ни один паттерн не прошёл проверку (или отчёт ещё не создан).</div>";
-    document.getElementById("t-pat").textContent = "0";
-  }
-  document.getElementById("report-body").textContent = txt.slice(0, 4000);
+function loadReport() {
+  return fetchText(RAW + "reports/REPORT.md").then(function (txt) {
+    if (!txt) { document.getElementById("report-body").textContent = "Отчёт появится после первого ежедневного обновления (05:40 UTC)."; return; }
+    var patSection = txt.split("## Паттерны")[1] || "";
+    var rows = patSection.match(/| [^|]+ | d+ | d+ | [^|]+ | [^|]+ |/g) || [];
+    if (rows.length) {
+      var html = "<tr><th>Событие</th><th>Горизонт (баров)</th><th>Пар</th><th>Средний форвард</th><th>Медиана t</th></tr>";
+      rows.forEach(function (r) {
+        var p = r.split("|").map(function (x) { return x.trim(); }).filter(String);
+        if (p.length >= 5) html += "<tr><td>" + p[0] + "</td><td>" + p[1] + "</td><td>" + p[2] + "</td><td class='pos'>" + p[3] + "</td><td>" + p[4] + "</td></tr>";
+      });
+      document.getElementById("pat-table").innerHTML = html;
+      countUp(document.getElementById("t-pat"), rows.length);
+    } else {
+      document.getElementById("pat-wrap").innerHTML = "<div class='dim' style='font-size:13px;padding:6px'>Пока ни один паттерн не прошёл проверку (или отчёт ещё не создан).</div>";
+      document.getElementById("t-pat").textContent = "0";
+    }
+    document.getElementById("report-body").textContent = txt.slice(0, 4000);
+  });
 }
 
 function refreshAll() {
   document.getElementById("ticker").textContent = "обновлено: " + new Date().toLocaleTimeString();
-  loadWorkerStatus(); loadProgress(); loadQueue(); loadLeaderboard(); loadReport();
+  loadWorkerStatus();
+  loadProgress();
+  loadQueue();
+  loadLeaderboard();
+  loadReport();
 }
 
 refreshAll();
