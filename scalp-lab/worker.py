@@ -15,6 +15,17 @@ def save_progress(q, start):
     os.makedirs("results", exist_ok=True)
     with open("results/progress.json", "w") as f:
         json.dump(prog, f)
+    hist = []
+    try:
+        with open("results/history.json") as f:
+            hist = json.load(f)
+    except Exception:
+        hist = []
+    if not hist or hist[-1].get("done") != done:
+        hist.append({"updated": prog["updated"], "done": done,
+                     "total": len(q), "errors": err})
+        with open("results/history.json", "w") as f:
+            json.dump(hist[-500:], f)
 
 
 def main():
