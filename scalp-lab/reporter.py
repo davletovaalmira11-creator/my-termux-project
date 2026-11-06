@@ -70,40 +70,57 @@ def main():
         lines.append("- пока нет данных")
     lines.append("")
 
-    lines.append("## Лидерборд стратегий (OOS)")
-    lines.append("")
     passed = [r for r in bts
               if r["trades"] >= MIN_TRADES
               and r["folds"] >= MIN_FOLDS
               and r["oos"]["pf"] > 1.0
               and r["oos"]["t"] > 1.0]
     passed.sort(key=lambda r: r["oos"]["sharpe"], reverse=True)
+
+    lines.append("## Лидерборд стратегий (OOS)")
+    lines.append("")
     lines.append("| # | стратегия | пара | TF | Sharpe | PF | WinRate | MaxDD | t | сделок | стабильность |")
     lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
-    top = passed[:30]
-    for i, r in enumerate(top):
+    for i, r in enumerate(passed[:30]):
         o = r["oos"]
-        robust = "*" if (r["param_stability"] >= 0.5 and o["t"] > 2.0 and r["param_stability"] * o["pf"] >= 1.0) else ""
+        robust = "*" if (r["param_stability"] >= 0.5 and o["t"] > 2.0) else ""
         lines.append("| %d | %s%s | %s | %s | %.2f | %.2f | %.1f%% | %s | %.1f | %d | %.0f%% |" % (
             i + 1, r["strategy"], robust, r["symbol"], r["tf"], o["sharpe"], o["pf"],
             o["winrate"] * 100, fmt(o["maxdd"]), o["t"], r["trades"], r["param_stability"] * 100))
     lines.append("")
-    lines.append("Робастные (подозрение на закономерность, а не подгонку) отмечены звездочкой: стабильные параметры между фолдами + t>2.")
+    lines.append("Робастные отмечены звездочкой: стабильные параметры между фолдами + t>2.")
+    lines.append("")
+
+    lines.append("## Устойчивость по монетам (агрегация)")
+    lines.append("")
+    lines.append("Закономерность живет на многих парах; подгонка - обычно на одной.")
+    lines.append("")
+    lines.append("| стратегия | TF | пар в лидерборде | медиана Sharpe | медиана PF | пар с Sharpe>0 |")
+    lines.append("|---|---|---|---|---|---|")
+    groups = defaultdict(list)
+    for r in passed:
+        groups[(r["strategy"], r["tf"])].append(r)
+    for (st, tf), xs in sorted(groups.items()):
+        sh = [x["oos"]["sharpe"] for x in xs]
+        pf = [x["oos"]["pf"] for x in xs]
+        lines.append("| %s | %s | %d | %.2f | %.2f | %d |" % (
+            st, tf, len(xs), float(np.median(sh)), float(np.median(pf)),
+            sum(1 for s in sh if s > 0)))
     lines.append("")
 
     if scans:
         pvals = [p_from_t(x["t"]) for x in scans]
         keep = set(bh_keep(pvals))
         surv = [x for i, x in enumerate(scans) if i in keep]
-        groups = defaultdict(list)
+        groups2 = defaultdict(list)
         for x in surv:
-            groups[(x["event"], x["horizon"])].append(x)
+            groups2[(x["event"], x["horizon"])].append(x)
         lines.append("## Паттерны, выжившие поправку Бенджамини-Хохберга (FDR 5%%)")
         lines.append("")
-        if groups:
+        if groups2:
             lines.append("| событие | горизонт(баров) | пар | средн. форвард | медиана t |")
             lines.append("|---|---|---|---|---|")
-            for (ev, hz), xs in sorted(groups.items(), key=lambda kv: -abs(np.mean([a["mean_fwd"] for a in kv[1]]))):
+            for (ev, hz), xs in sorted(groups2.items(), key=lambda kv: -abs(np.mean([a["mean_fwd"] for a in kv[1]]))):
                 mf = np.mean([a["mean_fwd"] for a in xs])
                 mt = np.median([a["t"] for a in xs])
                 lines.append("| %s | %d | %d | %s | %.1f |" % (ev, hz, len(xs), fmt(mf), mt))
