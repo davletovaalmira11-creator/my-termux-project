@@ -15,12 +15,14 @@ def position_returns(df, pos, fee, slip):
     return net, n_trades
 
 
-def walk_forward(df, sigs, train_bars, test_bars, fee, slip, tf_min):
+def walk_forward(df, sigs, train_bars, test_bars, fee, slip, tf_min,
+                 fee2=None, slip2=None):
     bars_per_year = 365.0 * 24 * 60 / tf_min
     keys = list(sigs.keys())
     if not keys:
         return {"error": "no valid params"}
     oos_parts = []
+    oos2_parts = []
     chosen = []
     is_sharpes = []
     total_trades = 0
@@ -36,6 +38,9 @@ def walk_forward(df, sigs, train_bars, test_bars, fee, slip, tf_min):
         a, b = t0, t0 + test_bars
         net, trades = position_returns(df.iloc[a:b], sigs[best_key].iloc[a:b], fee, slip)
         oos_parts.append(net.values)
+        if fee2 is not None:
+            net2, _ = position_returns(df.iloc[a:b], sigs[best_key].iloc[a:b], fee2, slip2)
+            oos2_parts.append(net2.values)
         chosen.append(best_key)
         is_sharpes.append(best_is)
         total_trades += trades
@@ -45,7 +50,7 @@ def walk_forward(df, sigs, train_bars, test_bars, fee, slip, tf_min):
     oos_ret = np.concatenate(oos_parts)
     mo = metrics(oos_ret, bars_per_year)
     top = Counter(chosen).most_common(1)[0]
-    return {
+    res = {
         "oos": mo,
         "trades": int(total_trades),
         "is_sharpe_avg": float(np.mean(is_sharpes)),
@@ -53,3 +58,7 @@ def walk_forward(df, sigs, train_bars, test_bars, fee, slip, tf_min):
         "param_stability": float(top[1] / len(chosen)),
         "top_param": top[0],
     }
+    if oos2_parts:
+        mo2 = metrics(np.concatenate(oos2_parts), bars_per_year)
+        res["oos_maker"] = mo2
+    return res

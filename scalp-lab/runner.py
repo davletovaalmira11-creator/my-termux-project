@@ -25,11 +25,18 @@ def run_task(t):
                 pass
         train_bars = int(t["train_days"] * 24 * 60 / tf_min)
         test_bars = int(t["test_days"] * 24 * 60 / tf_min)
+        if t["strategy"] in strategies.MAKER_SET:
+            fee, slip = config.FEE_MAKER, config.SLIP_MAKER
+            mode = "maker"
+        else:
+            fee, slip = config.FEE, config.SLIP
+            mode = "taker"
         res = engine.walk_forward(df, sigs, train_bars, test_bars,
-                                 config.FEE, config.SLIP, tf_min)
+                                  fee, slip, tf_min,
+                                  fee2=config.FEE_MAKER, slip2=config.SLIP_MAKER)
         res.update({"kind": "backtest", "symbol": t["symbol"], "tf": tf,
                     "strategy": t["strategy"], "days": int(t["days"]),
-                    "n_bars": int(len(df))})
+                    "n_bars": int(len(df)), "fee_mode": mode})
         return res
     res = scan.run_scan(df, t["symbol"], tf)
     return res
