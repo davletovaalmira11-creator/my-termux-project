@@ -4,6 +4,9 @@ on:
     - cron: "40 5 * * *"
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 concurrency:
   group: bt-report
   cancel-in-progress: false
@@ -23,7 +26,9 @@ jobs:
         working-directory: scalp-lab
       - run: python reporter.py
         working-directory: scalp-lab
+        continue-on-error: true
       - name: Commit report
+        if: always()
         working-directory: scalp-lab
         run: |
           git config user.name "bt-bot"

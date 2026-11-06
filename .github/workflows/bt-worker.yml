@@ -6,6 +6,9 @@ on:
     - cron: "23 */6 * * *"
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 concurrency:
   group: bt-worker
   cancel-in-progress: false
@@ -26,10 +29,12 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: scalp-lab/.cache
-          key: bt-cache-v1
+          key: bt-cache-v2
       - run: python worker.py --budget 40
         working-directory: scalp-lab
+        continue-on-error: true
       - name: Commit results
+        if: always()
         working-directory: scalp-lab
         run: |
           git config user.name "bt-bot"
