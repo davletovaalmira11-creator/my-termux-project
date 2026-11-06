@@ -33,9 +33,10 @@ def main():
     ap.add_argument("--budget", type=float, default=40)
     args = ap.parse_args()
     start = time.time()
+    os.makedirs("results", exist_ok=True)
+    os.makedirs("reports", exist_ok=True)
     if not os.path.exists("results/queue.json"):
         from queue_builder import build
-        os.makedirs("results", exist_ok=True)
         with open("results/queue.json", "w") as f:
             json.dump(build(), f)
     with open("results/queue.json") as f:

@@ -29,8 +29,10 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: scalp-lab/.cache
-          key: bt-cache-v2
-      - run: python worker.py --budget 40
+          key: bt-cache-v3
+      - run: |
+          mkdir -p reports
+          python worker.py --budget 40
         working-directory: scalp-lab
         continue-on-error: true
       - name: Commit results
@@ -39,7 +41,12 @@ jobs:
         run: |
           git config user.name "bt-bot"
           git config user.email "bt-bot@users.noreply.github.com"
-          git add results reports
-          git commit -m "auto: backtest results update [skip ci]" || echo "nothing to commit"
-          git pull --rebase origin master || true
-          git push || echo "push failed, will retry next run"
+          git add results 2>/dev/null || true
+          git add reports 2>/dev/null || true
+          if git status --porcelain | grep -q .; then
+            git commit -m "auto: backtest results update [skip ci]"
+            git pull --rebase origin master || true
+            git push || echo "push failed, will retry next run"
+          else
+            echo "nothing to commit"
+          fi
