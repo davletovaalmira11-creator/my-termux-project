@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Scalp Lab — Live Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #30363d;
+    --text: #c9d1d9; --dim: #8b949e; --green: #3fb950; --red: #f85149;
+    --yellow: #d29922; --blue: #58a6ff; --purple: #bc8cff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; padding: 20px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .sub { color: var(--dim); font-size: 13px; margin-bottom: 18px; }
+  .live-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card .label { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  .card .value { font-size: 26px; font-weight: 700; margin-top: 4px; }
+  .card .note { color: var(--dim); font-size: 12px; margin-top: 2px; }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .panel h2 { font-size: 15px; margin-bottom: 12px; }
+  .bar-wrap { background: var(--bg); border-radius: 6px; height: 18px; overflow: hidden; display: flex; margin-bottom: 6px; }
+  .bar-done { background: var(--green); height: 100%; }
+  .bar-err { background: var(--red); height: 100%; }
+  .bar-run { background: var(--yellow); height: 100%; }
+  .bar-todo { background: #21262d; height: 100%; flex: 1; }
+  .legend { display: flex; gap: 16px; color: var(--dim); font-size: 12px; flex-wrap: wrap; }
+  .legend span b { color: var(--text); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { color: var(--dim); font-weight: 600; }
+  tr:hover td { background: #1c2128; }
+  .heat { overflow-x: auto; }
+  .heat .cell { padding: 5px 7px; border-radius: 4px; text-align: center; white-space: nowrap; }
+  .st-done { background: #1a4224; color: #7ee787; }
+  .st-error { background: #4a1e1e; color: #ffa198; }
+  .st-running { background: #453618; color: #f0c067; }
+  .st-pending { background: #1c2128; color: #6e7681; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .ok { background: #12261e; color: var(--green); }
+  .off { background: #21262d; color: var(--dim); }
+  .bad { background: #2d1517; color: var(--red); }
+  #refresh-btn { background: var(--border); color: var(--text); border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 12px; }
+  #refresh-btn:hover { background: #3d444d; }
+  .dim { color: var(--dim); }
+  .report-body { white-space: pre-wrap; font-size: 13px; color: var(--text); max-height: 400px; overflow-y: auto; }
+  .topnav { display: flex; align-items: center; }
+  a { color: var(--blue); }
+  @media (max-width: 640px) { body { padding: 10px; } .card .value { font-size: 20px; } }
+</style>
+</head>
+<body>
+<h1>🧪 Crypto Scalp Lab</h1>
+<div class="topnav">
+  <div class="sub" id="worker-status"><span class="live-dot" style="background:var(--dim)"></span>загрузка…</div>
+  <button id="refresh-btn" onclick="refreshAll()">⟳ Обновить</button>
+</div>
+<p class="sub" id="last-update"></p>
+
+<div class="grid">
+  <div class="card"><div class="label">Всего задач</div><div class="value" id="t-total">—</div></div>
+  <div class="card"><div class="label">Готово</div><div class="value" id="t-done" style="color:var(--green)">—</div><div class="note" id="t-done-note"></div></div>
+  <div class="card"><div class="label">Осталось</div><div class="value" id="t-todo">—</div><div class="note" id="eta"></div></div>
+  <div class="card"><div class="label">Ошибки</div><div class="value" id="t-err">—</div></div>
+  <div class="card"><div class="label">Стратегий в лидерборде</div><div class="value" id="t-lb">—</div></div>
+  <div class="card"><div class="label">Паттернов выжило</div><div class="value" id="t-pat">—</div></div>
+</div>
+
+<div class="panel">
+  <h2>Прогресс очереди</h2>
+  <div class="bar-wrap"><div class="bar-done" id="b-done"></div><div class="bar-err" id="b-err"></div><div class="bar-run" id="b-run"></div><div class="bar-todo"></div></div>
+  <div class="legend">
+    <span>✅ готово: <b id="l-done">0</b></span>
+    <span>▶ идёт: <b id="l-run">0</b></span>
+    <span>⛔ ошибки: <b id="l-err">0</b></span>
+    <span>⬜ в очереди: <b id="l-todo">0</b></span>
+    <span id="l-updated"></span>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Карта задач <span class="dim">(пары × стратегии × TF)</span></h2>
+  <div class="heat" id="heatmap"></div>
+</div>
+
+<div class="panel">
+  <h2>🏆 Лидерборд стратегий <span class="dim">(out-of-sample, с комиссиями; ★ = робастные)</span></h2>
+  <div style="overflow-x:auto"><table id="lb-table"></table></div>
+</div>
+
+<div class="panel">
+  <h2>🔎 Паттерны, выжившие статпроверку (BH, FDR 5%)</h2>
+  <div style="overflow-x:auto"><table id="pat-table"></table></div>
+</div>
+
+<div class="panel">
+  <h2>Полный отчёт</h2>
+  <div class="report-body" id="report-body">—</div>
+</div>
+
+<script>
+const OWNER = "davletovaalmira11-creator";
+const REPO = "my-termux-project";
+const RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/scalp-lab/";
+const API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
+
+async function fetchText(url) {
+  const r = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+  if (!r.ok) return null;
+  return await r.text();
+}
+
+let queue = null;
+
+async function loadQueue() {
+  const txt = await fetchText(RAW + "results/queue.json");
+  if (!txt) return;
+  queue = JSON.parse(txt);
+  const byStatus = {};
+  queue.forEach(t => byStatus[t.status] = (byStatus[t.status] || 0) + 1);
+  const done = byStatus.done || 0, err = byStatus.error || 0,
+        running = byStatus.running || 0, todo = byStatus.pending || 0, total = queue.length;
+  document.getElementById("t-total").textContent = total;
+  document.getElementById("t-done").textContent = done;
+  document.getElementById("t-done-note").textContent = (total ? (done * 100 / total).toFixed(1) : 0) + "%";
+  document.getElementById("t-todo").textContent = total - done - err;
+  document.getElementById("t-err").textContent = err;
+  const remain = total - done - err;
+  document.getElementById("eta").textContent = remain ? "≈ " + Math.ceil(remain / 36) + " дн." : "готово!";
+  const pct = f => (f * 100 / total) + "%";
+  document.getElementById("b-done").style.width = pct(done);
+  document.getElementById("b-err").style.width = pct(err);
+  document.getElementById("b-run").style.width = pct(running);
+  document.getElementById("l-done").textContent = done;
+  document.getElementById("l-run").textContent = running;
+  document.getElementById("l-err").textContent = err;
+  document.getElementById("l-todo").textContent = todo;
+  renderHeatmap();
+}
+
+async function loadProgress() {
+  const txt = await fetchText(RAW + "results/progress.json");
+  if (!txt) return;
+  const p = JSON.parse(txt);
+  document.getElementById("l-updated").textContent = "⟵ последний прогон воркера: " + p.updated + " (" + p.elapsed_min + " мин)";
+}
+
+function renderHeatmap() {
+  if (!queue) return;
+  const symbols = [...new Set(queue.map(t => t.symbol))];
+  const tfs = [...new Set(queue.map(t => t.tf))];
+  const strats = ["scan", ...[...new Set(queue.filter(t => t.kind === "backtest").map(t => t.strategy))]];
+  const short = { bollinger_reversion: "boll", vwap_reversion: "vwap", ema_cross: "ema", donchian: "donch", volume_surge: "vol" };
+  let html = "";
+  tfs.forEach(tf => { html += "<div class='cell dim' style='grid-column: span " + strats.length + "; text-align:center'>" + tf + "</div>"; });
+  html = "<div class='cell dim'></div>" + html;
+  tfs.forEach(() => strats.forEach(s => { html += "<div class='cell dim' title='" + s + "'>" + (short[s] || s) + "</div>"; }));
+  symbols.forEach(sym => {
+    html += "<div class='cell dim' style='text-align:right;padding-right:6px'>" + sym.replace("USDT", "") + "</div>";
+    tfs.forEach(tf => strats.forEach(s => {
+      const id = s === "scan" ? "scan-" + sym + "-" + tf : "bt-" + s + "-" + sym + "-" + tf;
+      const t = queue.find(x => x.id === id);
+      const st = t ? t.status : "pending";
+      const cls = st === "done" ? "st-done" : st === "error" ? "st-error" : st === "running" ? "st-running" : "st-pending";
+      html += "<div class='cell " + cls + "' title='" + id + (t && t.error ? " — " + t.error : "") + "'>" + (st === "done" ? "✓" : st === "error" ? "✕" : st === "running" ? "▶" : "·") + "</div>";
+    }));
+  });
+  const cols = 1 + tfs.length * strats.length;
+  document.getElementById("heatmap").innerHTML = "<div style='display:grid;grid-template-columns:90px repeat(" + (cols - 1) + ",38px);gap:3px;font-size:11px;overflow-x:auto'>" + html + "</div>";
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(String.fromCharCode(10));
+  if (lines.length < 2) return [];
+  const header = lines[0].split(",");
+  return lines.slice(1).map(l => {
+    const vals = l.split(",");
+    const o = {};
+    header.forEach((h, i) => o[h] = vals[i]);
+    return o;
+  });
+}
+
+async function loadLeaderboard() {
+  const txt = await fetchText(RAW + "reports/leaderboard.csv");
+  if (!txt) return;
+  const rows = parseCSV(txt);
+  document.getElementById("t-lb").textContent = rows.length;
+  const cols = ["strategy", "symbol", "tf", "oos_sharpe", "oos_pf", "oos_t", "trades", "param_stability"];
+  const names = { strategy: "Стратегия", symbol: "Пара", tf: "TF", oos_sharpe: "OOS Sharpe", oos_pf: "PF", oos_t: "t-стат", trades: "Сделок", param_stability: "Стабильность" };
+  let html = "<tr>" + cols.map(c => "<th>" + names[c] + "</th>").join("") + "</tr>";
+  rows.slice(0, 50).forEach(r => {
+    const robust = parseFloat(r.oos_t) > 2 && parseFloat(r.param_stability) >= 0.5;
+    html += "<tr>" + cols.map(c => {
+      let v = r[c] || "—";
+      if (c === "strategy" && robust) v = "★ " + v;
+      if (c === "symbol") v = v.replace("USDT", "");
+      return "<td>" + v + "</td>";
+    }).join("") + "</tr>";
+  });
+  document.getElementById("lb-table").innerHTML = html;
+}
+
+async function loadReport() {
+  const txt = await fetchText(RAW + "reports/REPORT.md");
+  if (!txt) { document.getElementById("report-body").textContent = "Отчёт появится после первого ежедневного обновления."; return; }
+  const patSection = (txt.split("## Паттерны")[1] || "");
+  const rows = [...patSection.matchAll(/| ([^|]+) | (d+) | (d+) | ([^|]+) | ([^|]+) |/g)];
+  if (rows.length) {
+    let html = "<tr><th>Событие</th><th>Горизонт (баров)</th><th>Пар</th><th>Средний форвард</th><th>Медиана t</th></tr>";
+    rows.forEach(m => { html += "<tr><td>" + m[1].trim() + "</td><td>" + m[2] + "</td><td>" + m[3] + "</td><td>" + m[4].trim() + "</td><td>" + m[5].trim() + "</td></tr>"; });
+    document.getElementById("pat-table").innerHTML = html;
+    document.getElementById("t-pat").textContent = rows.length;
+  } else {
+    document.getElementById("pat-table").outerHTML = "<div class='dim' style='font-size:13px'>Пока ни один паттерн не прошёл проверку (или отчёт ещё не создан).</div>";
+    document.getElementById("t-pat").textContent = "0";
+  }
+  document.getElementById("report-body").textContent = txt.slice(0, 4000);
+}
+
+async function loadWorkerStatus() {
+  const el = document.getElementById("worker-status");
+  try {
+    const r = await fetch(API + "/actions/runs?per_page=10", { headers: { "Accept": "application/vnd.github+json" } });
+    if (!r.ok) throw 0;
+    const data = await r.json();
+    const runs = data.workflow_runs || [];
+    const worker = runs.find(x => x.name === "bt-worker");
+    if (!worker) { el.innerHTML = "<span class='live-dot' style='background:var(--dim)'></span>воркеры ещё не запускались"; return; }
+    const running = runs.filter(x => x.name === "bt-worker" && x.status !== "completed");
+    if (running.length) {
+      const mins = Math.round((Date.now() - new Date(running[0].run_started_at)) / 60000);
+      el.innerHTML = "<span class='live-dot' style='background:var(--green)'></span><span class='pill ok'>воркер работает · " + mins + " мин</span>";
+    } else if (worker.conclusion === "success") {
+      el.innerHTML = "<span class='live-dot' style='background:var(--blue)'></span><span class='pill off'>воркер выключен · последний прогон успешен</span>";
+    } else if (worker.conclusion === "failure") {
+      el.innerHTML = "<span class='live-dot' style='background:var(--red)'></span><span class='pill bad'>последний прогон упал</span> <a href='" + worker.html_url + "' target='_blank'>логи</a>";
+    } else {
+      el.innerHTML = "<span class='live-dot' style='background:var(--dim)'></span>статус: " + worker.status;
+    }
+  } catch (e) {
+    el.innerHTML = "<span class='live-dot' style='background:var(--dim)'></span>статус воркера недоступен (лимит API)";
+  }
+}
+
+function refreshAll() {
+  document.getElementById("last-update").textContent = "обновлено: " + new Date().toLocaleTimeString();
+  loadWorkerStatus(); loadProgress(); loadQueue(); loadLeaderboard(); loadReport();
+}
+
+refreshAll();
+setInterval(refreshAll, 60000);
+</script>
+</body>
+</html>
