@@ -1,0 +1,2 @@
+strategy,symbol,tf,oos_sharpe,oos_pf,oos_t,trades,param_stability,is_sharpe_avg,folds
+bollinger_reversion,SUIUSDT,15m,1.127,1.032,1.04,525,0.45,2.29,22
