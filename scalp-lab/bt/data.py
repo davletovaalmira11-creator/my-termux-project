@@ -28,14 +28,13 @@ def _read_zip(path):
     with zipfile.ZipFile(path) as z:
         name = z.namelist()[0]
         with z.open(name) as f:
-            df = pd.read_csv(f, header=None, names=COLS, usecols=list(range(11)))
+            df = pd.read_csv(f, header=None, names=COLS)
+    # newer Binance archives include a header row - drop non-numeric rows
+    df = df[pd.to_numeric(df["open_time"], errors="coerce").notna()]
     return df
 
 
-def klines(symbol, tf, days, cache_dir=".cache"):
-    key = (symbol, tf, days)
-    if key in _MEMO:
-        return _MEMO[key]
+def _klines_raw(symbol, tf, days, cache_dir):
     os.makedirs(cache_dir, exist_ok=True)
     end = pd.Timestamp.utcnow().normalize()
     start = end - pd.Timedelta(days=days)
@@ -60,11 +59,26 @@ def klines(symbol, tf, days, cache_dir=".cache"):
     if not frames:
         raise RuntimeError("no data for " + symbol + " " + tf)
     df = pd.concat(frames, ignore_index=True)
-    df["dt"] = pd.to_datetime(df["open_time"], unit="ms", utc=True)
+    df["dt"] = pd.to_datetime(df["open_time"].astype("int64"), unit="ms", utc=True)
     df = df.drop_duplicates("open_time").sort_values("open_time").reset_index(drop=True)
     df = df[df["dt"] >= start].reset_index(drop=True)
     df = df[KEEP]
     for c in KEEP[1:]:
         df[c] = df[c].astype(float)
+    return df
+
+
+def klines(symbol, tf, days, cache_dir=".cache"):
+    key = (symbol, tf, days)
+    if key in _MEMO:
+        return _MEMO[key]
+    try:
+        df = _klines_raw(symbol, tf, days, cache_dir)
+    except RuntimeError:
+        # some futures symbols are quoted as 1000<SYM>USDT (e.g. PEPE)
+        if not symbol.endswith("USDT") or symbol.startswith("1000"):
+            raise
+        alt = "1000" + symbol
+        df = _klines_raw(alt, tf, days, cache_dir)
     _MEMO[key] = df
     return df
