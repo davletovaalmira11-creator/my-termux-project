@@ -45,8 +45,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-07T11:21:44Z",
- "runs": 20,
+ "updated": "2026-11-07T12:00:08Z",
+ "runs": 21,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
