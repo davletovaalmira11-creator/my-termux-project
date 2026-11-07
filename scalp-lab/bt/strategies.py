@@ -274,6 +274,102 @@ def wick_regime(df, w, vz_max, h):
 
 
 
+# ===== волна 4: быстрые скальп-стратегии (частые сделки, короткое удержание) =====
+
+
+def bb_fast(df, n, k):
+    # короткий Bollinger: возврат к среднему на малом окне -> много сигналов
+    return bollinger_reversion(df, n, k)
+
+
+def ema_snap(df, n, k):
+    # резкое отклонение цены от EMA -> отскок назад к EMA
+    e = df["close"].ewm(span=n, adjust=False).mean()
+    dev = df["close"] - e
+    sd = dev.rolling(200).std().replace(0.0, np.nan)
+    z = dev / sd
+    sig = pd.Series(np.nan, index=df.index)
+    sig[z > k] = -1.0
+    sig[z < -k] = 1.0
+    sig[z.abs() < 0.3] = 0.0
+    return sig.ffill().fillna(0.0)
+
+
+def flow_fade(df, k, h):
+    # order-flow: перекос агрессивных покупок/продаж (taker flow) -> контрарианский откат
+    q = df["quote_vol"].replace(0.0, np.nan)
+    imb = df["taker_quote"] / q
+    m = imb.rolling(200).mean()
+    s = imb.rolling(200).std().replace(0.0, np.nan)
+    z = (imb - m) / s
+    sig = pd.Series(np.nan, index=df.index)
+    sig[z > k] = -1.0
+    sig[z < -k] = 1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def squeeze_pop(df, n, m, vz, h):
+    # сжатие диапазона -> прорыв с объёмом -> короткий моментум по движению
+    rng = (df["high"] - df["low"]).rolling(n).mean()
+    avg = rng.rolling(200).mean().replace(0.0, np.nan)
+    sq = (rng < m * avg).fillna(False)
+    hi = df["high"].rolling(n).max().shift(1)
+    lo = df["low"].rolling(n).min().shift(1)
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[sq.shift(1).fillna(False) & (df["close"] > hi) & (z > vz)] = 1.0
+    sig[sq.shift(1).fillna(False) & (df["close"] < lo) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def qr_revert(df, n, q):
+    # цена в крайнем квантиле окна -> возврат к медиане
+    qh = df["close"].rolling(n).quantile(1.0 - q)
+    ql = df["close"].rolling(n).quantile(q)
+    med = df["close"].rolling(n).median()
+    sd = df["close"].rolling(n).std().replace(0.0, np.nan)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[df["close"] > qh] = -1.0
+    sig[df["close"] < ql] = 1.0
+    sig[(df["close"] - med).abs() < 0.1 * sd] = 0.0
+    return sig.ffill().fillna(0.0)
+
+
+def level_fade(df, n, w, h):
+    # касание границы диапазона без пробоя -> отбой от уровня
+    hi = df["high"].rolling(n).max().shift(1)
+    lo = df["low"].rolling(n).min().shift(1)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(df["high"] >= hi * (1.0 - w)) & (df["close"] < hi)] = -1.0
+    sig[(df["low"] <= lo * (1.0 + w)) & (df["close"] > lo)] = 1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def streak_bb(df, n_streak, k, h):
+    # серия одноцветных свечей + выход за короткий Bollinger -> усиленный реверс
+    up = (df["close"] - df["open"]) > 0
+    dn = ~up
+    up_run = up.groupby((~up).cumsum()).cumsum()
+    dn_run = dn.groupby((~dn).cumsum()).cumsum()
+    m = df["close"].rolling(20).mean()
+    sd = df["close"].rolling(20).std()
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(dn_run >= n_streak) & (df["close"] < m - k * sd)] = 1.0
+    sig[(up_run >= n_streak) & (df["close"] > m + k * sd)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def vol_pop(df, vz, h):
+    # объёмный импульс после затишья -> короткий моментум по направлению свечи
+    z = _vol_z(df)
+    calm_prev = z.shift(1) < 1.0
+    up = (df["close"] - df["open"]) > 0
+    sig = pd.Series(np.nan, index=df.index)
+    sig[calm_prev & (z > vz) & up] = 1.0
+    sig[calm_prev & (z > vz) & (~up)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
 def grid(**kv):
     res = [{}]
     for key in list(kv):
@@ -316,6 +412,15 @@ STRATEGIES = {
     "ls_contrarian": (ls_contrarian, grid(z=[1.5, 2.0, 2.5], h=[30, 60])),
     "bb_regime": (bb_regime, grid(n=[100, 200], k=[2.0, 2.5], vz_max=[1.0, 1.5])),
     "wick_regime": (wick_regime, grid(w=[0.4, 0.5], vz_max=[1.0, 1.5], h=[15, 30])),
+    # волна 4: быстрые скальпы
+    "bb_fast": (bb_fast, grid(n=[10, 15], k=[2.0, 2.5])),
+    "ema_snap": (ema_snap, grid(n=[20, 50], k=[2.0, 2.5])),
+    "flow_fade": (flow_fade, grid(k=[2.0, 2.5], h=[15, 30])),
+    "squeeze_pop": (squeeze_pop, grid(n=[20, 60], m=[0.7], vz=[2.0], h=[30, 60])),
+    "qr_revert": (qr_revert, grid(n=[100, 200], q=[0.05, 0.1])),
+    "level_fade": (level_fade, grid(n=[60], w=[0.001, 0.002], h=[15, 30])),
+    "streak_bb": (streak_bb, grid(n_streak=[3], k=[1.5, 2.0], h=[30, 60])),
+    "vol_pop": (vol_pop, grid(vz=[3.0, 4.0], h=[15, 30])),
 }
 
 # режим исполнения: реверсивные входят лимитками (maker),
@@ -323,7 +428,8 @@ STRATEGIES = {
 MAKER_SET = {"streak_reversion", "wick_reversion", "bb_maker",
              "bollinger_reversion", "vwap_reversion",
              "streak_vol", "bb_vol", "wick_vol", "spike_revert", "crash_revert", "spike_bb", "vol_burst_revert",
-             "funding_revert", "oi_exhaust", "ls_contrarian", "bb_regime", "wick_regime"}
+             "funding_revert", "oi_exhaust", "ls_contrarian", "bb_regime", "wick_regime",
+             "bb_fast", "ema_snap", "flow_fade", "qr_revert", "level_fade", "streak_bb"}
 
 # стратегии, которым нужны funding/OI/long-short из архивов (runner обогащает df)
 DERIV_SET = {"funding_revert", "oi_exhaust", "ls_contrarian"}

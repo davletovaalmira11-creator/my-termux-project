@@ -20,7 +20,7 @@ except Exception:
 
 STATE_PATH = "results/paper.json"
 CAPITAL_START = 1000.0
-MAX_TRACK = 5
+MAX_TRACK = 8
 MIN_STABILITY = 0.3
 LOOKBACK_DAYS = {"1m": 3, "5m": 10, "15m": 20, "1h": 40}
 COST = {"taker": 2 * (config.FEE + config.SLIP),
