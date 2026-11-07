@@ -13,6 +13,10 @@ import time
 
 import config
 from bt import data, strategies
+try:
+    from bt import live
+except Exception:
+    live = None
 
 STATE_PATH = "results/paper.json"
 CAPITAL_START = 1000.0
@@ -98,6 +102,16 @@ def close_pos(st, key, px, ts, reason):
     st["closed"] = st["closed"][-300:]
 
 
+def get_klines(symbol, tf):
+    """Живые свечи (лаг ~1 минута); при сбое - дневные архивы (лаг ~1 день)."""
+    if live is not None:
+        try:
+            return live.klines_live(symbol, tf, LOOKBACK_DAYS.get(tf, 10))
+        except Exception as e:
+            print("live data failed, fallback to archives:", str(e)[:80], flush=True)
+    return data.klines(symbol, tf, LOOKBACK_DAYS.get(tf, 10))
+
+
 def main():
     st = load_state()
     tops = top_strategies()
@@ -108,14 +122,14 @@ def main():
             continue
         t = st["positions"][key]
         try:
-            df = data.klines(t["symbol"], t["tf"], LOOKBACK_DAYS.get(t["tf"], 10))
+            df = get_klines(t["symbol"], t["tf"])
             close_pos(st, key, float(df["close"].iloc[-1]),
                       str(df["dt"].iloc[-1]), "rotated out")
         except Exception:
             pass
     for t in tops:
         try:
-            df = data.klines(t["symbol"], t["tf"], LOOKBACK_DAYS.get(t["tf"], 10))
+            df = get_klines(t["symbol"], t["tf"])
             fn = strategies.STRATEGIES[t["strategy"]][0]
             sig = fn(df, **t["params"])
             cur = float(sig.iloc[-1])
