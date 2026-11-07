@@ -155,6 +155,14 @@ a { color:var(--blue); text-decoration:none; }
   </div>
   <!-- ===== VIEW: TOP ===== -->
   <div class="view" id="v-top">
+    <div class="panel"><h2>💰 Экономика лидера <span class="tag" id="eco-name"></span></h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">В месяц</div><div class="value" id="e-monthly">—</div><div class="note">сложный процент</div></div>
+        <div class="kpi"><div class="label">Прибыль на $1000</div><div class="value" id="e-usd">—</div><div class="note">в месяц</div></div>
+        <div class="kpi"><div class="label">Сделок в день</div><div class="value" id="e-tpd">—</div><div class="note" id="e-tf"></div></div>
+        <div class="kpi"><div class="label">В день</div><div class="value" id="e-daily">—</div><div class="note">средняя доходность</div></div>
+      </div>
+    </div>
     <div class="panel"><h2>🏆 Топ-10 стратегий <span class="tag">по OOS Sharpe</span></h2><div class="chart-box" id="bar-box"><div class="fallback">пока нет данных — лидерборд заполнится после первых готовых бэктестов</div></div></div>
     <div class="panel">
       <h2>📋 Лидерборд <span class="tag">★ = устойчивая стратегия</span></h2>
@@ -164,6 +172,9 @@ a { color:var(--blue); text-decoration:none; }
         <option value="oos_t">Сортировка: t-статистика ↓</option>
         <option value="trades">Сортировка: число сделок ↓</option>
         <option value="param_stability">Сортировка: стабильность ↓</option>
+        <option value="monthly_pct">Сортировка: доход в месяц ↓</option>
+        <option value="daily_pct">Сортировка: доход в день ↓</option>
+        <option value="trades_per_day">Сортировка: сделок в день ↓</option>
       </select></div>
       <div class="lb-cards" id="lb-cards"><div class="fallback">загрузка…</div></div>
       <div class="tbl-wrap"><table id="lb-table"></table></div>
@@ -403,8 +414,40 @@ function loadLeaderboard() {
     }
   });
 }
+function pctStr(v) {
+  var x = parseFloat(v);
+  if (isNaN(x)) return "—";
+  return (x > 0 ? "+" : "") + (x * 100).toFixed(2) + "%";
+}
+function num(v) {
+  var x = parseFloat(v);
+  return isNaN(x) ? "—" : (x >= 10 ? Math.round(x) : x.toFixed(1));
+}
+function usdStr(v) {
+  var x = parseFloat(v);
+  if (isNaN(x)) return "—";
+  return (x > 0 ? "+" : "") + x.toFixed(0);
+}
+function updateEco(rows) {
+  if (!rows || !rows.length) return;
+  var r = rows[0];
+  document.getElementById("eco-name").textContent = (STRAT_RU[r.strategy] || r.strategy) + " · " + r.symbol.replace("USDT", "") + " · " + r.tf;
+  document.getElementById("e-monthly").textContent = pctStr(r.monthly_pct);
+  var mu = parseFloat(r.monthly_pct);
+  document.getElementById("e-monthly").style.color = mu > 0 ? "var(--green)" : "var(--red)";
+  var usd = parseFloat(r.usd_per_month_1000);
+  var eu = document.getElementById("e-usd");
+  eu.textContent = isNaN(usd) ? "—" : (usd > 0 ? "+" : "") + "$" + Math.abs(usd).toFixed(0);
+  eu.style.color = usd > 0 ? "var(--green)" : "var(--red)";
+  document.getElementById("e-tpd").textContent = num(r.trades_per_day);
+  document.getElementById("e-tf").textContent = r.fee_mode ? ("режим " + r.fee_mode) : "";
+  var ed = document.getElementById("e-daily");
+  ed.textContent = pctStr(r.daily_pct);
+  ed.style.color = parseFloat(r.daily_pct) > 0 ? "var(--green)" : "var(--red)";
+}
 function renderLb() {
   var rows = sortedLb();
+  updateEco(rows);
   /* mobile cards */
   var h = "";
   rows.slice(0, 40).forEach(function (r) {
@@ -416,12 +459,13 @@ function renderLb() {
     h += "<div class='lb-main'><span class='lb-sharpe" + (sh > 0 ? "" : " low") + "'>" + (sh > 0 ? "+" : "") + r.oos_sharpe + "</span><span class='lb-sub'>OOS Sharpe</span></div>";
     h += "<div class='lb-chips'>";
     h += "<span>PF <b>" + r.oos_pf + "</b></span><span>t <b>" + r.oos_t + "</b></span><span>сделок <b>" + r.trades + "</b></span><span>стаб <b>" + r.param_stability + "</b></span>";
+    h += "<span>день <b>" + pctStr(r.daily_pct) + "</b></span><span>мес <b>" + pctStr(r.monthly_pct) + "</b></span><span><b>" + num(r.trades_per_day) + "</b> сд/день</span><span>$1000 → <b>$" + usdStr(r.usd_per_month_1000) + "</b>/мес</span>";
     h += "</div></div>";
   });
   document.getElementById("lb-cards").innerHTML = h || "<div class='fallback'>пока пусто — стратегии появятся после первых готовых бэктестов</div>";
   /* desktop table */
-  var cols = ["strategy", "symbol", "tf", "oos_sharpe", "oos_pf", "oos_t", "trades", "param_stability"];
-  var names = { strategy: "Стратегия", symbol: "Пара", tf: "TF", oos_sharpe: "OOS Sharpe", oos_pf: "PF", oos_t: "t-стат", trades: "Сделок", param_stability: "Стабильность" };
+  var cols = ["strategy", "symbol", "tf", "oos_sharpe", "oos_pf", "oos_t", "trades", "trades_per_day", "daily_pct", "monthly_pct", "usd_per_month_1000", "param_stability"];
+  var names = { strategy: "Стратегия", symbol: "Пара", tf: "TF", oos_sharpe: "OOS Sharpe", oos_pf: "PF", oos_t: "t-стат", trades: "Сделок", trades_per_day: "сд/день", daily_pct: "в день", monthly_pct: "в месяц", usd_per_month_1000: "$/мес на $1000", param_stability: "Стабильность" };
   var t = "<tr>" + cols.map(function (c) { return "<th onclick=\"sortLb('" + c + "')\">" + names[c] + (lbSort.col === c ? (lbSort.dir < 0 ? " ↓" : " ↑") : "") + "</th>"; }).join("") + "</tr>";
   rows.slice(0, 60).forEach(function (r) {
     var robust = parseFloat(r.oos_t) > 2 && parseFloat(r.param_stability) >= 0.5;
@@ -430,6 +474,9 @@ function renderLb() {
       if (c === "strategy" && robust) v = "★ " + v;
       if (c === "symbol") v = v.replace("USDT", "");
       if (c === "oos_sharpe" && parseFloat(v) > 0) return "<td class='pos'>" + v + "</td>";
+      if (c === "daily_pct" || c === "monthly_pct") return "<td>" + pctStr(v) + "</td>";
+      if (c === "trades_per_day") return "<td>" + num(v) + "</td>";
+      if (c === "usd_per_month_1000") return "<td>" + usdStr(v) + "</td>";
       return "<td>" + v + "</td>";
     }).join("") + "</tr>";
   });
