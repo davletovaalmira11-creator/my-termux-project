@@ -17,7 +17,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,16 +33,10 @@ jobs:
           key: bt-cache-v3
       - run: |
           mkdir -p reports
-          python worker.py --budget 40
+          timeout 2100 python worker.py --budget 32 || echo "worker stopped (budget/cap)"
         working-directory: scalp-lab
         continue-on-error: true
-      - run: python reporter.py || true
-        working-directory: scalp-lab
-        continue-on-error: true
-      - run: python paper.py || true
-        working-directory: scalp-lab
-        continue-on-error: true
-      - name: Commit results
+      - name: Commit worker progress
         if: always()
         working-directory: scalp-lab
         run: |
@@ -51,7 +45,28 @@ jobs:
           git add results 2>/dev/null || true
           git add reports 2>/dev/null || true
           if git status --porcelain | grep -q .; then
-            git commit -m "auto: backtest results update [skip ci]"
+            git commit -m "auto: worker progress [skip ci]" || echo "nothing to commit"
+            git pull --rebase origin master || true
+            git push || echo "push failed, will retry next run"
+          else
+            echo "nothing to commit"
+          fi
+      - run: timeout 120 python reporter.py || true
+        working-directory: scalp-lab
+        continue-on-error: true
+      - run: timeout 150 python paper.py || true
+        working-directory: scalp-lab
+        continue-on-error: true
+      - name: Commit paper results
+        if: always()
+        working-directory: scalp-lab
+        run: |
+          git config user.name "bt-bot"
+          git config user.email "bt-bot@users.noreply.github.com"
+          git add results 2>/dev/null || true
+          git add reports 2>/dev/null || true
+          if git status --porcelain | grep -q .; then
+            git commit -m "auto: backtest results update [skip ci]" || echo "nothing to commit"
             git pull --rebase origin master || true
             git push || echo "push failed, will retry next run"
           else

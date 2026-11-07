@@ -15,14 +15,17 @@ KEEP = ["dt", "open", "high", "low", "close", "volume", "quote_vol",
 _MEMO = {}
 
 
-def _fetch(url, path):
-    r = requests.get(url, timeout=180)
-    if r.status_code == 404:
+def _fetch(url, path, timeout=60):
+    try:
+        r = requests.get(url, timeout=timeout)
+        if r.status_code == 404:
+            return False
+        r.raise_for_status()
+        with open(path, "wb") as f:
+            f.write(r.content)
+        return True
+    except requests.exceptions.RequestException:
         return False
-    r.raise_for_status()
-    with open(path, "wb") as f:
-        f.write(r.content)
-    return True
 
 
 def _read_zip(path):
@@ -109,30 +112,39 @@ def _read_zip_named(path, cols):
     return df
 
 
-def _deriv_raw(kind, symbol, days, cache_dir):
-    """fundingRate / metrics: monthly + daily архивы data.binance.vision (futures um)."""
+def _deriv_raw(kind, symbol, days, cache_dir, timeout=20, max_req=40):
+    """fundingRate / metrics: monthly + daily архивы data.binance.vision (futures um).
+    Жёсткие таймауты и лимит запросов: медленный/битый источник не может
+    повесить воркер или бумажную торговлю."""
     cols = FUND_COLS if kind == "fundingRate" else METRICS_COLS
     os.makedirs(cache_dir, exist_ok=True)
     end = pd.Timestamp.utcnow().normalize()
     start = end - pd.Timedelta(days=days)
     frames = []
-    for m in pd.period_range(start, end, freq="M"):
-        fn = symbol + "-" + kind + "-" + str(m) + ".zip"
+    reqs = [0]
+
+    def load(fn, sub):
         p = os.path.join(cache_dir, fn)
-        url = BASE + "/monthly/" + kind + "/" + symbol + "/" + fn
         if not os.path.exists(p):
-            if not _fetch(url, p):
-                continue
-        frames.append(_read_zip_named(p, cols))
+            reqs[0] += 1
+            if reqs[0] > max_req:
+                raise RuntimeError("deriv request cap " + symbol)
+            if not _fetch(BASE + "/" + sub + "/" + symbol + "/" + fn, p, timeout):
+                return None
+        try:
+            return _read_zip_named(p, cols)
+        except Exception:
+            return None
+
+    for m in pd.period_range(start, end, freq="M"):
+        df = load(symbol + "-" + kind + "-" + str(m) + ".zip", "monthly/" + kind)
+        if df is not None:
+            frames.append(df)
     cur_start = end.to_period("M").start_time.tz_localize("UTC")
     for day in pd.date_range(cur_start, end, freq="D"):
-        fn = symbol + "-" + kind + "-" + day.strftime("%Y-%m-%d") + ".zip"
-        p = os.path.join(cache_dir, fn)
-        url = BASE + "/daily/" + kind + "/" + symbol + "/" + fn
-        if not os.path.exists(p):
-            if not _fetch(url, p):
-                continue
-        frames.append(_read_zip_named(p, cols))
+        df = load(symbol + "-" + kind + "-" + day.strftime("%Y-%m-%d") + ".zip", "daily/" + kind)
+        if df is not None:
+            frames.append(df)
     if not frames:
         raise RuntimeError("no " + kind + " data for " + symbol)
     df = pd.concat(frames, ignore_index=True)
@@ -140,17 +152,17 @@ def _deriv_raw(kind, symbol, days, cache_dir):
     return df
 
 
-def funding(symbol, days, cache_dir=".cache"):
+def funding(symbol, days, cache_dir=".cache", timeout=20):
     """Исторический funding rate: DataFrame [dt, funding]."""
     key = ("fundingRate", symbol, days)
     if key in _DERIV_MEMO:
         return _DERIV_MEMO[key]
     try:
-        raw = _deriv_raw("fundingRate", symbol, days, cache_dir)
+        raw = _deriv_raw("fundingRate", symbol, days, cache_dir, timeout)
     except RuntimeError:
         if not symbol.endswith("USDT") or symbol.startswith("1000"):
             raise
-        raw = _deriv_raw("fundingRate", "1000" + symbol, days, cache_dir)
+        raw = _deriv_raw("fundingRate", "1000" + symbol, days, cache_dir, timeout)
     fr = pd.DataFrame({
         "dt": pd.to_datetime(raw["calc_time"].astype("int64"), unit="ms", utc=True),
         "funding": pd.to_numeric(raw["last_funding_rate"], errors="coerce")})
@@ -159,17 +171,17 @@ def funding(symbol, days, cache_dir=".cache"):
     return fr
 
 
-def metrics(symbol, days, cache_dir=".cache"):
+def metrics(symbol, days, cache_dir=".cache", timeout=20):
     """Метрики позиционирования: DataFrame [dt, oi, ls_ratio] (daily metrics)."""
     key = ("metrics", symbol, days)
     if key in _DERIV_MEMO:
         return _DERIV_MEMO[key]
     try:
-        raw = _deriv_raw("metrics", symbol, days, cache_dir)
+        raw = _deriv_raw("metrics", symbol, days, cache_dir, timeout)
     except RuntimeError:
         if not symbol.endswith("USDT") or symbol.startswith("1000"):
             raise
-        raw = _deriv_raw("metrics", "1000" + symbol, days, cache_dir)
+        raw = _deriv_raw("metrics", "1000" + symbol, days, cache_dir, timeout)
     mt = pd.DataFrame({
         "dt": pd.to_datetime(raw["create_time"].astype("int64"), unit="ms", utc=True),
         "oi": pd.to_numeric(raw["sum_open_interest"], errors="coerce"),
@@ -179,11 +191,18 @@ def metrics(symbol, days, cache_dir=".cache"):
     return mt
 
 
-def add_deriv(df, symbol, days, cache_dir=".cache"):
-    """Присоединяет funding/OI/long-short к свечам (asof, без утечки будущего)."""
+def add_deriv(df, symbol, days, cache_dir=".cache", timeout=20):
+    """Присоединяет funding/OI/long-short к свечам (asof, без утечки будущего).
+    Отсутствующая сторона данных не роняет задачу: колонки заполняются нулями."""
     df = df.copy().reset_index(drop=True)
     d_ts = df["dt"].astype("int64").values
-    for side in (funding(symbol, days, cache_dir), metrics(symbol, days, cache_dir)):
+    sides = []
+    for mk in (funding, metrics):
+        try:
+            sides.append(mk(symbol, days, cache_dir, timeout))
+        except Exception as e:
+            print("deriv enrich skip:", mk.__name__, str(e)[:80], flush=True)
+    for side in sides:
         s_ts = side["dt"].astype("int64").values
         pos = np.searchsorted(s_ts, d_ts, side="right") - 1
         for c in side.columns:
@@ -191,4 +210,7 @@ def add_deriv(df, symbol, days, cache_dir=".cache"):
                 continue
             v = side[c].values
             df[c] = np.where(pos >= 0, v[np.clip(pos, 0, len(v) - 1)], 0.0)
+    for c in ("funding", "oi", "ls_ratio"):
+        if c not in df.columns:
+            df[c] = 0.0
     return df

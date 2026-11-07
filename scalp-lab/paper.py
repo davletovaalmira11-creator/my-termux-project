@@ -140,7 +140,7 @@ def main():
         try:
             df = get_klines(t["symbol"], t["tf"])
             if t["strategy"] in strategies.DERIV_SET:
-                df = data.add_deriv(df, t["symbol"], LOOKBACK_DAYS.get(t["tf"], 10))
+                df = data.add_deriv(df, t["symbol"], min(LOOKBACK_DAYS.get(t["tf"], 10), 30), timeout=8)
             fn = strategies.STRATEGIES[t["strategy"]][0]
             sig = fn(df, **t["params"])
             cur = float(sig.iloc[-1])

@@ -189,7 +189,7 @@ def main():
     os.makedirs("reports", exist_ok=True)
     queues = load_queues()
     done = 0
-    while time.time() - start < args.budget * 60:
+    while time.time() - start < args.budget * 60 - 300:
         task = None
         for path, q in queues:
             for t in q:
