@@ -196,7 +196,7 @@ a { color:var(--blue); text-decoration:none; }
         <div class="kpi"><div class="label">Сделок закрыто</div><div class="value" id="p-trades">—</div><div class="note">реальные сигналы</div></div>
         <div class="kpi"><div class="label">Winrate</div><div class="value" id="p-winrate">—</div><div class="note">положительных</div></div>
       </div>
-      <div class="legend"><span>виртуальный портфель топ-5 OOS-стратегий · сигналы с живых данных Binance · обновление каждые 30 минут · комиссии и проскальзывание учитываются</span></div>
+      <div class="legend"><span>виртуальный портфель топ-8 OOS-стратегий · сигналы с живых данных Binance · обновление каждые 30 минут · комиссии и проскальзывание учитываются</span></div>
     </div>
     <div class="panel"><h2>📈 Динамика капитала</h2><div class="chart-box" id="eq-box"><div class="fallback">график появится после первых сделок</div></div></div>
     <div class="panel"><h2>🎯 Отслеживаемые стратегии</h2><div id="paper-tracked"><div class="fallback">загрузка…</div></div></div>
@@ -229,7 +229,7 @@ var RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/s
 var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
 var HAS_CHART = typeof Chart !== "undefined";
 var NL = String.fromCharCode(10);
-var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём", spike_revert: "Памп/дамп реверс", spike_follow: "Памп/дамп инерция", crash_revert: "Каскад-реверс", spike_bb: "Спайк+Bollinger", vol_burst_revert: "Взрыв объёма", funding_revert: "Funding-реверс", oi_exhaust: "OI-истощение", ls_contrarian: "LS-контрариан", bb_regime: "Bollinger+режим", wick_regime: "Тень+режим" };
+var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём", spike_revert: "Памп/дамп реверс", spike_follow: "Памп/дамп инерция", crash_revert: "Каскад-реверс", spike_bb: "Спайк+Bollinger", vol_burst_revert: "Взрыв объёма", funding_revert: "Funding-реверс", oi_exhaust: "OI-истощение", ls_contrarian: "LS-контрариан", bb_regime: "Bollinger+режим", wick_regime: "Тень+режим", bb_fast: "Быстрый Bollinger", ema_snap: "EMA-отскок", flow_fade: "Order-flow откат", squeeze_pop: "Сжатие→прорыв", qr_revert: "Квантиль-реверс", level_fade: "Отбой уровня", streak_bb: "Серия+Bollinger", vol_pop: "Объёмный импульс" };
 var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
 var chLine = null, chDonut = null, chBar = null, chEq = null;
 function showView(v) {
