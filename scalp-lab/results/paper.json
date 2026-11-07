@@ -28,8 +28,8 @@
   }
  },
  "closed": [],
- "updated": "2026-11-07T04:34:51Z",
- "runs": 9,
+ "updated": "2026-11-07T05:32:39Z",
+ "runs": 10,
  "tops": [
   {
    "key": "bollinger_reversion-SUIUSDT-15m",
