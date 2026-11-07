@@ -1,20 +1,7 @@
 {
  "capital_start": 1000.0,
- "equity": 1060.6879664141707,
- "positions": {
-  "bb_maker-DOTUSDT-1m": {
-   "strategy": "bb_maker",
-   "symbol": "DOTUSDT",
-   "tf": "1m",
-   "signal": 1.0,
-   "entry": 0.897,
-   "opened": "2026-11-07 16:19:00",
-   "fee_mode": "maker",
-   "oos_sharpe": 1.62,
-   "last_ts": "2026-11-07 16:19:00",
-   "last_px": 0.897
-  }
- },
+ "equity": 1063.7050738236533,
+ "positions": {},
  "closed": [
   {
    "key": "bollinger_reversion-SUIUSDT-15m",
@@ -57,10 +44,24 @@
    "closed_ts": "2026-11-07 12:04:00",
    "fee_mode": "maker",
    "reason": "flat signal"
+  },
+  {
+   "key": "bb_maker-DOTUSDT-1m",
+   "strategy": "bb_maker",
+   "symbol": "DOTUSDT",
+   "tf": "1m",
+   "side": "long",
+   "entry": 0.897,
+   "exit": 0.9,
+   "pnl_pct": 0.2844,
+   "opened": "2026-11-07 16:19:00",
+   "closed_ts": "2026-11-07 16:44:00",
+   "fee_mode": "maker",
+   "reason": "flat signal"
   }
  ],
- "updated": "2026-11-07T16:20:34Z",
- "runs": 25,
+ "updated": "2026-11-07T16:58:16Z",
+ "runs": 26,
  "tops": [
   {
    "key": "vol_burst_revert-ARBUSDT-15m",
@@ -104,9 +105,9 @@
    },
    "fee_mode": "maker",
    "oos_sharpe": 1.62,
-   "signal": 1.0,
-   "sig_last": "2026-11-07 16:19:00",
-   "sig_pct": 39.87
+   "signal": 0.0,
+   "sig_last": "2026-11-07 16:43:00",
+   "sig_pct": 37.3
   },
   {
    "key": "streak_vol-SOLUSDT-15m",
@@ -126,17 +127,17 @@
   }
  ],
  "stats": {
-  "n_trades": 3,
-  "wins": 2,
-  "winrate": 66.7,
-  "equity": 1060.69,
-  "pnl_pct": 6.07,
-  "open": 1
+  "n_trades": 4,
+  "wins": 3,
+  "winrate": 75.0,
+  "equity": 1063.71,
+  "pnl_pct": 6.37,
+  "open": 0
  },
  "seen": {
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-07 16:00:00",
-  "wick_vol-APTUSDT-15m": "2026-11-07 16:00:00",
-  "bb_maker-DOTUSDT-1m": "2026-11-07 16:19:00",
-  "streak_vol-SOLUSDT-15m": "2026-11-07 16:00:00"
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-07 16:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-07 16:30:00",
+  "bb_maker-DOTUSDT-1m": "2026-11-07 16:57:00",
+  "streak_vol-SOLUSDT-15m": "2026-11-07 16:30:00"
  }
 }
