@@ -39,6 +39,9 @@ jobs:
       - run: python reporter.py || true
         working-directory: scalp-lab
         continue-on-error: true
+      - run: python paper.py || true
+        working-directory: scalp-lab
+        continue-on-error: true
       - name: Commit results
         if: always()
         working-directory: scalp-lab

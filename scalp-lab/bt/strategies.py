@@ -111,6 +111,51 @@ def bb_maker(df, n, k):
     return bollinger_reversion(df, n, k)
 
 
+# ===== комбинированные: сигнал + подтверждение объёмом (vol_z, FDR-выживший) =====
+
+def _vol_z(df):
+    v = df["volume"]
+    m = v.rolling(200).mean()
+    s = v.rolling(200).std().replace(0.0, np.nan)
+    return (v - m) / s
+
+
+def streak_vol(df, n_streak, vz, h):
+    # серия одноцветных свечей + всплеск объёма -> реверс (объединение 2 FDR-паттернов)
+    up = (df["close"] - df["open"]) > 0
+    dn = ~up
+    up_run = up.groupby((~up).cumsum()).cumsum()
+    dn_run = dn.groupby((~dn).cumsum()).cumsum()
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(dn_run >= n_streak) & (z > vz)] = 1.0
+    sig[(up_run >= n_streak) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def bb_vol(df, n, k, vz, h):
+    # выход за границу Bollinger, подтверждённый объёмом: меньше ложных входов
+    m = df["close"].rolling(n).mean()
+    sd = df["close"].rolling(n).std()
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(df["close"] < m - k * sd) & (z > vz)] = 1.0
+    sig[(df["close"] > m + k * sd) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def wick_vol(df, w, vz, h):
+    # большая тень + всплеск объёма -> откат
+    rng = (df["high"] - df["low"]).replace(0.0, np.nan)
+    body_hi = df[["open", "close"]].max(axis=1)
+    body_lo = df[["open", "close"]].min(axis=1)
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[((body_lo - df["low"]) > w * rng) & (z > vz)] = 1.0
+    sig[((df["high"] - body_hi) > w * rng) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
 def grid(**kv):
     res = [{}]
     for key in list(kv):
@@ -136,9 +181,14 @@ STRATEGIES = {
     "wick_reversion": (wick_reversion, grid(w=[0.4, 0.5], h=[15, 30, 60])),
     "donchian_trend": (donchian_trend, grid(n=[96, 192, 384])),
     "bb_maker": (bb_maker, grid(n=[50, 100, 200], k=[2.0, 2.5])),
+    # комбинированные: сигнал + объёмное подтверждение
+    "streak_vol": (streak_vol, grid(n_streak=[3, 4], vz=[2.0, 3.0], h=[15, 30, 60])),
+    "bb_vol": (bb_vol, grid(n=[50, 100], k=[2.0, 2.5], vz=[2.0, 3.0], h=[15, 30, 60])),
+    "wick_vol": (wick_vol, grid(w=[0.4, 0.5], vz=[2.0, 3.0], h=[15, 30, 60])),
 }
 
 # режим исполнения: реверсивные входят лимитками (maker),
 # трендовые - по рынку (taker)
 MAKER_SET = {"streak_reversion", "wick_reversion", "bb_maker",
-             "bollinger_reversion", "vwap_reversion"}
+             "bollinger_reversion", "vwap_reversion",
+             "streak_vol", "bb_vol", "wick_vol"}
