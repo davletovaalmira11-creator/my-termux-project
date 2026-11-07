@@ -211,7 +211,7 @@ var RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/s
 var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
 var HAS_CHART = typeof Chart !== "undefined";
 var NL = String.fromCharCode(10);
-var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс" };
+var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker" };
 var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
 var chLine = null, chDonut = null, chBar = null;
 function showView(v) {
