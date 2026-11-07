@@ -11,6 +11,8 @@ import json
 import os
 import time
 
+import numpy as np
+
 import config
 from bt import data, strategies
 try:
@@ -22,7 +24,8 @@ STATE_PATH = "results/paper.json"
 CAPITAL_START = 1000.0
 MAX_TRACK = 8
 MIN_STABILITY = 0.3
-LOOKBACK_DAYS = {"1m": 3, "5m": 10, "15m": 20, "1h": 40}
+LOOKBACK_DAYS = {"1m": 2, "5m": 7, "15m": 12, "1h": 40}
+PAPER_BUDGET_S = 120
 COST = {"taker": 2 * (config.FEE + config.SLIP),
         "maker": 2 * (config.FEE_MAKER + config.SLIP_MAKER)}
 
@@ -136,36 +139,58 @@ def main():
                       str(df["dt"].iloc[-1]), "rotated out")
         except Exception:
             pass
+    seen = st.setdefault("seen", {})
+    live_keys = set(t["key"] for t in tops)
+    for k in list(seen.keys()):
+        if k not in live_keys:
+            del seen[k]
+    deadline = time.time() + PAPER_BUDGET_S
     for t in tops:
+        if time.time() > deadline:
+            print("paper: time budget reached, rest strategies next run", flush=True)
+            break
         try:
             df = get_klines(t["symbol"], t["tf"])
             if t["strategy"] in strategies.DERIV_SET:
                 df = data.add_deriv(df, t["symbol"], min(LOOKBACK_DAYS.get(t["tf"], 10), 30), timeout=8)
             fn = strategies.STRATEGIES[t["strategy"]][0]
-            sig = fn(df, **t["params"])
-            cur = float(sig.iloc[-1])
-            t["signal"] = cur
+            sig = fn(df, **t["params"]).fillna(0.0)
         except Exception as e:
             print("paper skip", t["key"], str(e)[:80], flush=True)
             continue
-        px = float(df["close"].iloc[-1])
-        ts = str(df["dt"].iloc[-1])
-        pos = st["positions"].get(t["key"])
-        if cur != 0.0:
-            if pos is None or pos["signal"] != cur:
-                if pos is not None:
-                    close_pos(st, t["key"], px, ts, "signal flip")
-                st["positions"][t["key"]] = {
-                    "strategy": t["strategy"], "symbol": t["symbol"],
-                    "tf": t["tf"], "signal": cur, "entry": px,
-                    "opened": ts, "fee_mode": t["fee_mode"],
-                    "oos_sharpe": t["oos_sharpe"], "last_ts": ts,
-                    "last_px": px}
-            else:
-                pos["last_ts"] = ts
-                pos["last_px"] = px
-        elif pos is not None:
-            close_pos(st, t["key"], px, ts, "flat signal")
+        dts = df["dt"].astype(str).values
+        closes = df["close"].values
+        vals = np.asarray(sig.values, dtype=float)
+        if len(dts) < 2:
+            continue
+        t["signal"] = float(vals[-1])
+        last_seen = seen.get(t["key"], "")
+        if last_seen:
+            idx = np.nonzero(dts > last_seen)[0]
+            start = int(idx[0]) if len(idx) else int(len(dts) - 1)
+        else:
+            start = int(len(dts) - 1)
+        for i in range(start, len(dts)):
+            s = float(vals[i])
+            px = float(closes[i])
+            ts = str(dts[i])
+            pos = st["positions"].get(t["key"])
+            if s != 0.0:
+                if pos is None or pos["signal"] != s:
+                    if pos is not None:
+                        close_pos(st, t["key"], px, ts, "signal flip")
+                    st["positions"][t["key"]] = {
+                        "strategy": t["strategy"], "symbol": t["symbol"],
+                        "tf": t["tf"], "signal": s, "entry": px,
+                        "opened": ts, "fee_mode": t["fee_mode"],
+                        "oos_sharpe": t["oos_sharpe"], "last_ts": ts,
+                        "last_px": px}
+                else:
+                    pos["last_ts"] = ts
+                    pos["last_px"] = px
+            elif pos is not None:
+                close_pos(st, t["key"], px, ts, "flat signal")
+        seen[t["key"]] = str(dts[-1])
     st["updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     st["runs"] = int(st.get("runs", 0)) + 1
     st["tops"] = tops

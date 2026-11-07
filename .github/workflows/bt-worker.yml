@@ -46,15 +46,16 @@ jobs:
           git add reports 2>/dev/null || true
           if git status --porcelain | grep -q .; then
             git commit -m "auto: worker progress [skip ci]" || echo "nothing to commit"
-            git pull --rebase origin master || true
-            git push || echo "push failed, will retry next run"
+            git fetch origin || true
+            git rebase origin/master || { git rebase --abort 2>/dev/null || true; echo "rebase failed, will retry next run"; }
+            git push origin HEAD:master || echo "push failed, will retry next run"
           else
             echo "nothing to commit"
           fi
       - run: timeout 120 python reporter.py || true
         working-directory: scalp-lab
         continue-on-error: true
-      - run: timeout 150 python paper.py || true
+      - run: timeout 180 python paper.py || true
         working-directory: scalp-lab
         continue-on-error: true
       - name: Commit paper results
@@ -67,8 +68,9 @@ jobs:
           git add reports 2>/dev/null || true
           if git status --porcelain | grep -q .; then
             git commit -m "auto: backtest results update [skip ci]" || echo "nothing to commit"
-            git pull --rebase origin master || true
-            git push || echo "push failed, will retry next run"
+            git fetch origin || true
+            git rebase origin/master || { git rebase --abort 2>/dev/null || true; echo "rebase failed, will retry next run"; }
+            git push origin HEAD:master || echo "push failed, will retry next run"
           else
             echo "nothing to commit"
           fi

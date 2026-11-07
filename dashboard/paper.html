@@ -608,6 +608,12 @@ function loadPaper() {
         });
       }
     }
+    else if ((p.closed || []).length) {
+      var eqv2 = [p.capital_start || 1000];
+      (p.closed || []).forEach(function (x) { eqv2.push(eqv2[eqv2.length - 1] * (1 + x.pnl_pct / 100)); });
+      var eb2 = document.getElementById("eq-box");
+      if (eb2) { eb2.innerHTML = svgSpark(eqv2); }
+    }
     var tops = p.tops || [];
     var tk = "";
     if (tops.length) {
@@ -621,6 +627,21 @@ function loadPaper() {
     } else { tk = "<div class='fallback'>топ-стратегии отбираются после бэктестов</div>"; }
     document.getElementById("paper-tracked").innerHTML = tk;
   });
+}
+function svgSpark(vals) {
+  var w = 320, h = 120, pad = 8;
+  var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+  if (mx === mn) { mx = mn + 1; }
+  var pts = vals.map(function (v, i) {
+    var x = pad + i * (w - 2 * pad) / Math.max(vals.length - 1, 1);
+    var y = h - pad - (v - mn) / (mx - mn) * (h - 2 * pad);
+    return x.toFixed(1) + "," + y.toFixed(1);
+  });
+  var last = "$" + Number(vals[vals.length - 1]).toFixed(2);
+  return "<svg viewBox='0 0 " + w + " " + h + "' style='width:100%;height:auto'>"
+    + "<polyline fill='rgba(63,185,80,.12)' stroke='#3fb950' stroke-width='2' points='"
+    + pts.join(" ") + "'/></svg>"
+    + "<div class='fallback'>график капитала (SVG, CDN не нужен): " + last + "</div>";
 }
 function loadRotation() {
   return fetchText(RAW + "results/rotation.json").then(function (txt) {

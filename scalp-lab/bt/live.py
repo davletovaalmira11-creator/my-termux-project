@@ -19,7 +19,7 @@ def klines_live(symbol, tf, days, max_bars=20000):
     while cur_end > start_ms and len(rows) < max_bars:
         r = requests.get(LIVE_URL, params={
             "symbol": symbol, "interval": tf, "limit": 1000,
-            "endTime": cur_end}, timeout=30)
+            "endTime": cur_end}, timeout=10)
         r.raise_for_status()
         batch = r.json()
         if not isinstance(batch, list) or not batch:
@@ -27,7 +27,7 @@ def klines_live(symbol, tf, days, max_bars=20000):
         rows = batch + rows
         cur_end = batch[0][0] - 1
     cols = ["open_time", "open", "high", "low", "close", "volume",
-            "close_time", "quote_vol", "trades", "tb", "tq", "iv"]
+            "close_time", "quote_vol", "trades", "taker_base", "taker_quote", "iv"]
     df = pd.DataFrame(rows, columns=cols)
     df["dt"] = pd.to_datetime(df["open_time"], unit="ms")
     for c in ["open", "high", "low", "close", "volume", "quote_vol"]:
