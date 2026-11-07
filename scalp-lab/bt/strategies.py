@@ -156,6 +156,29 @@ def wick_vol(df, w, vz, h):
     return sig.ffill(limit=h).fillna(0.0)
 
 
+
+
+def spike_revert(df, pct, vz, h):
+    # памп/дамп: большое движение свечи + всплеск объёма -> вход ПРОТИВ движения
+    # опирается на FDR-закономерность: vol_z-всплески откатываются
+    r = df["close"] / df["open"] - 1.0
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(r < -pct) & (z > vz)] = 1.0
+    sig[(r > pct) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def spike_follow(df, pct, vz, h):
+    # инерция пампа/дампа: большое движение + объём -> вход ПО движению
+    r = df["close"] / df["open"] - 1.0
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(r > pct) & (z > vz)] = 1.0
+    sig[(r < -pct) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
 def grid(**kv):
     res = [{}]
     for key in list(kv):
@@ -185,10 +208,13 @@ STRATEGIES = {
     "streak_vol": (streak_vol, grid(n_streak=[3, 4], vz=[2.0, 3.0], h=[15, 30, 60])),
     "bb_vol": (bb_vol, grid(n=[50, 100], k=[2.0, 2.5], vz=[2.0, 3.0], h=[15, 30, 60])),
     "wick_vol": (wick_vol, grid(w=[0.4, 0.5], vz=[2.0, 3.0], h=[15, 30, 60])),
+    # памп/дамп: резкий ход с объёмом
+    "spike_revert": (spike_revert, grid(pct=[0.01, 0.02, 0.03, 0.05], vz=[2.0, 3.0], h=[30, 60])),
+    "spike_follow": (spike_follow, grid(pct=[0.008, 0.015, 0.03], vz=[2.0, 3.0], h=[15, 30, 60])),
 }
 
 # режим исполнения: реверсивные входят лимитками (maker),
 # трендовые - по рынку (taker)
 MAKER_SET = {"streak_reversion", "wick_reversion", "bb_maker",
              "bollinger_reversion", "vwap_reversion",
-             "streak_vol", "bb_vol", "wick_vol"}
+             "streak_vol", "bb_vol", "wick_vol", "spike_revert"}
