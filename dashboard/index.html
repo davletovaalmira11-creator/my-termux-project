@@ -104,7 +104,7 @@ tr:hover td { background:rgba(255,255,255,.04); }
 .log-row .msg { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .report { white-space:pre-wrap; font-size:12px; max-height:340px; overflow-y:auto; line-height:1.55; color:#c9d1d9; }
 /* ===== bottom nav ===== */
-.nav { position:fixed; left:0; right:0; bottom:0; z-index:100; display:grid; grid-template-columns:repeat(4,1fr);
+.nav { position:fixed; left:0; right:0; bottom:0; z-index:100; display:grid; grid-template-columns:repeat(5,1fr);
   background:rgba(10,14,24,.92); backdrop-filter:blur(16px); border-top:1px solid var(--border);
   padding:6px 8px calc(6px + env(safe-area-inset-bottom)); }
 .nav button { background:none; border:none; color:var(--dim); font-family:inherit; cursor:pointer;
@@ -187,6 +187,20 @@ a { color:var(--blue); text-decoration:none; }
     </div>
     <div class="panel"><h2>📄 Полный отчёт</h2><div class="report" id="report-body">—</div></div>
   </div>
+  <!-- ===== VIEW: PAPER ===== -->
+  <div class="view" id="v-paper">
+    <div class="panel"><h2>🧾 Бумажный трейдинг <span class="tag" id="p-updated"></span></h2>
+      <div class="kpis">
+        <div class="kpi"><div class="label">Капитал</div><div class="value" id="p-equity">—</div><div class="note">старт $1000</div></div>
+        <div class="kpi"><div class="label">Прибыль</div><div class="value" id="p-pnl">—</div><div class="note">за всё время</div></div>
+        <div class="kpi"><div class="label">Сделок закрыто</div><div class="value" id="p-trades">—</div><div class="note">реальные сигналы</div></div>
+        <div class="kpi"><div class="label">Winrate</div><div class="value" id="p-winrate">—</div><div class="note">положительных</div></div>
+      </div>
+      <div class="legend"><span>виртуальный портфель топ-5 OOS-стратегий · сигналы с живых данных Binance · обновление каждые 4 часа · комиссии и проскальзывание учитываются</span></div>
+    </div>
+    <div class="panel"><h2>📍 Открытые позиции</h2><div id="paper-positions"><div class="fallback">загрузка…</div></div></div>
+    <div class="panel"><h2>📜 История сделок</h2><div id="paper-trades"><div class="fallback">загрузка…</div></div></div>
+  </div>
   <!-- ===== VIEW: SYSTEM ===== -->
   <div class="view" id="v-sys">
     <div class="panel"><h2>🛰 Прогоны воркеров <span class="tag" id="next-cron"></span></h2><div class="log" id="runs-log"><div class="fallback">загрузка логов…</div></div></div>
@@ -202,6 +216,7 @@ a { color:var(--blue); text-decoration:none; }
     <button class="on" id="nav-overview" onclick="showView('overview')"><span class="ic">📊</span>Обзор</button>
     <button id="nav-top" onclick="showView('top')"><span class="ic">🏆</span>Топ</button>
     <button id="nav-pat" onclick="showView('pat')"><span class="ic">🔎</span>Паттерны</button>
+    <button id="nav-paper" onclick="showView('paper')"><span class="ic">🧾</span>Бумажная</button>
     <button id="nav-sys" onclick="showView('sys')"><span class="ic">🛰</span>Система</button>
   </div>
 <script>
@@ -211,11 +226,11 @@ var RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/s
 var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
 var HAS_CHART = typeof Chart !== "undefined";
 var NL = String.fromCharCode(10);
-var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker" };
+var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём" };
 var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
 var chLine = null, chDonut = null, chBar = null;
 function showView(v) {
-  ["overview","top","pat","sys"].forEach(function (x) {
+  ["overview","top","pat","paper","sys"].forEach(function (x) {
     document.getElementById("v-" + x).className = "view" + (x === v ? " on" : "");
     document.getElementById("nav-" + x).className = x === v ? "on" : "";
   });
@@ -513,6 +528,46 @@ function loadReport() {
     document.getElementById("report-body").textContent = txt.slice(0, 4000);
   });
 }
+function loadPaper() {
+  return fetchText(RAW + "results/paper.json").then(function (txt) {
+    if (!txt) { document.getElementById("paper-positions").innerHTML = "<div class='fallback'>бумажный трейдинг стартует после первого прогона воркера</div>"; document.getElementById("paper-trades").innerHTML = "<div class='fallback'>—</div>"; return; }
+    var p = JSON.parse(txt);
+    var s = p.stats || {};
+    var eq = document.getElementById("p-equity");
+    eq.textContent = s.equity != null ? "$" + s.equity.toFixed(2) : "—";
+    var pe = document.getElementById("p-pnl");
+    var pnl = parseFloat(s.pnl_pct);
+    pe.textContent = isNaN(pnl) ? "—" : (pnl > 0 ? "+" : "") + pnl.toFixed(2) + "%";
+    pe.style.color = pnl > 0 ? "var(--green)" : "var(--red)";
+    document.getElementById("p-trades").textContent = s.n_trades != null ? s.n_trades : "—";
+    document.getElementById("p-winrate").textContent = s.winrate != null ? s.winrate + "%" : "—";
+    document.getElementById("p-updated").textContent = p.updated ? "обновлён " + p.updated.slice(5, 16).replace("T", " ") + " UTC" : "";
+    var pos = p.positions || {};
+    var keys = Object.keys(pos);
+    var h = "";
+    if (keys.length) {
+      h = "<table><tr><th>Стратегия</th><th>Пара</th><th>Напр.</th><th>Вход</th><th>Тек.</th><th>P&amp;L</th></tr>";
+      keys.forEach(function (k) {
+        var q = pos[k];
+        var dir = q.signal > 0 ? "long 🟢" : "short 🔴";
+        var upnl = q.signal * (q.last_px / q.entry - 1) * 100;
+        h += "<tr><td>" + (STRAT_RU[q.strategy] || q.strategy) + "</td><td>" + q.symbol.replace("USDT", "") + " " + q.tf + "</td><td>" + dir + "</td><td>" + Number(q.entry).toPrecision(6) + "</td><td>" + Number(q.last_px).toPrecision(6) + "</td><td class='" + (upnl >= 0 ? "pos" : "") + "'>" + (upnl > 0 ? "+" : "") + upnl.toFixed(3) + "%</td></tr>";
+      });
+      h += "</table>";
+    } else { h = "<div class='fallback'>открытых позиций нет — ждём сигналов</div>"; }
+    document.getElementById("paper-positions").innerHTML = h;
+    var tr = (p.closed || []).slice().reverse().slice(0, 30);
+    var t = "";
+    if (tr.length) {
+      t = "<table><tr><th>Стратегия</th><th>Пара</th><th>Сторона</th><th>Вход</th><th>Выход</th><th>Результат</th><th>Когда</th></tr>";
+      tr.forEach(function (x) {
+        t += "<tr><td>" + (STRAT_RU[x.strategy] || x.strategy) + "</td><td>" + x.symbol.replace("USDT", "") + " " + x.tf + "</td><td>" + (x.side === "long" ? "🟢 long" : "🔴 short") + "</td><td>" + Number(x.entry).toPrecision(6) + "</td><td>" + Number(x.exit).toPrecision(6) + "</td><td class='" + (x.pnl_pct > 0 ? "pos" : "") + "'>" + (x.pnl_pct > 0 ? "+" : "") + x.pnl_pct.toFixed(3) + "%</td><td>" + String(x.closed_ts).slice(5, 16).replace("T", " ") + "</td></tr>";
+      });
+      t += "</table>";
+    } else { t = "<div class='fallback'>закрытых сделок ещё нет — сигналы приходят каждые 4 часа</div>"; }
+    document.getElementById("paper-trades").innerHTML = t;
+  });
+}
 function refreshAll() {
   document.getElementById("ticker").textContent = "обновлено: " + new Date().toLocaleTimeString();
   loadWorkerStatus();
@@ -521,6 +576,7 @@ function refreshAll() {
   loadQueue();
   loadLeaderboard();
   loadReport();
+  loadPaper();
 }
 if (!HAS_CHART) { document.getElementById("donut-box").innerHTML = "<div class='fallback'>графики недоступны (CDN заблокирован) — цифры в силе</div>"; }
 refreshAll();
