@@ -1,20 +1,7 @@
 {
  "capital_start": 1000.0,
- "equity": 1072.9766635471176,
- "positions": {
-  "bb_maker-DOTUSDT-1m": {
-   "strategy": "bb_maker",
-   "symbol": "DOTUSDT",
-   "tf": "1m",
-   "signal": 1.0,
-   "entry": 0.913,
-   "opened": "2026-11-06 23:59:00+00:00",
-   "fee_mode": "maker",
-   "oos_sharpe": 2.06,
-   "last_ts": "2026-11-06 23:59:00+00:00",
-   "last_px": 0.913
-  }
- },
+ "equity": 1060.6879664141707,
+ "positions": {},
  "closed": [
   {
    "key": "bollinger_reversion-SUIUSDT-15m",
@@ -43,10 +30,24 @@
    "closed_ts": "2026-11-06 23:45:00+00:00",
    "fee_mode": "taker",
    "reason": "flat signal"
+  },
+  {
+   "key": "bb_maker-DOTUSDT-1m",
+   "strategy": "bb_maker",
+   "symbol": "DOTUSDT",
+   "tf": "1m",
+   "side": "long",
+   "entry": 0.913,
+   "exit": 0.903,
+   "pnl_pct": -1.1453,
+   "opened": "2026-11-06 23:59:00+00:00",
+   "closed_ts": "2026-11-07 12:04:00",
+   "fee_mode": "maker",
+   "reason": "flat signal"
   }
  ],
- "updated": "2026-11-07T12:00:08Z",
- "runs": 21,
+ "updated": "2026-11-07T12:05:59Z",
+ "runs": 22,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -86,7 +87,7 @@
    },
    "fee_mode": "maker",
    "oos_sharpe": 2.06,
-   "signal": 1.0
+   "signal": 0.0
   },
   {
    "key": "vol_drift-PEPEUSDT-15m",
@@ -117,11 +118,11 @@
   }
  ],
  "stats": {
-  "n_trades": 2,
+  "n_trades": 3,
   "wins": 2,
-  "winrate": 100.0,
-  "equity": 1072.98,
-  "pnl_pct": 7.3,
-  "open": 1
+  "winrate": 66.7,
+  "equity": 1060.69,
+  "pnl_pct": 6.07,
+  "open": 0
  }
 }
