@@ -104,7 +104,7 @@ tr:hover td { background:rgba(255,255,255,.04); }
 .log-row .msg { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .report { white-space:pre-wrap; font-size:12px; max-height:340px; overflow-y:auto; line-height:1.55; color:#c9d1d9; }
 /* ===== bottom nav ===== */
-.nav { position:fixed; left:0; right:0; bottom:0; z-index:100; display:grid; grid-template-columns:repeat(5,1fr);
+.nav { position:fixed; left:0; right:0; bottom:0; z-index:100; display:grid; grid-template-columns:repeat(6,1fr);
   background:rgba(10,14,24,.92); backdrop-filter:blur(16px); border-top:1px solid var(--border);
   padding:6px 8px calc(6px + env(safe-area-inset-bottom)); }
 .nav button { background:none; border:none; color:var(--dim); font-family:inherit; cursor:pointer;
@@ -126,13 +126,23 @@ a { color:var(--blue); text-decoration:none; }
 .qcard .qc.up { color:var(--green); } .qcard .qc.down { color:var(--red); }
 .qcard.flash-up { background:rgba(63,185,80,.16); } .qcard.flash-down { background:rgba(248,81,73,.16); }
 .qcard svg { margin-top:6px; display:block; }
+.cnd-row { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; margin-bottom:10px; }
+.cnd-row::-webkit-scrollbar { display:none; }
+.cnd-chip { flex:0 0 auto; padding:8px 14px; border-radius:100px; border:1px solid var(--border); background:var(--card2); color:var(--dim); font-weight:600; font-size:12px; cursor:pointer; font-family:inherit; }
+.cnd-chip:active { transform:scale(.94); }
+.cnd-chip.on { color:#fff; background:linear-gradient(135deg,#1f6feb,#a371f7); border-color:transparent; }
+.cnd-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.cnd-px { font-size:28px; font-weight:800; font-variant-numeric:tabular-nums; }
+.cnd-box { position:relative; height:340px; background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+#cnd-canvas { width:100%; height:100%; display:block; }
+.arch-verdict-ok { color:var(--green); font-weight:600; } .arch-verdict-no { color:var(--dim); }
 ::-webkit-scrollbar{height:6px;width:6px;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v7</span></div>
+    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v8</span></div>
     <div class="top-right">
       <span class="pill"><span class="dot na" id="w-dot"></span><span id="w-status">…</span></span>
       <button class="btn-r" onclick="refreshAll()" aria-label="Обновить">⟳</button>
@@ -165,6 +175,17 @@ a { color:var(--blue); text-decoration:none; }
       <div class="legend" style="margin-top:10px"><span class="st-done" style="padding:2px 8px;border-radius:6px">✓ готово</span><span class="st-running" style="padding:2px 8px;border-radius:6px">▶ идёт</span><span class="st-error" style="padding:2px 8px;border-radius:6px">✕ ошибка</span><span class="st-pending" style="padding:2px 8px;border-radius:6px">· в очереди</span></div>
     </div>
   </div>
+  <!-- ===== VIEW: CANDLES ===== -->
+  <div class="view" id="v-candles">
+    <div class="panel"><h2>🕯 Свечи в реальном времени <span class="tag" id="cnd-upd">Binance live · обновление 10 сек</span></h2>
+      <div class="cnd-row" id="cnd-syms"></div>
+      <div class="cnd-row" id="cnd-tfs"></div>
+      <div class="cnd-head" id="cnd-head"></div>
+      <div class="cnd-box"><canvas id="cnd-canvas"></canvas></div>
+      <div class="legend" style="margin-top:10px"><span>свечи Binance · синяя EMA20, фиолетовая EMA50 · гистограмма — объём · пунктир — текущая цена · если пусто, API недоступен из вашей сети</span></div>
+    </div>
+    <div class="panel"><h2>ℹ️ Как читать график</h2><div class="report" style="white-space:normal">Выберите монету и таймфрейм. Тело свечи — открытие/закрытие, тени — максимум/минимум. EMA20 выше EMA50 — локальный импульс вверх. Последняя свеча «дышит» в реальном времени: график подтягивает свежие данные каждые 10 секунд. Стратегии лаборатории торгуют именно эти свечи — бэктесты и бумажный трейдинг используют те же данные Binance.</div></div>
+  </div>
   <!-- ===== VIEW: TOP ===== -->
   <div class="view" id="v-top">
     <div class="panel"><h2>💰 Экономика лидера <span class="tag" id="eco-name"></span></h2>
@@ -191,6 +212,21 @@ a { color:var(--blue); text-decoration:none; }
       <div class="lb-cards" id="lb-cards"><div class="fallback">загрузка…</div></div>
       <div class="tbl-wrap"><table id="lb-table"></table></div>
     </div>
+    <div class="panel"><h2>🗄 Архив всех стратегий <span class="tag">каждый бэктест сохранён в репозитории</span></h2>
+      <div class="kpis" style="margin-bottom:12px">
+        <div class="kpi"><div class="label">Всего протестировано</div><div class="value" id="a-total">—</div><div class="note">уникальных стратегий · пар · TF</div></div>
+        <div class="kpi"><div class="label">Прошли фильтры</div><div class="value" id="a-pass" style="color:var(--green)">—</div><div class="note">в лидерборде</div></div>
+        <div class="kpi"><div class="label">Отсеяны</div><div class="value" id="a-filt">—</div><div class="note">шум, подгонки, слабые</div></div>
+        <div class="kpi"><div class="label">Жёсткость отбора</div><div class="value" id="a-rate">—</div><div class="note">проходной процент</div></div>
+      </div>
+      <div class="sort-row"><select id="arch-sort" onchange="archSel(this.value)">
+        <option value="sharpe">Сортировка: OOS Sharpe ↓</option>
+        <option value="verdict">Сначала прошедшие фильтры</option>
+        <option value="trades">Сортировка: число сделок ↓</option>
+      </select></div>
+      <div class="tbl-wrap" style="display:block"><table id="arch-table"></table></div>
+      <div class="legend" style="margin-top:10px"><span>полные JSON каждого прогона лежат в results/backtest/ репозитория — ничего не теряется; здесь сводка по всем уникальным комбинациям</span></div>
+    </div>
   </div>
   <!-- ===== VIEW: PATTERNS ===== -->
   <div class="view" id="v-pat">
@@ -209,9 +245,10 @@ a { color:var(--blue); text-decoration:none; }
         <div class="kpi"><div class="label">Winrate</div><div class="value" id="p-winrate">—</div><div class="note">положительных</div></div>
       </div>
       <div class="legend"><span>виртуальный портфель топ-8 OOS-стратегий · сигналы с живых данных Binance · обновление каждые 30 минут · комиссии и проскальзывание учитываются</span></div>
+      <div class="legend" style="margin-top:8px"><span>⏸ «флэт» = стратегия вне сделки, ждёт триггер — норма для событийных стратегий; «Активность» = % баров в позиции, «Последний сигнал» = когда торговала в последний раз</span></div>
     </div>
     <div class="panel"><h2>📈 Динамика капитала</h2><div class="chart-box" id="eq-box"><div class="fallback">график появится после первых сделок</div></div></div>
-    <div class="panel"><h2>🎯 Отслеживаемые стратегии</h2><div id="paper-tracked"><div class="fallback">загрузка…</div></div></div>
+    <div class="panel"><h2>🎯 Отслеживаемые стратегии <span class="tag">⏸ флэт = ждёт триггер, не поломка</span></h2><div id="paper-tracked"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📍 Открытые позиции</h2><div id="paper-positions"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📜 История сделок</h2><div id="paper-trades"><div class="fallback">загрузка…</div></div></div>
   </div>
@@ -229,6 +266,7 @@ a { color:var(--blue); text-decoration:none; }
 </div>
   <div class="nav">
     <button class="on" id="nav-overview" onclick="showView('overview')"><span class="ic">📊</span>Обзор</button>
+    <button id="nav-candles" onclick="showView('candles')"><span class="ic">🕯</span>Свечи</button>
     <button id="nav-top" onclick="showView('top')"><span class="ic">🏆</span>Топ</button>
     <button id="nav-pat" onclick="showView('pat')"><span class="ic">🔎</span>Паттерны</button>
     <button id="nav-paper" onclick="showView('paper')"><span class="ic">🧾</span>Бумажная</button>
@@ -245,7 +283,7 @@ var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-р
 var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
 var chLine = null, chDonut = null, chBar = null, chEq = null;
 function showView(v) {
-  ["overview","top","pat","paper","sys"].forEach(function (x) {
+  ["overview","candles","top","pat","paper","sys"].forEach(function (x) {
     document.getElementById("v-" + x).className = "view" + (x === v ? " on" : "");
     document.getElementById("nav-" + x).className = x === v ? "on" : "";
   });
@@ -629,11 +667,11 @@ function loadPaper() {
     var tops = p.tops || [];
     var tk = "";
     if (tops.length) {
-      tk = "<table><tr><th>Стратегия</th><th>Пара</th><th>Сигнал сейчас</th><th>Sharpe</th></tr>";
+      tk = "<table><tr><th>Стратегия</th><th>Пара</th><th>Сигнал</th><th>Последний сигнал</th><th>Активность</th><th>Sharpe</th></tr>";
       tops.forEach(function (x) {
         var sg = x.signal;
         var st = (sg === undefined || sg === null) ? "— нет данных" : (sg > 0 ? "🟢 long" : (sg < 0 ? "🔴 short" : "⏸ флэт"));
-        tk += "<tr><td>" + (STRAT_RU[x.strategy] || x.strategy) + "</td><td>" + x.symbol.replace("USDT", "") + " " + x.tf + "</td><td>" + st + "</td><td>" + x.oos_sharpe + "</td></tr>";
+        tk += "<tr><td>" + (STRAT_RU[x.strategy] || x.strategy) + "</td><td>" + x.symbol.replace("USDT", "") + " " + x.tf + "</td><td>" + st + "</td><td>" + (x.sig_last ? String(x.sig_last).slice(5, 16).replace("T", " ") : "—") + "</td><td>" + (x.sig_pct !== undefined ? x.sig_pct + "%" : "—") + "</td><td>" + x.oos_sharpe + "</td></tr>";
       });
       tk += "</table>";
     } else { tk = "<div class='fallback'>топ-стратегии отбираются после бэктестов</div>"; }
@@ -716,6 +754,111 @@ function loadSparks() {
     }).catch(function () {});
   });
 }
+var CND = { sym: "BTCUSDT", tf: "5m", data: [] };
+var CND_TFS = { "1m": 180, "5m": 200, "15m": 160, "1h": 120 };
+function emaArr(vals, period) { var e = [], m = 0; for (var i = 0; i < vals.length; i++) { m = i ? m + (vals[i] - m) * (2 / (period + 1)) : vals[i]; e.push(m); } return e; }
+function drawCandles() {
+  var cv = document.getElementById("cnd-canvas");
+  if (!cv || !CND.data.length) return;
+  var dpr = window.devicePixelRatio || 1;
+  var W = cv.clientWidth || 320, H = cv.clientHeight || 340;
+  cv.width = W * dpr; cv.height = H * dpr;
+  var ctx = cv.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  var k = CND.data, n = k.length;
+  var closes = k.map(function (r2) { return Number(r2[4]); });
+  var hi = -1e18, lo = 1e18, vmax = 0;
+  k.forEach(function (r2) { hi = Math.max(hi, Number(r2[2])); lo = Math.min(lo, Number(r2[3])); vmax = Math.max(vmax, Number(r2[5])); });
+  if (hi === lo) hi = lo + 1;
+  var padR = 66, padT = 12, padB = 14;
+  var volH = Math.max(40, H * 0.16);
+  var chH = H - volH - padT - padB - 8;
+  var xw = W - padR;
+  function Y(p) { return padT + (hi - p) / (hi - lo) * chH; }
+  function X(i) { return (i + 0.5) * xw / n; }
+  var cw = Math.max(1.5, xw / n * 0.62);
+  ctx.strokeStyle = "rgba(255,255,255,.06)"; ctx.fillStyle = "rgba(139,148,158,.85)"; ctx.font = "10px Inter,sans-serif";
+  for (var g = 0; g <= 4; g++) {
+    var py = padT + chH * g / 4;
+    ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(xw, py); ctx.stroke();
+    ctx.fillText(fmtPrice(hi - (hi - lo) * g / 4), xw + 6, py + 3);
+  }
+  function drawLine(arr, col) { ctx.strokeStyle = col; ctx.lineWidth = 1.4; ctx.beginPath(); for (var i = 0; i < arr.length; i++) { var px = X(i), pyy = Y(arr[i]); if (!i) ctx.moveTo(px, pyy); else ctx.lineTo(px, pyy); } ctx.stroke(); }
+  if (n >= 50) drawLine(emaArr(closes, 50), "rgba(163,113,247,.85)");
+  if (n >= 20) drawLine(emaArr(closes, 20), "rgba(88,166,255,.9)");
+  var volTop = padT + chH + 8, volH2 = H - volTop - padB;
+  k.forEach(function (r2, i) {
+    var o = Number(r2[1]), c = Number(r2[4]), h2 = Number(r2[2]), l2 = Number(r2[3]), v = Number(r2[5]);
+    var up = c >= o;
+    var col = up ? "#26a69a" : "#ef5350";
+    var px = X(i);
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(px, Y(h2)); ctx.lineTo(px, Y(l2)); ctx.stroke();
+    var yo = Y(o), yc = Y(c);
+    ctx.fillRect(px - cw / 2, Math.min(yo, yc), cw, Math.max(Math.abs(yc - yo), 1));
+    ctx.fillStyle = up ? "rgba(38,166,154,.45)" : "rgba(239,83,80,.45)";
+    var vh = (v / (vmax || 1)) * volH2;
+    ctx.fillRect(px - cw / 2, volTop + volH2 - vh, cw, vh);
+  });
+  var last = closes[closes.length - 1];
+  ctx.setLineDash([4, 4]); ctx.strokeStyle = "rgba(230,237,243,.55)"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, Y(last)); ctx.lineTo(xw, Y(last)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = "#e6edf3"; ctx.fillText(fmtPrice(last), xw + 6, Y(last) + 3);
+  var chg = (last / closes[0] - 1) * 100;
+  var hd = document.getElementById("cnd-head");
+  if (hd) hd.innerHTML = "<span class='cnd-px' style='color:" + (chg >= 0 ? "var(--green)" : "var(--red)") + "'>" + fmtPrice(last) + "</span><span style='color:var(--dim);font-size:12px'>" + CND.sym.replace("USDT", "/USDT") + " · " + CND.tf + "</span><span style='font-weight:600;color:" + (chg >= 0 ? "var(--green)" : "var(--red)") + "'>" + (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%</span><span style='color:var(--dim);font-size:11px'>за период графика</span>";
+}
+function loadCandles() {
+  if (!window.fetch) return;
+  fetch("https://data-api.binance.vision/api/v3/klines?symbol=" + CND.sym + "&interval=" + CND.tf + "&limit=" + CND_TFS[CND.tf]).then(function (r) { return r.json(); }).then(function (k) {
+    if (!Array.isArray(k) || !k.length) return;
+    CND.data = k;
+    drawCandles();
+    var u = document.getElementById("cnd-upd"); if (u) u.textContent = "обновлено " + new Date().toLocaleTimeString();
+  }).catch(function () { var u = document.getElementById("cnd-upd"); if (u) u.textContent = "недоступен из вашей сети"; });
+}
+function renderCndChips() {
+  var e1 = document.getElementById("cnd-syms"), e2 = document.getElementById("cnd-tfs");
+  if (!e1 || !e2) return;
+  var h1 = "";
+  QUOTE_SYMBOLS.forEach(function (s) { h1 += "<button class='cnd-chip" + (s === CND.sym ? " on" : "") + "' onclick=\"cndSym('" + s + "')\">" + s.replace("USDT", "") + "</button>"; });
+  e1.innerHTML = h1;
+  var h2 = "";
+  Object.keys(CND_TFS).forEach(function (tf) { h2 += "<button class='cnd-chip" + (tf === CND.tf ? " on" : "") + "' onclick=\"cndTf('" + tf + "')\">" + tf + "</button>"; });
+  e2.innerHTML = h2;
+}
+function cndSym(s) { CND.sym = s; renderCndChips(); loadCandles(); }
+function cndTf(tf) { CND.tf = tf; renderCndChips(); loadCandles(); }
+var archAll = [], archMode = "sharpe";
+function loadArchive() {
+  return fetchText(RAW + "reports/archive.csv").then(function (txt) {
+    var at = document.getElementById("arch-table");
+    if (!at) return;
+    if (!txt) { at.innerHTML = "<tr><td class='fallback' style='padding:14px'>архив появится после ближайшего прогона репортёра (~30 мин)</td></tr>"; return; }
+    archAll = parseCSV(txt);
+    var np = 0; archAll.forEach(function (r) { if (r.verdict === "passed") np++; });
+    countUp(document.getElementById("a-total"), archAll.length);
+    document.getElementById("a-pass").textContent = np;
+    document.getElementById("a-filt").textContent = archAll.length - np;
+    document.getElementById("a-rate").textContent = archAll.length ? (np * 100 / archAll.length).toFixed(1) + "%" : "—";
+    renderArch();
+  });
+}
+function archSel(v) { archMode = v; renderArch(); }
+function renderArch() {
+  if (!archAll.length) return;
+  var rows = archAll.slice();
+  if (archMode === "trades") rows.sort(function (a, b) { return (parseInt(b.trades) || 0) - (parseInt(a.trades) || 0); });
+  else if (archMode === "verdict") rows.sort(function (a, b) { return a.verdict === b.verdict ? (parseFloat(b.oos_sharpe) || 0) - (parseFloat(a.oos_sharpe) || 0) : (a.verdict === "passed" ? -1 : 1); });
+  else rows.sort(function (a, b) { return (parseFloat(b.oos_sharpe) || -99) - (parseFloat(a.oos_sharpe) || -99); });
+  var t = "<tr><th>#</th><th>Стратегия</th><th>Пара</th><th>TF</th><th>Sharpe</th><th>PF</th><th>Сделок</th><th>Вердикт</th></tr>";
+  rows.slice(0, 200).forEach(function (r, i) {
+    var ok = r.verdict === "passed";
+    t += "<tr><td>" + (i + 1) + "</td><td>" + (STRAT_RU[r.strategy] || r.strategy) + "</td><td>" + String(r.symbol || "").replace("USDT", "") + "</td><td>" + r.tf + "</td><td class='" + (parseFloat(r.oos_sharpe) > 0 ? "pos" : "") + "'>" + r.oos_sharpe + "</td><td>" + r.oos_pf + "</td><td>" + r.trades + "</td><td class='" + (ok ? "arch-verdict-ok" : "arch-verdict-no") + "'>" + (ok ? "✓ в лидерборде" : "✕ отсеяна") + "</td></tr>";
+  });
+  document.getElementById("arch-table").innerHTML = t;
+}
 function loadRotation() {
   return fetchText(RAW + "results/rotation.json").then(function (txt) {
     var el = document.getElementById("rot-info");
@@ -736,6 +879,7 @@ function refreshAll() {
   loadReport();
   loadPaper();
   loadRotation();
+  loadArchive();
 }
 if (!HAS_CHART) { document.getElementById("donut-box").innerHTML = "<div class='fallback'>графики недоступны (CDN заблокирован) — цифры в силе</div>"; }
 refreshAll();
@@ -744,6 +888,9 @@ loadSparks();
 setInterval(refreshAll, 60000);
 setInterval(loadQuotes, 10000);
 setInterval(loadSparks, 60000);
+renderCndChips();
+loadCandles();
+setInterval(loadCandles, 10000);
 </script>
 </body>
 </html>

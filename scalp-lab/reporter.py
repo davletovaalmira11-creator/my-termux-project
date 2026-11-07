@@ -180,6 +180,15 @@ def main():
             d, m, tpd = economics(r)
             f.write(",".join(str(x) for x in [r["strategy"], r["symbol"], r["tf"], round(o["sharpe"], 3), round(o["pf"], 3), round(o["t"], 2), r["trades"], round(r["param_stability"], 2), round(r["is_sharpe_avg"], 2), r["folds"], fee_mode(r), maker_sharpe(r), maker_pf(r), round(d, 6), round(m, 6), round(tpd, 2), round(m * 1000, 2)]) + chr(10))
 
+    passed_ids = set(id(r) for r in passed)
+    bts.sort(key=lambda r: r["oos"]["sharpe"], reverse=True)
+    with open("reports/archive.csv", "w") as f:
+        f.write("strategy,symbol,tf,oos_sharpe,oos_pf,oos_t,trades,folds,param_stability,days,wave,verdict" + chr(10))
+        for r in bts:
+            o = r["oos"]
+            verdict = "passed" if id(r) in passed_ids else "filtered"
+            f.write(",".join(str(x) for x in [r["strategy"], r["symbol"], r["tf"], round(o["sharpe"], 3), round(o["pf"], 3), round(o["t"], 2), r["trades"], r["folds"], round(r["param_stability"], 2), r.get("days", ""), r.get("wave", ""), verdict]) + chr(10))
+
     print("backtest results:", len(bts), "passed filters:", len(passed), "scan findings:", len(scans))
 
 

@@ -65,8 +65,9 @@ def top_strategies():
             mt = 0
         if k not in best or mt >= best[k][0]:
             best[k] = (mt, r)
-    bts = [v[1] for v in best.values()]
-    for r in bts:
+    all_res = [v[1] for v in best.values()]
+    bts = []
+    for r in all_res:
         o = r["oos"]
         if r.get("trades", 0) < 200 or r.get("folds", 0) < 8:
             continue
@@ -164,6 +165,9 @@ def main():
         if len(dts) < 2:
             continue
         t["signal"] = float(vals[-1])
+        nz = np.nonzero(vals)[0]
+        t["sig_last"] = str(dts[nz[-1]]) if len(nz) else ""
+        t["sig_pct"] = round(100.0 * len(nz) / len(vals), 2)
         last_seen = seen.get(t["key"], "")
         if last_seen:
             idx = np.nonzero(dts > last_seen)[0]
