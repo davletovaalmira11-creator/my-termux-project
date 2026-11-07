@@ -1,35 +1,39 @@
 {
  "capital_start": 1000.0,
- "equity": 1000.0,
- "positions": {
-  "bollinger_reversion-SUIUSDT-15m": {
+ "equity": 1072.9766635471176,
+ "positions": {},
+ "closed": [
+  {
+   "key": "bollinger_reversion-SUIUSDT-15m",
    "strategy": "bollinger_reversion",
    "symbol": "SUIUSDT",
    "tf": "15m",
-   "signal": 1.0,
+   "side": "long",
    "entry": 0.841,
+   "exit": 0.8687,
+   "pnl_pct": 3.2437,
    "opened": "2026-11-05 23:45:00+00:00",
+   "closed_ts": "2026-11-06 23:45:00+00:00",
    "fee_mode": "maker",
-   "oos_sharpe": 1.13,
-   "last_ts": "2026-11-05 23:45:00+00:00",
-   "last_px": 0.841
+   "reason": "flat signal"
   },
-  "vol_drift-PEPEUSDT-15m": {
+  {
+   "key": "vol_drift-PEPEUSDT-15m",
    "strategy": "vol_drift",
    "symbol": "PEPEUSDT",
    "tf": "15m",
-   "signal": 1.0,
+   "side": "long",
    "entry": 0.0047927,
+   "exit": 0.0049876,
+   "pnl_pct": 3.9266,
    "opened": "2026-11-05 23:45:00+00:00",
+   "closed_ts": "2026-11-06 23:45:00+00:00",
    "fee_mode": "taker",
-   "oos_sharpe": 0.96,
-   "last_ts": "2026-11-05 23:45:00+00:00",
-   "last_px": 0.0047927
+   "reason": "flat signal"
   }
- },
- "closed": [],
- "updated": "2026-11-07T07:45:30Z",
- "runs": 12,
+ ],
+ "updated": "2026-11-07T08:34:46Z",
+ "runs": 13,
  "tops": [
   {
    "key": "bollinger_reversion-SUIUSDT-15m",
@@ -57,11 +61,11 @@
   }
  ],
  "stats": {
-  "n_trades": 0,
-  "wins": 0,
-  "winrate": 0.0,
-  "equity": 1000.0,
-  "pnl_pct": 0.0,
-  "open": 2
+  "n_trades": 2,
+  "wins": 2,
+  "winrate": 100.0,
+  "equity": 1072.98,
+  "pnl_pct": 7.3,
+  "open": 0
  }
 }
