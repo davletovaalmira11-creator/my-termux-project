@@ -46,8 +46,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-07T12:05:59Z",
- "runs": 22,
+ "updated": "2026-11-07T12:18:40Z",
+ "runs": 23,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -60,6 +60,19 @@
    },
    "fee_mode": "maker",
    "oos_sharpe": 3.12,
+   "signal": 0.0
+  },
+  {
+   "key": "vol_burst_revert-ARBUSDT-15m",
+   "strategy": "vol_burst_revert",
+   "symbol": "ARBUSDT",
+   "tf": "15m",
+   "params": {
+    "h": 120,
+    "vz": 6.0
+   },
+   "fee_mode": "maker",
+   "oos_sharpe": 2.67,
    "signal": 0.0
   },
   {
@@ -100,20 +113,6 @@
    },
    "fee_mode": "taker",
    "oos_sharpe": 1.68,
-   "signal": 0.0
-  },
-  {
-   "key": "wick_vol-OPUSDT-15m",
-   "strategy": "wick_vol",
-   "symbol": "OPUSDT",
-   "tf": "15m",
-   "params": {
-    "h": 15,
-    "vz": 2.0,
-    "w": 0.5
-   },
-   "fee_mode": "maker",
-   "oos_sharpe": 1.27,
    "signal": 0.0
   }
  ],
