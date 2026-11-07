@@ -32,8 +32,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-07T08:34:46Z",
- "runs": 13,
+ "updated": "2026-11-07T08:58:55Z",
+ "runs": 14,
  "tops": [
   {
    "key": "bollinger_reversion-SUIUSDT-15m",
