@@ -211,6 +211,68 @@ def vol_burst_revert(df, vz, h):
     sig[(z > vz) & up] = -1.0
     return sig.ffill(limit=h).fillna(0.0)
 
+# ===== деривативные данные: funding rate, открытый интерес, long/short =====
+
+
+def funding_revert(df, z, h):
+    # экстремальный funding: толпа платит за позицию -> контрарианский вход
+    f = df["funding"]
+    fz = (f - f.rolling(90).mean()) / f.rolling(90).std().replace(0.0, np.nan)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[fz > z] = -1.0
+    sig[fz < -z] = 1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def oi_exhaust(df, k, thr, oi_thr, h):
+    # памп/дамп без поддержки открытого интереса -> движение выдыхается, откат
+    r = df["close"].pct_change(k)
+    oic = df["oi"].pct_change(k)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(r > thr) & (oic < -oi_thr)] = -1.0
+    sig[(r < -thr) & (oic < -oi_thr)] = 1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def ls_contrarian(df, z, h):
+    # taker long/short ratio: толпа агрегированно в лонгах -> контрарианский шорт
+    ls = df["ls_ratio"]
+    lz = (ls - ls.rolling(200).mean()) / ls.rolling(200).std().replace(0.0, np.nan)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[lz > z] = -1.0
+    sig[lz < -z] = 1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+# ===== мета-стратегии: сигнал + фильтр режима рынка =====
+
+
+def bb_regime(df, n, k, vz_max):
+    # Bollinger-реверс, но только когда рынок спокоен (vol_z < vz_max)
+    m = df["close"].rolling(n).mean()
+    sd = df["close"].rolling(n).std()
+    z = _vol_z(df)
+    calm = z < vz_max
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(df["close"] < m - k * sd) & calm] = 1.0
+    sig[(df["close"] > m + k * sd) & calm] = -1.0
+    sig[(df["close"] - m).abs() < 0.1 * sd] = 0.0
+    return sig.ffill().fillna(0.0)
+
+
+def wick_regime(df, w, vz_max, h):
+    # теневой реверс только в спокойном рынке
+    rng = (df["high"] - df["low"]).replace(0.0, np.nan)
+    body_hi = df[["open", "close"]].max(axis=1)
+    body_lo = df[["open", "close"]].min(axis=1)
+    z = _vol_z(df)
+    calm = z < vz_max
+    sig = pd.Series(np.nan, index=df.index)
+    sig[((body_lo - df["low"]) > w * rng) & calm] = 1.0
+    sig[((df["high"] - body_hi) > w * rng) & calm] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
 
 def grid(**kv):
     res = [{}]
@@ -248,10 +310,20 @@ STRATEGIES = {
     "crash_revert": (crash_revert, grid(k=[3, 5], thr=[0.03, 0.05, 0.08], vz=[2.0, 3.0], h=[30, 60])),
     "spike_bb": (spike_bb, grid(pct=[0.01, 0.02], k=[2.0, 2.5], vz=[2.0, 3.0], h=[30, 60])),
     "vol_burst_revert": (vol_burst_revert, grid(vz=[4.0, 5.0, 6.0], h=[60, 120])),
+    # волна 3: деривативные данные (funding / OI / long-short) + мета-фильтры режима
+    "funding_revert": (funding_revert, grid(z=[1.5, 2.0, 2.5], h=[30, 60])),
+    "oi_exhaust": (oi_exhaust, grid(k=[12, 24], thr=[0.02, 0.04], oi_thr=[0.02, 0.05], h=[30, 60])),
+    "ls_contrarian": (ls_contrarian, grid(z=[1.5, 2.0, 2.5], h=[30, 60])),
+    "bb_regime": (bb_regime, grid(n=[100, 200], k=[2.0, 2.5], vz_max=[1.0, 1.5])),
+    "wick_regime": (wick_regime, grid(w=[0.4, 0.5], vz_max=[1.0, 1.5], h=[15, 30])),
 }
 
 # режим исполнения: реверсивные входят лимитками (maker),
 # трендовые - по рынку (taker)
 MAKER_SET = {"streak_reversion", "wick_reversion", "bb_maker",
              "bollinger_reversion", "vwap_reversion",
-             "streak_vol", "bb_vol", "wick_vol", "spike_revert", "crash_revert", "spike_bb", "vol_burst_revert"}
+             "streak_vol", "bb_vol", "wick_vol", "spike_revert", "crash_revert", "spike_bb", "vol_burst_revert",
+             "funding_revert", "oi_exhaust", "ls_contrarian", "bb_regime", "wick_regime"}
+
+# стратегии, которым нужны funding/OI/long-short из архивов (runner обогащает df)
+DERIV_SET = {"funding_revert", "oi_exhaust", "ls_contrarian"}

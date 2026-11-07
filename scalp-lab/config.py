@@ -11,6 +11,7 @@ TFS = {
     "1m":  {"days": 180, "train_days": 20, "test_days": 5},
     "5m":  {"days": 365, "train_days": 30, "test_days": 7},
     "15m": {"days": 365, "train_days": 45, "test_days": 14},
+    "1h":  {"days": 730, "train_days": 90, "test_days": 21},
 }
 
 # taker fee фьючерсов Binance (0.05%) + оценочное проскальзывание

@@ -122,7 +122,7 @@ a { color:var(--blue); text-decoration:none; }
 <body>
 <div class="app">
   <div class="top">
-    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v5</span></div>
+    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v6</span></div>
     <div class="top-right">
       <span class="pill"><span class="dot na" id="w-dot"></span><span id="w-status">…</span></span>
       <button class="btn-r" onclick="refreshAll()" aria-label="Обновить">⟳</button>
@@ -206,8 +206,9 @@ a { color:var(--blue); text-decoration:none; }
   <!-- ===== VIEW: SYSTEM ===== -->
   <div class="view" id="v-sys">
     <div class="panel"><h2>🛰 Прогоны воркеров <span class="tag" id="next-cron"></span></h2><div class="log" id="runs-log"><div class="fallback">загрузка логов…</div></div></div>
+    <div class="panel"><h2>🔄 Ротация лидеров <span class="tag">раз в 7 дней</span></h2><div class="log" id="rot-info"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>🤖 Коммиты</h2><div class="log" id="commits-log"></div></div>
-    <div class="panel"><h2>⚙️ Как работает система</h2><div class="report" style="white-space:normal">Конвейер полностью автономен: воркеры GitHub Actions каждые ~40 минут обрабатывают очередь задач (20 пар × 4 таймфрейма × 6 тестов + волны углубления), ошибки автоматически перезапускаются до 3 раз, при завершении очереди система сама строит новую волну исследований на основе лучших OOS-результатов. Все результаты — walk-forward out-of-sample с учётом комиссий и проскальзывания.</div></div>
+    <div class="panel"><h2>⚙️ Как работает система</h2><div class="report" style="white-space:normal">Конвейер полностью автономен: воркеры GitHub Actions каждые ~30 минут обрабатывают очередь задач, ошибки автоматически перезапускаются до 3 раз, при завершении очереди система сама строит новую волну исследований на основе лучших OOS-результатов. Все результаты — walk-forward out-of-sample с учётом комиссий и проскальзывания. Волна 3: стратегии на деривативных данных (funding rate, открытый интерес, long/short ratio из архивов Binance), мета-стратегии с фильтром режима рынка, часовой таймфрейм 1h и еженедельная ротация лидеров — топ-10 перепроверяется на свежих данных раз в 7 дней, протухшие результаты заменяются.</div></div>
   </div>
   <footer>
     <a href="https://github.com/davletovaalmira11-creator/my-termux-project" target="_blank">репозиторий</a> ·
@@ -228,7 +229,7 @@ var RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/s
 var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
 var HAS_CHART = typeof Chart !== "undefined";
 var NL = String.fromCharCode(10);
-var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём", spike_revert: "Памп/дамп реверс", spike_follow: "Памп/дамп инерция", crash_revert: "Каскад-реверс", spike_bb: "Спайк+Bollinger", vol_burst_revert: "Взрыв объёма" };
+var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём", spike_revert: "Памп/дамп реверс", spike_follow: "Памп/дамп инерция", crash_revert: "Каскад-реверс", spike_bb: "Спайк+Bollinger", vol_burst_revert: "Взрыв объёма", funding_revert: "Funding-реверс", oi_exhaust: "OI-истощение", ls_contrarian: "LS-контрариан", bb_regime: "Bollinger+режим", wick_regime: "Тень+режим" };
 var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
 var chLine = null, chDonut = null, chBar = null, chEq = null;
 function showView(v) {
@@ -313,7 +314,7 @@ function loadActivity() {
     commitsLog.innerHTML = h || "<div class='fallback'>коммитов нет</div>";
   }).catch(function () { commitsLog.innerHTML = ""; });
 }
-var QUEUE_FILES = ["queue.json","queue2.json","queue3.json","queue4.json","queue5.json","queue6.json","queue7.json","queue8.json","queue9.json","queue10.json","queue11.json","queue12.json","queue13.json","queue14.json","queue15.json"];
+var QUEUE_FILES = ["queue.json","queue2.json","queue3.json","queue4.json","queue5.json","queue6.json","queue7.json","queue8.json","queue9.json","queue10.json","queue11.json","queue12.json","queue13.json","queue14.json","queue15.json","queue16.json","queue17.json","queue18.json","queue19.json","queue20.json"];
 function loadQueue() {
   return Promise.all(QUEUE_FILES.map(function (f) { return fetchText(RAW + "results/" + f); })).then(function (arr) {
     var s = {}, total = 0, first = null;
@@ -621,6 +622,16 @@ function loadPaper() {
     document.getElementById("paper-tracked").innerHTML = tk;
   });
 }
+function loadRotation() {
+  return fetchText(RAW + "results/rotation.json").then(function (txt) {
+    var el = document.getElementById("rot-info");
+    if (!el) return;
+    if (!txt) { el.innerHTML = "<div class='fallback'>ротация ещё не срабатывала — включится после завершения текущей очереди</div>"; return; }
+    var r;
+    try { r = JSON.parse(txt); } catch (e) { return; }
+    el.innerHTML = "<div class='log-row'><span class='t'>" + String(r.last_rot || "").slice(5, 16).replace("T", " ") + " UTC</span><span class='msg'>перепроверено топ-стратегий: <b>" + (r.tasks || 0) + "</b> · следующая ротация через ~7 дней</span></div>";
+  });
+}
 function refreshAll() {
   document.getElementById("ticker").textContent = "обновлено: " + new Date().toLocaleTimeString();
   loadWorkerStatus();
@@ -630,6 +641,7 @@ function refreshAll() {
   loadLeaderboard();
   loadReport();
   loadPaper();
+  loadRotation();
 }
 if (!HAS_CHART) { document.getElementById("donut-box").innerHTML = "<div class='fallback'>графики недоступны (CDN заблокирован) — цифры в силе</div>"; }
 refreshAll();

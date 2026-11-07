@@ -115,6 +115,72 @@ def evolve(queues):
     return len(tasks)
 
 
+ROTATE_DAYS = 7
+
+
+def rotate_leaders(queues):
+    """Еженедельная ротация: топ-стратегии лидерборда перепроверяются на
+    свежих данных; устаревшие результаты заменяются (dedup по mtime)."""
+    try:
+        with open("results/rotation.json") as fh:
+            rot = json.load(fh)
+    except Exception:
+        rot = {}
+    last = rot.get("last_rot", "")
+    if last:
+        try:
+            age = time.time() - time.mktime(time.strptime(last, "%Y-%m-%dT%H:%M:%SZ"))
+        except Exception:
+            age = 1e18
+        if age < ROTATE_DAYS * 86400:
+            return 0
+    if not os.path.exists("reports/leaderboard.csv"):
+        return 0
+    rows = []
+    with open("reports/leaderboard.csv") as fh:
+        fh.readline()
+        for line in fh:
+            p = line.strip().split(",")
+            if len(p) >= 3:
+                rows.append(p)
+    ids = set()
+    for _, q in queues:
+        for t in q:
+            ids.add(t["id"])
+    datekey = time.strftime("%Y%m%d", time.gmtime())
+    tasks = []
+    seen = set()
+    for p in rows:
+        st, sym, tf = p[0], p[1], p[2]
+        if (st, sym, tf) in seen:
+            continue
+        seen.add((st, sym, tf))
+        tid = "rot-" + datekey + "-" + st + "-" + sym + "-" + tf
+        if tid in ids:
+            continue
+        cfg = config.TFS.get(tf)
+        if cfg is None:
+            continue
+        tasks.append({"id": tid, "kind": "backtest",
+                      "symbol": sym, "tf": tf, "strategy": st,
+                      "days": cfg["days"], "train_days": cfg["train_days"],
+                      "test_days": cfg["test_days"], "wave": "rotation",
+                      "status": "pending"})
+        if len(tasks) >= 10:
+            break
+    if not tasks:
+        return 0
+    n = len(queue_files())
+    path = "results/queue%d.json" % (n + 1)
+    with open(path, "w") as fh:
+        json.dump(tasks, fh, ensure_ascii=False)
+    with open("results/rotation.json", "w") as fh:
+        json.dump({"last_rot": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                   "tasks": len(tasks)}, fh)
+    print("rotation: %d re-verify tasks -> %s" % (len(tasks), path), flush=True)
+    return len(tasks)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=float, default=40)
@@ -165,6 +231,7 @@ def main():
     pend = sum(1 for t in all_tasks if t.get("status") == "pending")
     if pend == 0:
         evolve(queues)
+        rotate_leaders(queues)
     queues = load_queues()
     all_tasks = [x for _, qq in queues for x in qq]
     save_progress(all_tasks, start, "final")

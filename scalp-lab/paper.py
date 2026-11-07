@@ -22,7 +22,7 @@ STATE_PATH = "results/paper.json"
 CAPITAL_START = 1000.0
 MAX_TRACK = 5
 MIN_STABILITY = 0.3
-LOOKBACK_DAYS = {"1m": 3, "5m": 10, "15m": 20}
+LOOKBACK_DAYS = {"1m": 3, "5m": 10, "15m": 20, "1h": 40}
 COST = {"taker": 2 * (config.FEE + config.SLIP),
         "maker": 2 * (config.FEE_MAKER + config.SLIP_MAKER)}
 
@@ -47,7 +47,7 @@ def save_state(st):
 
 
 def top_strategies():
-    bts = []
+    best = {}
     for f in glob.glob("results/backtest/*.json"):
         try:
             r = json.load(open(f))
@@ -55,6 +55,15 @@ def top_strategies():
             continue
         if not (isinstance(r, dict) and "oos" in r):
             continue
+        k = (r.get("strategy"), r.get("symbol"), r.get("tf"))
+        try:
+            mt = os.path.getmtime(f)
+        except Exception:
+            mt = 0
+        if k not in best or mt >= best[k][0]:
+            best[k] = (mt, r)
+    bts = [v[1] for v in best.values()]
+    for r in bts:
         o = r["oos"]
         if r.get("trades", 0) < 200 or r.get("folds", 0) < 8:
             continue
@@ -130,6 +139,8 @@ def main():
     for t in tops:
         try:
             df = get_klines(t["symbol"], t["tf"])
+            if t["strategy"] in strategies.DERIV_SET:
+                df = data.add_deriv(df, t["symbol"], LOOKBACK_DAYS.get(t["tf"], 10))
             fn = strategies.STRATEGIES[t["strategy"]][0]
             sig = fn(df, **t["params"])
             cur = float(sig.iloc[-1])

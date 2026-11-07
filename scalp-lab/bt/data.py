@@ -1,6 +1,7 @@
 import os
 import zipfile
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -81,4 +82,113 @@ def klines(symbol, tf, days, cache_dir=".cache"):
         alt = "1000" + symbol
         df = _klines_raw(alt, tf, days, cache_dir)
     _MEMO[key] = df
+    return df
+
+
+# ===== деривативные данные: funding rate, открытый интерес, long/short =====
+
+FUND_COLS = ["calc_time", "funding_interval_hours", "last_funding_rate"]
+METRICS_COLS = ["create_time", "symbol", "sum_open_interest", "sum_open_interest_value",
+                "count_toptrader_long_short_ratio", "sum_toptrader_long_short_ratio",
+                "count_long_short_ratio", "sum_taker_long_short_vol_ratio"]
+_DERIV_MEMO = {}
+
+
+def _read_zip_named(path, cols):
+    with zipfile.ZipFile(path) as z:
+        name = z.namelist()[0]
+        with z.open(name) as fh:
+            df = pd.read_csv(fh, header=None, names=cols, dtype=str)
+    tcol = df[cols[0]]
+    ts = pd.to_numeric(tcol, errors="coerce")
+    if ts.isna().all():
+        # некоторые архивы хранят время строкой - парсим в ms
+        ts = pd.to_datetime(tcol, utc=True, errors="coerce").astype("int64") // 1000000
+    df[cols[0]] = ts
+    df = df[df[cols[0]] > 0]
+    return df
+
+
+def _deriv_raw(kind, symbol, days, cache_dir):
+    """fundingRate / metrics: monthly + daily архивы data.binance.vision (futures um)."""
+    cols = FUND_COLS if kind == "fundingRate" else METRICS_COLS
+    os.makedirs(cache_dir, exist_ok=True)
+    end = pd.Timestamp.utcnow().normalize()
+    start = end - pd.Timedelta(days=days)
+    frames = []
+    for m in pd.period_range(start, end, freq="M"):
+        fn = symbol + "-" + kind + "-" + str(m) + ".zip"
+        p = os.path.join(cache_dir, fn)
+        url = BASE + "/monthly/" + kind + "/" + symbol + "/" + fn
+        if not os.path.exists(p):
+            if not _fetch(url, p):
+                continue
+        frames.append(_read_zip_named(p, cols))
+    cur_start = end.to_period("M").start_time.tz_localize("UTC")
+    for day in pd.date_range(cur_start, end, freq="D"):
+        fn = symbol + "-" + kind + "-" + day.strftime("%Y-%m-%d") + ".zip"
+        p = os.path.join(cache_dir, fn)
+        url = BASE + "/daily/" + kind + "/" + symbol + "/" + fn
+        if not os.path.exists(p):
+            if not _fetch(url, p):
+                continue
+        frames.append(_read_zip_named(p, cols))
+    if not frames:
+        raise RuntimeError("no " + kind + " data for " + symbol)
+    df = pd.concat(frames, ignore_index=True)
+    df = df.drop_duplicates(cols[0]).sort_values(cols[0]).reset_index(drop=True)
+    return df
+
+
+def funding(symbol, days, cache_dir=".cache"):
+    """Исторический funding rate: DataFrame [dt, funding]."""
+    key = ("fundingRate", symbol, days)
+    if key in _DERIV_MEMO:
+        return _DERIV_MEMO[key]
+    try:
+        raw = _deriv_raw("fundingRate", symbol, days, cache_dir)
+    except RuntimeError:
+        if not symbol.endswith("USDT") or symbol.startswith("1000"):
+            raise
+        raw = _deriv_raw("fundingRate", "1000" + symbol, days, cache_dir)
+    fr = pd.DataFrame({
+        "dt": pd.to_datetime(raw["calc_time"].astype("int64"), unit="ms", utc=True),
+        "funding": pd.to_numeric(raw["last_funding_rate"], errors="coerce")})
+    fr = fr.dropna().sort_values("dt").reset_index(drop=True)
+    _DERIV_MEMO[key] = fr
+    return fr
+
+
+def metrics(symbol, days, cache_dir=".cache"):
+    """Метрики позиционирования: DataFrame [dt, oi, ls_ratio] (daily metrics)."""
+    key = ("metrics", symbol, days)
+    if key in _DERIV_MEMO:
+        return _DERIV_MEMO[key]
+    try:
+        raw = _deriv_raw("metrics", symbol, days, cache_dir)
+    except RuntimeError:
+        if not symbol.endswith("USDT") or symbol.startswith("1000"):
+            raise
+        raw = _deriv_raw("metrics", "1000" + symbol, days, cache_dir)
+    mt = pd.DataFrame({
+        "dt": pd.to_datetime(raw["create_time"].astype("int64"), unit="ms", utc=True),
+        "oi": pd.to_numeric(raw["sum_open_interest"], errors="coerce"),
+        "ls_ratio": pd.to_numeric(raw["sum_taker_long_short_vol_ratio"], errors="coerce")})
+    mt = mt.dropna().sort_values("dt").reset_index(drop=True)
+    _DERIV_MEMO[key] = mt
+    return mt
+
+
+def add_deriv(df, symbol, days, cache_dir=".cache"):
+    """Присоединяет funding/OI/long-short к свечам (asof, без утечки будущего)."""
+    df = df.copy().reset_index(drop=True)
+    d_ts = df["dt"].astype("int64").values
+    for side in (funding(symbol, days, cache_dir), metrics(symbol, days, cache_dir)):
+        s_ts = side["dt"].astype("int64").values
+        pos = np.searchsorted(s_ts, d_ts, side="right") - 1
+        for c in side.columns:
+            if c == "dt":
+                continue
+            v = side[c].values
+            df[c] = np.where(pos >= 0, v[np.clip(pos, 0, len(v) - 1)], 0.0)
     return df

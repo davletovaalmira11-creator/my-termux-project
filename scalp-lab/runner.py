@@ -14,6 +14,8 @@ def run_task(t):
     df = data.klines(t["symbol"], tf, t["days"])
     if len(df) < 5000:
         raise RuntimeError("not enough data")
+    if t["kind"] == "backtest" and t["strategy"] in strategies.DERIV_SET:
+        df = data.add_deriv(df, t["symbol"], t["days"])
     if t["kind"] == "backtest":
         fn, g = strategies.STRATEGIES[t["strategy"]]
         g = [p for p in g if p.get("fast", 1) < p.get("slow", 9999)]

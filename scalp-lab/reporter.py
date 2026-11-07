@@ -64,14 +64,22 @@ def economics(r):
 
 def main():
     os.makedirs("reports", exist_ok=True)
-    bts = []
+    best = {}
     for f in glob.glob("results/backtest/*.json"):
         try:
             r = json.load(open(f))
         except Exception:
             continue
         if isinstance(r, dict) and "oos" in r:
-            bts.append(r)
+            k = (r.get("strategy"), r.get("symbol"), r.get("tf"))
+            try:
+                mt = os.path.getmtime(f)
+            except Exception:
+                mt = 0
+            if k not in best or mt >= best[k][0]:
+                best[k] = (mt, r)
+    # ротация: для пары (стратегия, пара, TF) остаётся самый свежий прогон
+    bts = [v[1] for v in best.values()]
     scans = []
     for f in glob.glob("results/scan/*.json"):
         try:
