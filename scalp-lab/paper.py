@@ -17,7 +17,7 @@ from bt import data, strategies
 STATE_PATH = "results/paper.json"
 CAPITAL_START = 1000.0
 MAX_TRACK = 5
-MIN_STABILITY = 0.4
+MIN_STABILITY = 0.3
 LOOKBACK_DAYS = {"1m": 3, "5m": 10, "15m": 20}
 COST = {"taker": 2 * (config.FEE + config.SLIP),
         "maker": 2 * (config.FEE_MAKER + config.SLIP_MAKER)}
@@ -119,6 +119,7 @@ def main():
             fn = strategies.STRATEGIES[t["strategy"]][0]
             sig = fn(df, **t["params"])
             cur = float(sig.iloc[-1])
+            t["signal"] = cur
         except Exception as e:
             print("paper skip", t["key"], str(e)[:80], flush=True)
             continue

@@ -198,6 +198,7 @@ a { color:var(--blue); text-decoration:none; }
       </div>
       <div class="legend"><span>виртуальный портфель топ-5 OOS-стратегий · сигналы с живых данных Binance · обновление каждые 30 минут · комиссии и проскальзывание учитываются</span></div>
     </div>
+    <div class="panel"><h2>🎯 Отслеживаемые стратегии</h2><div id="paper-tracked"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📍 Открытые позиции</h2><div id="paper-positions"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📜 История сделок</h2><div id="paper-trades"><div class="fallback">загрузка…</div></div></div>
   </div>
@@ -579,6 +580,18 @@ function loadPaper() {
       t += "</table>";
     } else { t = "<div class='fallback'>закрытых сделок ещё нет — сигналы обновляются каждые 30 минут</div>"; }
     document.getElementById("paper-trades").innerHTML = t;
+    var tops = p.tops || [];
+    var tk = "";
+    if (tops.length) {
+      tk = "<table><tr><th>Стратегия</th><th>Пара</th><th>Сигнал сейчас</th><th>Sharpe</th></tr>";
+      tops.forEach(function (x) {
+        var sg = x.signal;
+        var st = (sg === undefined || sg === null) ? "— нет данных" : (sg > 0 ? "🟢 long" : (sg < 0 ? "🔴 short" : "⏸ флэт"));
+        tk += "<tr><td>" + (STRAT_RU[x.strategy] || x.strategy) + "</td><td>" + x.symbol.replace("USDT", "") + " " + x.tf + "</td><td>" + st + "</td><td>" + x.oos_sharpe + "</td></tr>";
+      });
+      tk += "</table>";
+    } else { tk = "<div class='fallback'>топ-стратегии отбираются после бэктестов</div>"; }
+    document.getElementById("paper-tracked").innerHTML = tk;
   });
 }
 function refreshAll() {
