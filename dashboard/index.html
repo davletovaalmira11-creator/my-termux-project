@@ -254,9 +254,19 @@ function countUp(el, to, suffix) {
     if (p < 1) requestAnimationFrame(step);
   })(t0);
 }
+var RUNS_CACHE = { t: 0, data: null };
+function getCachedRuns() {
+  if (RUNS_CACHE.data && Date.now() - RUNS_CACHE.t < 300000) return Promise.resolve(RUNS_CACHE.data);
+  return fetchJSON(API + "/actions/runs?per_page=15").then(function (d) { RUNS_CACHE = { t: Date.now(), data: d }; return d; });
+}
+var COMMITS_CACHE = { t: 0, data: null };
+function getCachedCommits() {
+  if (COMMITS_CACHE.data && Date.now() - COMMITS_CACHE.t < 300000) return Promise.resolve(COMMITS_CACHE.data);
+  return fetchJSON(API + "/commits?per_page=8").then(function (d) { COMMITS_CACHE = { t: Date.now(), data: d }; return d; });
+}
 function loadWorkerStatus() {
   var dot = document.getElementById("w-dot"), el = document.getElementById("w-status");
-  fetchJSON(API + "/actions/runs?per_page=10").then(function (data) {
+  getCachedRuns().then(function (data) {
     var runs = (data.workflow_runs || []).filter(function (x) { return x.name === "bt-worker"; });
     var running = null;
     for (var i = 0; i < runs.length; i++) if (runs[i].status !== "completed") { running = runs[i]; break; }
@@ -277,7 +287,7 @@ function loadWorkerStatus() {
 function loadActivity() {
   var runsLog = document.getElementById("runs-log");
   var commitsLog = document.getElementById("commits-log");
-  fetchJSON(API + "/actions/runs?per_page=15").then(function (data) {
+  getCachedRuns().then(function (data) {
     var runs = (data.workflow_runs || []).filter(function (x) { return x.name === "bt-worker" || x.name === "bt-report"; }).slice(0, 8);
     if (!runs.length) { runsLog.innerHTML = "<div class='fallback'>прогонов ещё не было</div>"; return; }
     var h = "";
@@ -290,7 +300,7 @@ function loadActivity() {
     });
     runsLog.innerHTML = h;
   }).catch(function () { runsLog.innerHTML = "<div class='fallback'>логи недоступны (лимит API)</div>"; });
-  fetchJSON(API + "/commits?per_page=8").then(function (data) {
+  getCachedCommits().then(function (data) {
     var h = "";
     (data || []).forEach(function (c) {
       var isBot = (c.commit.author.email || "").indexOf("bt-bot") >= 0;
