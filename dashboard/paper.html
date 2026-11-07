@@ -116,13 +116,23 @@ tr:hover td { background:rgba(255,255,255,.04); }
 .view.on { display:block; }
 footer { text-align:center; color:var(--dim); font-size:11px; margin-top:20px; line-height:1.8; }
 a { color:var(--blue); text-decoration:none; }
+/* ===== live quotes ===== */
+.quotes { display:flex; gap:10px; overflow-x:auto; padding:2px 0 4px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+.quotes::-webkit-scrollbar { display:none; }
+.qcard { min-width:124px; flex:0 0 auto; border:1px solid var(--border); border-radius:14px; background:var(--card2); padding:10px 12px 8px; transition:background .6s; }
+.qcard .qs { font-size:11px; font-weight:800; letter-spacing:.5px; color:var(--dim); }
+.qcard .qp { font-size:17px; font-weight:800; margin-top:2px; font-variant-numeric:tabular-nums; }
+.qcard .qc { font-size:11px; font-weight:600; margin-top:2px; }
+.qcard .qc.up { color:var(--green); } .qcard .qc.down { color:var(--red); }
+.qcard.flash-up { background:rgba(63,185,80,.16); } .qcard.flash-down { background:rgba(248,81,73,.16); }
+.qcard svg { margin-top:6px; display:block; }
 ::-webkit-scrollbar{height:6px;width:6px;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v6</span></div>
+    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v7</span></div>
     <div class="top-right">
       <span class="pill"><span class="dot na" id="w-dot"></span><span id="w-status">…</span></span>
       <button class="btn-r" onclick="refreshAll()" aria-label="Обновить">⟳</button>
@@ -131,6 +141,8 @@ a { color:var(--blue); text-decoration:none; }
   <div class="upd" id="ticker">автообновление каждые 60 сек</div>
   <!-- ===== VIEW: OVERVIEW ===== -->
   <div class="view on" id="v-overview">
+    <div class="panel"><h2>⚡ Котировки в реальном времени <span class="tag" id="quotes-upd">Binance live</span></h2><div class="quotes" id="quotes"><div class="fallback">загрузка котировок…</div></div><div class="legend" style="margin-top:10px"><span>обновление каждые 10 сек · мини-график: свечи 5м за 4 часа · если пусто — API Binance недоступен из вашей сети</span></div></div>
+    
     <div class="panel">
       <h2>📊 Прогресс конвейера <span class="tag" id="last-run"></span></h2>
       <div class="bar"><div class="b-done" id="b-done"></div><div class="b-err" id="b-err"></div><div class="b-run" id="b-run"></div><div class="b-todo"></div></div>
@@ -643,6 +655,67 @@ function svgSpark(vals) {
     + pts.join(" ") + "'/></svg>"
     + "<div class='fallback'>график капитала (SVG, CDN не нужен): " + last + "</div>";
 }
+var QUOTE_SYMBOLS = ["BTCUSDT","ETHUSDT","SOLUSDT","DOGEUSDT","NEARUSDT","DOTUSDT","PEPEUSDT","APTUSDT","ARBUSDT"];
+var prevPrices = {};
+var sparkCache = {};
+function fmtPrice(p) {
+  var v = Number(p);
+  if (isNaN(v)) return "—";
+  if (v >= 100) return v.toFixed(2);
+  if (v >= 1) return v.toFixed(3);
+  return v.toFixed(6);
+}
+function qSpark(pts, up) {
+  if (!pts || pts.length < 2) return "";
+  var mn = Math.min.apply(null, pts), mx = Math.max.apply(null, pts);
+  if (mx === mn) mx = mn + 1;
+  var w = 100, h = 26, pad = 2;
+  var s = pts.map(function (v, i) {
+    var x = pad + i * (w - 2 * pad) / (pts.length - 1);
+    var y = h - pad - (v - mn) / (mx - mn) * (h - 2 * pad);
+    return x.toFixed(1) + "," + y.toFixed(1);
+  }).join(" ");
+  return "<svg viewBox='0 0 " + w + " " + h + "' width='" + w + "' height='" + h + "'><polyline fill='none' stroke='" + (up ? "#3fb950" : "#f85149") + "' stroke-width='1.6' points='" + s + "'/></svg>";
+}
+function loadQuotes() {
+  var el = document.getElementById("quotes");
+  if (!el || !window.fetch) return;
+  var url = "https://data-api.binance.vision/api/v3/ticker/24hr?symbols=" + encodeURIComponent(JSON.stringify(QUOTE_SYMBOLS));
+  fetch(url).then(function (r) { return r.json(); }).then(function (arr) {
+    if (!Array.isArray(arr) || !arr.length) return;
+    var html = "";
+    arr.forEach(function (x) {
+      var sym = x.symbol.replace("USDT", "");
+      var chg = Number(x.priceChangePercent) || 0;
+      var px = Number(x.lastPrice);
+      var dir = chg >= 0 ? "up" : "down";
+      var prev = prevPrices[x.symbol];
+      var flash = "";
+      if (prev !== undefined && px !== prev) flash = px > prev ? "flash-up" : "flash-down";
+      prevPrices[x.symbol] = px;
+      html += "<div class='qcard " + flash + "' id='qc-" + x.symbol + "'>"
+        + "<div class='qs'>" + sym + "<span style='color:var(--dim);font-weight:400'>/USDT</span></div>"
+        + "<div class='qp'>" + fmtPrice(px) + "</div>"
+        + "<div class='qc " + dir + "'>" + (chg >= 0 ? "▲ +" : "▼ ") + chg.toFixed(2) + "%</div>"
+        + (sparkCache[x.symbol] || "") + "</div>";
+    });
+    el.innerHTML = html;
+    document.getElementById("quotes-upd").textContent = "обновлено " + new Date().toLocaleTimeString();
+  }).catch(function () {
+    document.getElementById("quotes-upd").textContent = "недоступен из вашей сети";
+  });
+}
+function loadSparks() {
+  QUOTE_SYMBOLS.forEach(function (s) {
+    fetch("https://data-api.binance.vision/api/v3/klines?symbol=" + s + "&interval=5m&limit=48").then(function (r) { return r.json(); }).then(function (k) {
+      if (!Array.isArray(k) || !k.length) return;
+      var pts = k.map(function (r2) { return Number(r2[4]); });
+      sparkCache[s] = qSpark(pts, pts[pts.length - 1] >= pts[0]);
+      var card = document.getElementById("qc-" + s);
+      if (card && !card.querySelector("svg")) card.insertAdjacentHTML("beforeend", sparkCache[s]);
+    }).catch(function () {});
+  });
+}
 function loadRotation() {
   return fetchText(RAW + "results/rotation.json").then(function (txt) {
     var el = document.getElementById("rot-info");
@@ -666,7 +739,11 @@ function refreshAll() {
 }
 if (!HAS_CHART) { document.getElementById("donut-box").innerHTML = "<div class='fallback'>графики недоступны (CDN заблокирован) — цифры в силе</div>"; }
 refreshAll();
+loadQuotes();
+loadSparks();
 setInterval(refreshAll, 60000);
+setInterval(loadQuotes, 10000);
+setInterval(loadSparks, 60000);
 </script>
 </body>
 </html>
