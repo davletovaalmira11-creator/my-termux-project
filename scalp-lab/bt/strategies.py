@@ -179,6 +179,39 @@ def spike_follow(df, pct, vz, h):
     return sig.ffill(limit=h).fillna(0.0)
 
 
+def crash_revert(df, k, thr, vz, h):
+    # каскадный памп/дамп: суммарное движение за k баров + объём -> реверс
+    r = df["close"] / df["open"] - 1.0
+    cum = r.rolling(k).sum()
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(cum < -thr) & (z > vz)] = 1.0
+    sig[(cum > thr) & (z > vz)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def spike_bb(df, pct, k, vz, h):
+    # спайк + выход за Bollinger(50) одновременно -> усиленный реверс
+    r = df["close"] / df["open"] - 1.0
+    m = df["close"].rolling(50).mean()
+    sd = df["close"].rolling(50).std()
+    z = _vol_z(df)
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(r < -pct) & (z > vz) & (df["close"] < m - k * sd)] = 1.0
+    sig[(r > pct) & (z > vz) & (df["close"] > m + k * sd)] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
+def vol_burst_revert(df, vz, h):
+    # главный FDR-паттерн (vol_z>5, t=3.0): взрыв объёма -> откат против свечи
+    z = _vol_z(df)
+    up = (df["close"] - df["open"]) > 0
+    sig = pd.Series(np.nan, index=df.index)
+    sig[(z > vz) & (~up)] = 1.0
+    sig[(z > vz) & up] = -1.0
+    return sig.ffill(limit=h).fillna(0.0)
+
+
 def grid(**kv):
     res = [{}]
     for key in list(kv):
@@ -211,10 +244,14 @@ STRATEGIES = {
     # памп/дамп: резкий ход с объёмом
     "spike_revert": (spike_revert, grid(pct=[0.01, 0.02, 0.03, 0.05], vz=[2.0, 3.0], h=[30, 60])),
     "spike_follow": (spike_follow, grid(pct=[0.008, 0.015, 0.03], vz=[2.0, 3.0], h=[15, 30, 60])),
+    # памп/дамп: волна 2 — каскады, спайк+канал, взрыв объёма
+    "crash_revert": (crash_revert, grid(k=[3, 5], thr=[0.03, 0.05, 0.08], vz=[2.0, 3.0], h=[30, 60])),
+    "spike_bb": (spike_bb, grid(pct=[0.01, 0.02], k=[2.0, 2.5], vz=[2.0, 3.0], h=[30, 60])),
+    "vol_burst_revert": (vol_burst_revert, grid(vz=[4.0, 5.0, 6.0], h=[60, 120])),
 }
 
 # режим исполнения: реверсивные входят лимитками (maker),
 # трендовые - по рынку (taker)
 MAKER_SET = {"streak_reversion", "wick_reversion", "bb_maker",
              "bollinger_reversion", "vwap_reversion",
-             "streak_vol", "bb_vol", "wick_vol", "spike_revert"}
+             "streak_vol", "bb_vol", "wick_vol", "spike_revert", "crash_revert", "spike_bb", "vol_burst_revert"}

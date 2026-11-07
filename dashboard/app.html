@@ -198,6 +198,7 @@ a { color:var(--blue); text-decoration:none; }
       </div>
       <div class="legend"><span>виртуальный портфель топ-5 OOS-стратегий · сигналы с живых данных Binance · обновление каждые 30 минут · комиссии и проскальзывание учитываются</span></div>
     </div>
+    <div class="panel"><h2>📈 Динамика капитала</h2><div class="chart-box" id="eq-box"><div class="fallback">график появится после первых сделок</div></div></div>
     <div class="panel"><h2>🎯 Отслеживаемые стратегии</h2><div id="paper-tracked"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📍 Открытые позиции</h2><div id="paper-positions"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📜 История сделок</h2><div id="paper-trades"><div class="fallback">загрузка…</div></div></div>
@@ -227,9 +228,9 @@ var RAW = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/master/s
 var API = "https://api.github.com/repos/" + OWNER + "/" + REPO;
 var HAS_CHART = typeof Chart !== "undefined";
 var NL = String.fromCharCode(10);
-var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём", spike_revert: "Памп/дамп реверс", spike_follow: "Памп/дамп инерция" };
+var STRAT_RU = { ema_cross: "EMA-кросс", bollinger_reversion: "Bollinger-реверс", donchian: "Дончан", volume_surge: "Объёмный всплеск", vwap_reversion: "VWAP-реверс", streak_reversion: "Серия-реверс", vol_drift: "Объёмный дрейф", wick_reversion: "Теневой реверс", donchian_trend: "Дончан-тренд", bb_maker: "Bollinger-maker", streak_vol: "Серия+объём", bb_vol: "Bollinger+объём", wick_vol: "Тень+объём", spike_revert: "Памп/дамп реверс", spike_follow: "Памп/дамп инерция", crash_revert: "Каскад-реверс", spike_bb: "Спайк+Bollinger", vol_burst_revert: "Взрыв объёма" };
 var queue = null, lbAll = [], lbSort = { col: "oos_sharpe", dir: -1 };
-var chLine = null, chDonut = null, chBar = null;
+var chLine = null, chDonut = null, chBar = null, chEq = null;
 function showView(v) {
   ["overview","top","pat","paper","sys"].forEach(function (x) {
     document.getElementById("v-" + x).className = "view" + (x === v ? " on" : "");
@@ -312,7 +313,7 @@ function loadActivity() {
     commitsLog.innerHTML = h || "<div class='fallback'>коммитов нет</div>";
   }).catch(function () { commitsLog.innerHTML = ""; });
 }
-var QUEUE_FILES = ["queue.json","queue2.json","queue3.json","queue4.json","queue5.json","queue6.json","queue7.json","queue8.json","queue9.json"];
+var QUEUE_FILES = ["queue.json","queue2.json","queue3.json","queue4.json","queue5.json","queue6.json","queue7.json","queue8.json","queue9.json","queue10.json","queue11.json","queue12.json","queue13.json","queue14.json","queue15.json"];
 function loadQueue() {
   return Promise.all(QUEUE_FILES.map(function (f) { return fetchText(RAW + "results/" + f); })).then(function (arr) {
     var s = {}, total = 0, first = null;
@@ -590,6 +591,22 @@ function loadPaper() {
       t += "</table>";
     } else { t = "<div class='fallback'>закрытых сделок ещё нет — сигналы обновляются каждые 30 минут</div>"; }
     document.getElementById("paper-trades").innerHTML = t;
+    if (HAS_CHART && (p.closed || []).length) {
+      var eqv = [p.capital_start || 1000];
+      (p.closed || []).forEach(function (x) { eqv.push(eqv[eqv.length - 1] * (1 + x.pnl_pct / 100)); });
+      var eb = document.getElementById("eq-box");
+      if (eb) {
+        eb.innerHTML = "<canvas id='ch-eq'></canvas>";
+        if (chEq) chEq.destroy();
+        chEq = new Chart(document.getElementById("ch-eq"), {
+          type: "line",
+          data: { labels: ["старт"].concat((p.closed || []).map(function (x) { return String(x.closed_ts).slice(5, 16).replace("T", " "); })),
+            datasets: [{ label: "капитал", data: eqv, borderColor: "#3fb950", backgroundColor: "rgba(63,185,80,.12)", fill: true, tension: .35, pointRadius: 3, borderWidth: 2 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+            scales: { y: { ticks: { callback: function (v) { return "$" + v; } } }, x: { ticks: { maxTicksLimit: 6, maxRotation: 0 } } } }
+        });
+      }
+    }
     var tops = p.tops || [];
     var tk = "";
     if (tops.length) {
