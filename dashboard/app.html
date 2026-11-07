@@ -264,7 +264,12 @@ function loadWorkerStatus() {
       dot.className = "dot on"; el.textContent = "воркер идёт · " + mins + " мин";
     } else if (runs[0] && runs[0].conclusion === "failure") {
       dot.className = "dot bad"; el.innerHTML = "прогон упал · <a href='" + runs[0].html_url + "' target='_blank'>лог</a>";
-    } else if (runs[0]) { dot.className = "dot off"; el.textContent = "ожидание запуска"; }
+    } else if (runs[0]) {
+      dot.className = "dot off";
+      var nm = new Date().getUTCMinutes();
+      var nxt = nm < 23 ? 23 - nm : (nm < 53 ? 53 - nm : 83 - nm);
+      el.textContent = "✓ всё сделано · прогон через ~" + nxt + " мин";
+    }
     else { dot.className = "dot na"; el.textContent = "нет прогонов"; }
   }).catch(function () { dot.className = "dot na"; el.textContent = "лимит API"; });
 }
@@ -296,20 +301,28 @@ function loadActivity() {
     commitsLog.innerHTML = h || "<div class='fallback'>коммитов нет</div>";
   }).catch(function () { commitsLog.innerHTML = ""; });
 }
+var QUEUE_FILES = ["queue.json","queue2.json","queue3.json","queue4.json","queue5.json","queue6.json","queue7.json","queue8.json","queue9.json"];
 function loadQueue() {
-  return fetchText(RAW + "results/queue.json").then(function (txt) {
-    if (!txt) return;
-    queue = JSON.parse(txt);
-    var s = {};
-    queue.forEach(function (t) { s[t.status] = (s[t.status] || 0) + 1; });
-    var done = s.done || 0, err = s.error || 0, run = s.running || 0, total = queue.length;
+  return Promise.all(QUEUE_FILES.map(function (f) { return fetchText(RAW + "results/" + f); })).then(function (arr) {
+    var s = {}, total = 0, first = null;
+    arr.forEach(function (txt) {
+      if (!txt) return;
+      var q;
+      try { q = JSON.parse(txt); } catch (e) { return; }
+      if (!Array.isArray(q)) return;
+      q.forEach(function (t) { s[t.status] = (s[t.status] || 0) + 1; total++; });
+      if (!first) first = q;
+    });
+    if (!total) return;
+    queue = first;
+    var done = s.done || 0, err = s.error || 0, run = s.running || 0;
     countUp(document.getElementById("t-total"), total);
     countUp(document.getElementById("t-done"), done);
     countUp(document.getElementById("t-todo"), total - done - err);
     countUp(document.getElementById("t-err"), err);
-    document.getElementById("t-done-note").textContent = (done * 100 / total).toFixed(1) + "% очереди";
+    document.getElementById("t-done-note").textContent = (done * 100 / total).toFixed(1) + "% всех волн";
     var remain = total - done - err;
-    document.getElementById("eta").textContent = remain ? "≈ " + Math.ceil(remain / 36) + " дн." : "завершён 🎉";
+    document.getElementById("eta").textContent = remain ? "≈ " + Math.ceil(remain / 500) + " ч." : "завершён 🎉";
     function pct(f) { return Math.max(f * 100 / total, 0) + "%"; }
     document.getElementById("b-done").style.width = pct(done);
     document.getElementById("b-err").style.width = pct(err);
