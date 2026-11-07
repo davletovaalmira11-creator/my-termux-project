@@ -122,7 +122,7 @@ a { color:var(--blue); text-decoration:none; }
 <body>
 <div class="app">
   <div class="top">
-    <div class="logo">🧪 Scalp<span>Lab</span></div>
+    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v5</span></div>
     <div class="top-right">
       <span class="pill"><span class="dot na" id="w-dot"></span><span id="w-status">…</span></span>
       <button class="btn-r" onclick="refreshAll()" aria-label="Обновить">⟳</button>
@@ -422,7 +422,7 @@ function sortedLb() {
 }
 function loadLeaderboard() {
   return fetchText(RAW + "reports/leaderboard.csv").then(function (txt) {
-    if (!txt) return;
+    if (!txt) { setTimeout(loadLeaderboard, 4000); return; }
     lbAll = parseCSV(txt);
     renderLb();
     var top = lbAll.slice(0, 10);
