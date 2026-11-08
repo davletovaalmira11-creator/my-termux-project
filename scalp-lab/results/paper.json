@@ -116,8 +116,8 @@
    "reason": "rotated out"
   }
  ],
- "updated": "2026-11-08T16:14:16Z",
- "runs": 53,
+ "updated": "2026-11-08T16:18:02Z",
+ "runs": 54,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -263,14 +263,14 @@
   "open": 0
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-08 16:13:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-08 15:45:00",
-  "wick_vol-AVAXUSDT-15m": "2026-11-08 15:45:00",
-  "wick_vol-OPUSDT-15m": "2026-11-08 15:45:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-08 15:45:00",
-  "wick_vol-APTUSDT-15m": "2026-11-08 15:45:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-08 16:05:00",
-  "spike_bb-FILUSDT-15m": "2026-11-08 15:45:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-08 16:16:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-08 16:00:00",
+  "wick_vol-AVAXUSDT-15m": "2026-11-08 16:00:00",
+  "wick_vol-OPUSDT-15m": "2026-11-08 16:00:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-08 16:00:00",
+  "wick_vol-APTUSDT-15m": "2026-11-08 16:00:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-08 16:10:00",
+  "spike_bb-FILUSDT-15m": "2026-11-08 16:00:00"
  },
  "filter_stats": {
   "total": 1448,
