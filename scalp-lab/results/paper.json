@@ -88,24 +88,9 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-08T09:30:00Z",
- "runs": 42,
+ "updated": "2026-11-08T10:26:40Z",
+ "runs": 43,
  "tops": [
-  {
-   "key": "vol_burst_revert-ARBUSDT-15m",
-   "strategy": "vol_burst_revert",
-   "symbol": "ARBUSDT",
-   "tf": "15m",
-   "params": {
-    "h": 120,
-    "vz": 6.0
-   },
-   "fee_mode": "maker",
-   "oos_sharpe": 2.67,
-   "signal": 0.0,
-   "sig_last": "2026-11-07 07:15:00",
-   "sig_pct": 49.09
-  },
   {
    "key": "bb_maker-DOTUSDT-1m",
    "strategy": "bb_maker",
@@ -147,8 +132,7 @@
   "open": 0
  },
  "seen": {
-  "bb_maker-DOTUSDT-1m": "2026-11-08 09:28:00",
-  "streak_vol-SOLUSDT-15m": "2026-11-08 09:00:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-08 09:00:00"
+  "bb_maker-DOTUSDT-1m": "2026-11-08 10:25:00",
+  "streak_vol-SOLUSDT-15m": "2026-11-08 10:00:00"
  }
 }
