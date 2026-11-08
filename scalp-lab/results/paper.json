@@ -11,8 +11,8 @@
    "opened": "2026-11-08 06:20:00",
    "fee_mode": "maker",
    "oos_sharpe": 1.62,
-   "last_ts": "2026-11-08 06:32:00",
-   "last_px": 0.898
+   "last_ts": "2026-11-08 07:44:00",
+   "last_px": 0.897
   }
  },
  "closed": [
@@ -87,8 +87,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-08T06:33:45Z",
- "runs": 39,
+ "updated": "2026-11-08T07:45:46Z",
+ "runs": 40,
  "tops": [
   {
    "key": "bb_maker-DOTUSDT-1m",
@@ -102,8 +102,8 @@
    "fee_mode": "maker",
    "oos_sharpe": 1.62,
    "signal": -1.0,
-   "sig_last": "2026-11-08 06:32:00",
-   "sig_pct": 36.37
+   "sig_last": "2026-11-08 07:44:00",
+   "sig_pct": 38.87
   },
   {
    "key": "streak_vol-SOLUSDT-15m",
@@ -131,7 +131,7 @@
   "open": 1
  },
  "seen": {
-  "bb_maker-DOTUSDT-1m": "2026-11-08 06:32:00",
-  "streak_vol-SOLUSDT-15m": "2026-11-08 06:15:00"
+  "bb_maker-DOTUSDT-1m": "2026-11-08 07:44:00",
+  "streak_vol-SOLUSDT-15m": "2026-11-08 07:30:00"
  }
 }
