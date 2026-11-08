@@ -1,7 +1,20 @@
 {
  "capital_start": 1000.0,
  "equity": 1066.1723290830928,
- "positions": {},
+ "positions": {
+  "bb_maker-DOTUSDT-1m": {
+   "strategy": "bb_maker",
+   "symbol": "DOTUSDT",
+   "tf": "1m",
+   "signal": -1.0,
+   "entry": 0.9,
+   "opened": "2026-11-08 11:09:00",
+   "fee_mode": "maker",
+   "oos_sharpe": 1.62,
+   "last_ts": "2026-11-08 11:21:00",
+   "last_px": 0.903
+  }
+ },
  "closed": [
   {
    "key": "bollinger_reversion-SUIUSDT-15m",
@@ -88,9 +101,40 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-08T10:26:40Z",
- "runs": 43,
+ "updated": "2026-11-08T11:22:50Z",
+ "runs": 44,
  "tops": [
+  {
+   "key": "vol_burst_revert-ARBUSDT-15m",
+   "strategy": "vol_burst_revert",
+   "symbol": "ARBUSDT",
+   "tf": "15m",
+   "params": {
+    "h": 120,
+    "vz": 6.0
+   },
+   "fee_mode": "maker",
+   "oos_sharpe": 2.67,
+   "signal": 0.0,
+   "sig_last": "2026-11-07 07:15:00",
+   "sig_pct": 49.09
+  },
+  {
+   "key": "wick_vol-APTUSDT-15m",
+   "strategy": "wick_vol",
+   "symbol": "APTUSDT",
+   "tf": "15m",
+   "params": {
+    "h": 15,
+    "vz": 2.0,
+    "w": 0.5
+   },
+   "fee_mode": "maker",
+   "oos_sharpe": 2.52,
+   "signal": 0.0,
+   "sig_last": "2026-11-05 19:30:00",
+   "sig_pct": 13.03
+  },
   {
    "key": "bb_maker-DOTUSDT-1m",
    "strategy": "bb_maker",
@@ -102,9 +146,9 @@
    },
    "fee_mode": "maker",
    "oos_sharpe": 1.62,
-   "signal": 0.0,
-   "sig_last": "2026-11-08 07:49:00",
-   "sig_pct": 35.12
+   "signal": -1.0,
+   "sig_last": "2026-11-08 11:21:00",
+   "sig_pct": 35.43
   },
   {
    "key": "streak_vol-SOLUSDT-15m",
@@ -129,10 +173,12 @@
   "winrate": 66.7,
   "equity": 1066.17,
   "pnl_pct": 6.62,
-  "open": 0
+  "open": 1
  },
  "seen": {
-  "bb_maker-DOTUSDT-1m": "2026-11-08 10:25:00",
-  "streak_vol-SOLUSDT-15m": "2026-11-08 10:00:00"
+  "bb_maker-DOTUSDT-1m": "2026-11-08 11:21:00",
+  "streak_vol-SOLUSDT-15m": "2026-11-08 11:00:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-08 11:00:00",
+  "wick_vol-APTUSDT-15m": "2026-11-08 11:00:00"
  }
 }
