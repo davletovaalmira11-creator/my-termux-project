@@ -47,6 +47,7 @@ spike_bb,OPUSDT,1m,1.336,1.054,0.87,127,31,0.29,180,,filtered
 spike_bb,LINKUSDT,5m,1.323,1.08,1.26,114,47,0.34,365,,filtered
 spike_bb,LINKUSDT,15m,1.313,1.069,1.21,151,22,0.32,365,,filtered
 level_fade,APTUSDT,15m,1.305,1.025,1.2,962,22,0.36,365,,passed
+vol_pop,UNIUSDT,15m,1.276,1.055,1.17,337,22,0.59,365,,passed
 flow_fade,ATOMUSDT,1m,1.275,1.044,0.83,235,31,0.42,180,,filtered
 spike_bb,BTCUSDT,1m,1.273,1.232,0.83,12,31,0.65,180,,filtered
 crash_revert,LTCUSDT,15m,1.268,1.134,1.17,38,22,0.18,365,,filtered
@@ -631,7 +632,6 @@ vol_drift,SUIUSDT,15m,-0.371,0.992,-0.34,312,22,0.36,365,,filtered
 crash_revert,LTCUSDT,1m,-0.371,0.893,-0.24,4,31,0.74,180,,filtered
 spike_bb,FILUSDT,5m,-0.373,0.985,-0.35,238,47,0.3,365,,filtered
 bb_vol,FILUSDT,15m,-0.379,0.989,-0.35,405,22,0.14,365,,filtered
-vol_pop,UNIUSDT,15m,-0.38,0.979,-0.7,1364,22,0.5,1460,,filtered
 spike_follow,BTCUSDT,15m,-0.381,0.975,-0.35,88,22,0.27,365,,filtered
 streak_vol,BNBUSDT,15m,-0.383,0.988,-0.35,445,22,0.23,365,,filtered
 flow_fade,LTCUSDT,15m,-0.384,0.989,-0.35,670,22,0.5,365,,filtered
