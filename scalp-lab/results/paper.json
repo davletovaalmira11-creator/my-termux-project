@@ -116,8 +116,8 @@
    "reason": "rotated out"
   }
  ],
- "updated": "2026-11-08T16:42:03Z",
- "runs": 57,
+ "updated": "2026-11-08T16:49:54Z",
+ "runs": 58,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -263,21 +263,21 @@
   "open": 0
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-08 16:40:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-08 16:15:00",
-  "wick_vol-AVAXUSDT-15m": "2026-11-08 16:15:00",
-  "wick_vol-OPUSDT-15m": "2026-11-08 16:15:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-08 16:15:00",
-  "wick_vol-APTUSDT-15m": "2026-11-08 16:15:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-08 16:35:00",
-  "spike_bb-FILUSDT-15m": "2026-11-08 16:15:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-08 16:48:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-08 16:30:00",
+  "wick_vol-AVAXUSDT-15m": "2026-11-08 16:30:00",
+  "wick_vol-OPUSDT-15m": "2026-11-08 16:30:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-08 16:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-08 16:30:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-08 16:40:00",
+  "spike_bb-FILUSDT-15m": "2026-11-08 16:30:00"
  },
  "filter_stats": {
-  "total": 1528,
-  "low_trades": 269,
+  "total": 1568,
+  "low_trades": 309,
   "low_folds": 0,
-  "low_pf": 1189,
-  "low_t": 62,
+  "low_pf": 1185,
+  "low_t": 66,
   "no_params": 0,
   "admitted": 8
  },
@@ -333,6 +333,16 @@
    "reason": "low_trades"
   },
   {
+   "strategy": "funding_revert",
+   "symbol": "SUIUSDT",
+   "tf": "1m",
+   "sharpe": 2.15,
+   "t": 1.4,
+   "pf": 1.026,
+   "stability": 0.26,
+   "reason": "low_t"
+  },
+  {
    "strategy": "crash_revert",
    "symbol": "XRPUSDT",
    "tf": "15m",
@@ -351,6 +361,16 @@
    "pf": 1.365,
    "stability": 0.32,
    "reason": "low_trades"
+  },
+  {
+   "strategy": "funding_revert",
+   "symbol": "ARBUSDT",
+   "tf": "1m",
+   "sharpe": 2.01,
+   "t": 1.31,
+   "pf": 1.025,
+   "stability": 0.39,
+   "reason": "low_t"
   },
   {
    "strategy": "crash_revert",
@@ -380,26 +400,6 @@
    "t": 1.72,
    "pf": 1.454,
    "stability": 0.6,
-   "reason": "low_trades"
-  },
-  {
-   "strategy": "crash_revert",
-   "symbol": "SUIUSDT",
-   "tf": "5m",
-   "sharpe": 1.78,
-   "t": 1.69,
-   "pf": 1.151,
-   "stability": 0.19,
-   "reason": "low_trades"
-  },
-  {
-   "strategy": "crash_revert",
-   "symbol": "DOGEUSDT",
-   "tf": "5m",
-   "sharpe": 1.75,
-   "t": 1.66,
-   "pf": 1.176,
-   "stability": 0.32,
    "reason": "low_trades"
   }
  ]
