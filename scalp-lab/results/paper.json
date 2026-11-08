@@ -11,7 +11,7 @@
    "opened": "2026-11-08 16:49:00",
    "fee_mode": "maker",
    "oos_sharpe": 3.34,
-   "last_ts": "2026-11-08 17:19:00",
+   "last_ts": "2026-11-08 17:22:00",
    "last_px": 3.6
   },
   "bb_regime-NEARUSDT-1m": {
@@ -23,7 +23,7 @@
    "opened": "2026-11-08 17:01:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.94,
-   "last_ts": "2026-11-08 17:19:00",
+   "last_ts": "2026-11-08 17:22:00",
    "last_px": 3.6
   },
   "spike_bb-FILUSDT-15m": {
@@ -167,8 +167,8 @@
    "reason": "rotated out"
   }
  ],
- "updated": "2026-11-08T17:20:17Z",
- "runs": 65,
+ "updated": "2026-11-08T17:23:49Z",
+ "runs": 66,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -183,8 +183,8 @@
    "oos_sharpe": 3.34,
    "score": 2.77,
    "signal": 1.0,
-   "sig_last": "2026-11-08 17:19:00",
-   "sig_pct": 30.95
+   "sig_last": "2026-11-08 17:22:00",
+   "sig_pct": 31.05
   },
   {
    "key": "vol_burst_revert-ARBUSDT-15m",
@@ -249,8 +249,8 @@
    "oos_sharpe": 2.94,
    "score": 1.63,
    "signal": 1.0,
-   "sig_last": "2026-11-08 17:19:00",
-   "sig_pct": 30.36
+   "sig_last": "2026-11-08 17:22:00",
+   "sig_pct": 30.46
   },
   {
    "key": "spike_bb-FILUSDT-15m",
@@ -314,20 +314,20 @@
   "open": 3
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-08 17:19:00",
+  "bb_maker-NEARUSDT-1m": "2026-11-08 17:22:00",
   "spike_revert-SUIUSDT-15m": "2026-11-08 17:00:00",
   "wick_vol-AVAXUSDT-15m": "2026-11-08 17:00:00",
   "vol_burst_revert-ARBUSDT-15m": "2026-11-08 17:00:00",
   "wick_vol-APTUSDT-15m": "2026-11-08 17:00:00",
   "vol_burst_revert-ARBUSDT-5m": "2026-11-08 17:15:00",
   "spike_bb-FILUSDT-15m": "2026-11-08 17:00:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-08 17:19:00"
+  "bb_regime-NEARUSDT-1m": "2026-11-08 17:22:00"
  },
  "filter_stats": {
-  "total": 1748,
-  "low_trades": 311,
+  "total": 1784,
+  "low_trades": 344,
   "low_folds": 0,
-  "low_pf": 1349,
+  "low_pf": 1352,
   "low_t": 79,
   "no_params": 0,
   "admitted": 8
@@ -434,6 +434,16 @@
    "reason": "low_trades"
   },
   {
+   "strategy": "squeeze_pop",
+   "symbol": "XRPUSDT",
+   "tf": "5m",
+   "sharpe": 1.88,
+   "t": 1.78,
+   "pf": 1.084,
+   "stability": 0.3,
+   "reason": "low_trades"
+  },
+  {
    "strategy": "spike_revert",
    "symbol": "LTCUSDT",
    "tf": "15m",
@@ -441,16 +451,6 @@
    "t": 1.68,
    "pf": 1.118,
    "stability": 0.27,
-   "reason": "low_trades"
-  },
-  {
-   "strategy": "crash_revert",
-   "symbol": "BTCUSDT",
-   "tf": "5m",
-   "sharpe": 1.81,
-   "t": 1.72,
-   "pf": 1.454,
-   "stability": 0.6,
    "reason": "low_trades"
   }
  ]
