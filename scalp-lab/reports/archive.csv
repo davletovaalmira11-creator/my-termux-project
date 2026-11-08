@@ -13,7 +13,6 @@ crash_revert,SOLUSDT,15m,1.903,1.182,1.75,57,22,0.18,365,,filtered
 wick_vol,OPUSDT,15m,1.834,1.058,1.69,486,22,0.18,365,,passed
 spike_revert,LTCUSDT,15m,1.832,1.118,1.68,98,22,0.27,365,,filtered
 crash_revert,BTCUSDT,5m,1.811,1.454,1.72,8,47,0.6,365,,filtered
-spike_bb,FILUSDT,15m,1.779,1.068,1.63,284,22,0.27,365,,passed
 crash_revert,SUIUSDT,5m,1.777,1.151,1.69,58,47,0.19,365,,filtered
 crash_revert,DOGEUSDT,5m,1.746,1.176,1.66,55,47,0.32,365,,filtered
 spike_revert,ATOMUSDT,1m,1.7,1.103,1.11,65,31,0.32,180,,filtered
@@ -67,6 +66,7 @@ crash_revert,UNIUSDT,15m,0.941,1.051,0.86,86,22,0.14,365,,filtered
 spike_revert,ATOMUSDT,15m,0.93,1.041,0.85,154,22,0.27,365,,filtered
 vol_burst_revert,XRPUSDT,5m,0.913,1.014,0.87,1019,47,0.26,365,,filtered
 spike_bb,AVAXUSDT,5m,0.9,1.043,0.85,172,47,0.38,365,,filtered
+streak_vol,SOLUSDT,15m,0.898,1.03,1.17,764,22,0.32,730,,passed
 vol_burst_revert,BTCUSDT,5m,0.892,1.013,0.85,1040,47,0.32,365,,filtered
 bollinger_reversion,DOTUSDT,15m,0.89,1.025,0.82,569,22,0.59,365,,filtered
 wick_vol,FILUSDT,5m,0.888,1.016,0.84,1390,47,0.19,365,,filtered
@@ -173,7 +173,6 @@ spike_revert,BNBUSDT,5m,0.378,1.039,0.36,53,47,0.3,365,,filtered
 bb_regime,DOTUSDT,5m,0.377,1.005,0.36,1303,47,0.21,365,,filtered
 crash_revert,DOTUSDT,5m,0.374,1.034,0.36,49,47,0.28,365,,filtered
 vol_burst_revert,BNBUSDT,15m,0.374,1.01,0.34,286,22,0.32,365,,filtered
-streak_vol,SOLUSDT,15m,0.367,1.011,0.67,1752,22,0.23,1460,,filtered
 wick_vol,ARBUSDT,15m,0.365,1.011,0.34,512,22,0.14,365,,filtered
 streak_bb,PEPEUSDT,5m,0.359,1.004,0.34,2687,47,0.34,365,,filtered
 vol_burst_revert,ARBUSDT,5m,0.358,1.007,0.48,1704,47,0.3,730,,filtered
@@ -203,6 +202,7 @@ bb_maker,LINKUSDT,15m,0.241,1.005,0.22,533,22,0.36,365,,filtered
 streak_vol,PEPEUSDT,5m,0.225,1.004,0.21,1110,47,0.17,365,,filtered
 spike_bb,APTUSDT,5m,0.223,1.009,0.21,197,47,0.4,365,,filtered
 streak_vol,ATOMUSDT,15m,0.223,1.007,0.2,323,22,0.32,365,,filtered
+spike_bb,FILUSDT,15m,0.222,1.011,0.41,759,22,0.27,1460,,filtered
 bb_regime,DOGEUSDT,15m,0.222,1.005,0.2,349,22,0.23,365,,filtered
 streak_bb,NEARUSDT,1m,0.219,1.001,0.14,5236,31,0.45,180,,filtered
 wick_vol,ADAUSDT,5m,0.209,1.004,0.2,1213,47,0.28,365,,filtered
