@@ -1,11 +1,9 @@
 strategy,symbol,tf,oos_sharpe,oos_pf,oos_t,trades,folds,param_stability,days,wave,verdict
 spike_bb,ATOMUSDT,1m,4.742,1.325,3.09,63,31,0.52,180,,filtered
 bb_maker,NEARUSDT,1m,3.336,1.02,2.17,3450,31,0.29,180,,passed
-vol_burst_revert,ARBUSDT,15m,2.67,1.065,2.45,308,22,0.36,365,,passed
 crash_revert,PEPEUSDT,15m,2.578,1.142,2.37,129,22,0.23,365,,filtered
 crash_revert,SUIUSDT,1m,2.534,1.542,1.65,16,31,0.45,180,,filtered
 wick_vol,APTUSDT,15m,2.521,1.091,2.32,538,22,0.36,365,,passed
-vol_burst_revert,ARBUSDT,5m,2.437,1.036,2.31,911,47,0.26,365,,passed
 spike_bb,BNBUSDT,5m,2.433,1.308,2.31,45,47,0.32,365,,filtered
 spike_bb,FILUSDT,1m,2.234,1.121,1.46,96,31,0.39,180,,filtered
 crash_revert,XRPUSDT,15m,2.121,1.164,1.95,61,22,0.23,365,,filtered
@@ -179,6 +177,7 @@ crash_revert,DOTUSDT,5m,0.374,1.034,0.36,49,47,0.28,365,,filtered
 vol_burst_revert,BNBUSDT,15m,0.374,1.01,0.34,286,22,0.32,365,,filtered
 wick_vol,ARBUSDT,15m,0.365,1.011,0.34,512,22,0.14,365,,filtered
 streak_bb,PEPEUSDT,5m,0.359,1.004,0.34,2687,47,0.34,365,,filtered
+vol_burst_revert,ARBUSDT,5m,0.358,1.007,0.48,1704,47,0.3,730,,filtered
 vol_drift,NEARUSDT,5m,0.353,1.005,0.34,982,47,0.36,365,,filtered
 spike_bb,PEPEUSDT,5m,0.35,1.015,0.33,204,47,0.28,365,,filtered
 streak_reversion,ATOMUSDT,15m,0.348,1.006,0.32,1612,22,0.32,365,,filtered
@@ -386,6 +385,7 @@ wick_regime,UNIUSDT,15m,-0.268,0.996,-0.25,4426,22,0.32,365,,filtered
 streak_reversion,DOTUSDT,5m,-0.269,0.997,-0.26,4240,47,0.38,365,,filtered
 crash_revert,PEPEUSDT,5m,-0.272,0.984,-0.26,100,47,0.19,365,,filtered
 vol_burst_revert,SUIUSDT,1m,-0.283,0.998,-0.18,1854,31,0.35,180,,filtered
+vol_burst_revert,ARBUSDT,15m,-0.288,0.992,-0.37,553,22,0.27,730,,filtered
 vol_burst_revert,DOTUSDT,15m,-0.294,0.993,-0.27,286,22,0.32,365,,filtered
 spike_bb,ETHUSDT,15m,-0.306,0.987,-0.28,200,22,0.27,365,,filtered
 bb_regime,SOLUSDT,15m,-0.306,0.993,-0.28,333,22,0.36,365,,filtered
