@@ -142,7 +142,7 @@ a { color:var(--blue); text-decoration:none; }
 <body>
 <div class="app">
   <div class="top">
-    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v8</span></div>
+    <div class="logo">🧪 Scalp<span>Lab</span> <span class="tag" style="font-size:10px">v9</span></div>
     <div class="top-right">
       <span class="pill"><span class="dot na" id="w-dot"></span><span id="w-status">…</span></span>
       <button class="btn-r" onclick="refreshAll()" aria-label="Обновить">⟳</button>
@@ -249,6 +249,7 @@ a { color:var(--blue); text-decoration:none; }
     </div>
     <div class="panel"><h2>📈 Динамика капитала</h2><div class="chart-box" id="eq-box"><div class="fallback">график появится после первых сделок</div></div></div>
     <div class="panel"><h2>🎯 Отслеживаемые стратегии <span class="tag">⏸ флэт = ждёт триггер, не поломка</span></h2><div id="paper-tracked"><div class="fallback">загрузка…</div></div></div>
+    <div class="panel"><h2>🧬 Отбор в портфель <span class="tag">кто прошёл, кто и почему нет</span></h2><div id="paper-why"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📍 Открытые позиции</h2><div id="paper-positions"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>📜 История сделок</h2><div id="paper-trades"><div class="fallback">загрузка…</div></div></div>
   </div>
@@ -257,7 +258,7 @@ a { color:var(--blue); text-decoration:none; }
     <div class="panel"><h2>🛰 Прогоны воркеров <span class="tag" id="next-cron"></span></h2><div class="log" id="runs-log"><div class="fallback">загрузка логов…</div></div></div>
     <div class="panel"><h2>🔄 Ротация лидеров <span class="tag">раз в 7 дней</span></h2><div class="log" id="rot-info"><div class="fallback">загрузка…</div></div></div>
     <div class="panel"><h2>🤖 Коммиты</h2><div class="log" id="commits-log"></div></div>
-    <div class="panel"><h2>⚙️ Как работает система</h2><div class="report" style="white-space:normal">Конвейер полностью автономен: воркеры GitHub Actions каждые ~30 минут обрабатывают очередь задач, ошибки автоматически перезапускаются до 3 раз, при завершении очереди система сама строит новую волну исследований на основе лучших OOS-результатов. Все результаты — walk-forward out-of-sample с учётом комиссий и проскальзывания. Волна 3: стратегии на деривативных данных (funding rate, открытый интерес, long/short ratio из архивов Binance), мета-стратегии с фильтром режима рынка, часовой таймфрейм 1h и еженедельная ротация лидеров — топ-10 перепроверяется на свежих данных раз в 7 дней, протухшие результаты заменяются.</div></div>
+    <div class="panel"><h2>⚙️ Как работает система</h2><div class="report" style="white-space:normal">Конвейер полностью автономен: воркеры GitHub Actions каждые ~30 минут обрабатывают очередь задач, ошибки автоматически перезапускаются до 3 раз, при завершении очереди система сама строит новую волну исследований на основе лучших OOS-результатов. Все результаты — walk-forward out-of-sample с учётом комиссий и проскальзывания. Волна 3: стратегии на деривативных данных (funding rate, открытый интерес, long/short ratio из архивов Binance), мета-стратегии с фильтром режима рынка, часовой таймфрейм 1h и еженедельная ротация лидеров — топ-10 перепроверяется на свежих данных раз в 7 дней, протухшие результаты заменяются. Волна 5 (бог-уровень): фронт-исследование — система сама находит все ещё непротестированные комбинации (стратегия × пара × таймфрейм) и ставит их в очередь, приоритет — стратегиям с доказанным эджем на других парах. Портфель бумажной торговли собирается по композитному скору (OOS Sharpe × стабильность параметров) при статпороге t > 1.5: шум в портфель не попадает, а панель «Отбор в портфель» честно показывает, кто прошёл и почему каждая стратегия отсеялась.</div></div>
   </div>
   <footer>
     <a href="https://github.com/davletovaalmira11-creator/my-termux-project" target="_blank">репозиторий</a> ·
@@ -676,6 +677,24 @@ function loadPaper() {
       tk += "</table>";
     } else { tk = "<div class='fallback'>топ-стратегии отбираются после бэктестов</div>"; }
     document.getElementById("paper-tracked").innerHTML = tk;
+    var whyEl = document.getElementById("paper-why");
+    if (whyEl) {
+      var fs = p.filter_stats || {};
+      var REASONS = { low_trades: "мало сделок", low_folds: "мало фолдов", low_pf: "PF ≤ 1.01", low_t: "эдж не значим (t ≤ 1.5)", no_params: "нет валидных параметров" };
+      var w = "";
+      if (fs.total != null) {
+        w = "<div class='legend' style='margin-bottom:10px'><span>уникальных кандидатов: <b>" + fs.total + "</b></span><span>✅ взято в портфель: <b>" + (fs.admitted || 0) + "</b></span><span>мало сделок: <b>" + (fs.low_trades || 0) + "</b></span><span>мало фолдов: <b>" + (fs.low_folds || 0) + "</b></span><span>слабый PF: <b>" + (fs.low_pf || 0) + "</b></span><span>шум (t ≤ 1.5): <b>" + (fs.low_t || 0) + "</b></span></div>";
+      }
+      var cds = p.candidates || [];
+      if (cds.length) {
+        w += "<div class='legend' style='margin:6px 0 10px'><span>почти прошли — главные кандидаты на доработку:</span></div><table><tr><th>Стратегия</th><th>Пара</th><th>Sharpe</th><th>t</th><th>PF</th><th>Стаб.</th><th>Причина отсева</th></tr>";
+        cds.forEach(function (x) {
+          w += "<tr><td>" + (STRAT_RU[x.strategy] || x.strategy) + "</td><td>" + String(x.symbol || "").replace("USDT", "") + " " + x.tf + "</td><td class='pos'>+" + x.sharpe + "</td><td>" + x.t + "</td><td>" + x.pf + "</td><td>" + x.stability + "</td><td>" + (REASONS[x.reason] || x.reason) + "</td></tr>";
+        });
+        w += "</table>";
+      }
+      whyEl.innerHTML = w || "<div class='fallback'>данные отбора появятся после ближайшего прогона</div>";
+    }
   });
 }
 function svgSpark(vals) {

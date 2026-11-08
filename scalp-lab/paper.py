@@ -23,7 +23,12 @@ except Exception:
 STATE_PATH = "results/paper.json"
 CAPITAL_START = 1000.0
 MAX_TRACK = 8
-MIN_STABILITY = 0.3
+# Бог-уровень отбора: не жёсткий бан по стабильности, а композитный скор.
+# Стабильность параметров штрафует скор, но не отсекает стратегию с
+# доказанным эджем; зато шум (t <= 1.5) в портфель не попадает никогда.
+MIN_T = 1.5      # t-статистика OOS: ниже - эдж статистически не значим
+MIN_PF = 1.01    # минимальный profit factor после издержек
+STAB_REF = 0.35  # эталон стабильности параметров (ниже - штраф к скору)
 LOOKBACK_DAYS = {"1m": 2, "5m": 7, "15m": 12, "1h": 40}
 PAPER_BUDGET_S = 120
 COST = {"taker": 2 * (config.FEE + config.SLIP),
@@ -67,19 +72,38 @@ def top_strategies():
             best[k] = (mt, r)
     all_res = [v[1] for v in best.values()]
     bts = []
+    cand = []
+    stats = {"total": len(all_res), "low_trades": 0, "low_folds": 0,
+             "low_pf": 0, "low_t": 0, "no_params": 0, "admitted": 0}
     for r in all_res:
         o = r["oos"]
-        if r.get("trades", 0) < 200 or r.get("folds", 0) < 8:
+        reason = None
+        if r.get("trades", 0) < 200:
+            reason = "low_trades"
+        elif r.get("folds", 0) < 8:
+            reason = "low_folds"
+        elif o.get("pf", 0) <= MIN_PF:
+            reason = "low_pf"
+        elif o.get("t", 0) <= MIN_T:
+            reason = "low_t"
+        if reason:
+            stats[reason] += 1
+            if o.get("sharpe", 0) > 0.5:
+                cand.append({"strategy": r.get("strategy"),
+                             "symbol": r.get("symbol"), "tf": r.get("tf"),
+                             "sharpe": round(o.get("sharpe", 0), 2),
+                             "t": round(o.get("t", 0), 2),
+                             "pf": round(o.get("pf", 0), 3),
+                             "stability": round(r.get("param_stability", 0), 2),
+                             "reason": reason})
             continue
-        if o.get("pf", 0) <= 1.0 or o.get("t", 0) <= 1.0:
-            continue
-        if r.get("param_stability", 0) < MIN_STABILITY:
-            continue
-        bts.append(r)
-    bts.sort(key=lambda r: r["oos"]["sharpe"], reverse=True)
+        # композитный скор: OOS Sharpe x штраф за нестабильность параметров
+        score = o.get("sharpe", 0) * min(1.0, r.get("param_stability", 0) / STAB_REF)
+        bts.append((score, r))
+    bts.sort(key=lambda x: x[0], reverse=True)
     out = []
     seen = set()
-    for r in bts:
+    for score, r in bts:
         key = (r["strategy"], r["symbol"], r["tf"])
         if key in seen:
             continue
@@ -87,17 +111,22 @@ def top_strategies():
         try:
             params = json.loads(r.get("top_param", "{}"))
         except Exception:
+            stats["no_params"] += 1
             continue
         if not params:
+            stats["no_params"] += 1
             continue
         fee_mode = "maker" if r["strategy"] in strategies.MAKER_SET else "taker"
         out.append({"key": "-".join(key), "strategy": r["strategy"],
                     "symbol": r["symbol"], "tf": r["tf"],
                     "params": params, "fee_mode": fee_mode,
-                    "oos_sharpe": round(r["oos"]["sharpe"], 2)})
+                    "oos_sharpe": round(r["oos"]["sharpe"], 2),
+                    "score": round(score, 2)})
         if len(out) >= MAX_TRACK:
             break
-    return out
+    stats["admitted"] = len(out)
+    cand.sort(key=lambda c: -c["sharpe"])
+    return out, stats, cand[:12]
 
 
 def close_pos(st, key, px, ts, reason):
@@ -127,7 +156,7 @@ def get_klines(symbol, tf):
 
 def main():
     st = load_state()
-    tops = top_strategies()
+    tops, fstats, cands = top_strategies()
     top_keys = set(t["key"] for t in tops)
     # закрыть позиции стратегий, выпавших из топа
     for key in list(st["positions"].keys()):
@@ -207,6 +236,8 @@ def main():
         "equity": round(st["equity"], 2),
         "pnl_pct": round((st["equity"] / st["capital_start"] - 1.0) * 100, 2),
         "open": len(st["positions"])}
+    st["filter_stats"] = fstats
+    st["candidates"] = cands
     save_state(st)
     print("paper: equity %.2f, trades %d, open %d" % (
         st["equity"], len(st["closed"]), len(st["positions"])), flush=True)
