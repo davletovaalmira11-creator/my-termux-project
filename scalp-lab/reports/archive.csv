@@ -11,6 +11,7 @@ spike_bb,BNBUSDT,5m,2.433,1.308,2.31,45,47,0.32,365,,filtered
 spike_bb,FILUSDT,1m,2.234,1.121,1.46,96,31,0.39,180,,filtered
 funding_revert,SUIUSDT,1m,2.145,1.026,1.4,794,31,0.26,180,,passed
 crash_revert,XRPUSDT,15m,2.121,1.164,1.95,61,22,0.23,365,,filtered
+streak_bb,LTCUSDT,5m,2.067,1.021,1.96,2408,47,0.4,365,,passed
 crash_revert,ARBUSDT,1m,2.056,1.365,1.34,14,31,0.32,180,,filtered
 spike_revert,SUIUSDT,15m,2.023,1.082,1.86,209,22,0.23,365,,passed
 funding_revert,ARBUSDT,1m,2.013,1.025,1.31,842,31,0.39,180,,passed
@@ -38,14 +39,12 @@ squeeze_pop,ADAUSDT,5m,1.469,1.082,1.39,106,47,0.38,365,,filtered
 spike_bb,SOLUSDT,15m,1.451,1.08,1.33,159,22,0.27,365,,filtered
 spike_follow,SOLUSDT,1m,1.426,1.078,0.93,96,31,0.35,180,,filtered
 crash_revert,ATOMUSDT,15m,1.404,1.1,1.29,61,22,0.18,365,,filtered
-streak_bb,ADAUSDT,5m,1.395,1.013,1.32,2596,47,0.47,365,,passed
 crash_revert,PEPEUSDT,1m,1.374,1.15,0.9,16,31,0.45,180,,filtered
 spike_revert,OPUSDT,5m,1.369,1.064,1.3,150,47,0.28,365,,filtered
 spike_follow,APTUSDT,1m,1.354,1.039,0.88,187,31,0.32,180,,filtered
 spike_bb,OPUSDT,1m,1.336,1.054,0.87,127,31,0.29,180,,filtered
 spike_bb,LINKUSDT,5m,1.323,1.08,1.26,114,47,0.34,365,,filtered
 spike_bb,LINKUSDT,15m,1.313,1.069,1.21,151,22,0.32,365,,filtered
-level_fade,APTUSDT,15m,1.305,1.025,1.2,962,22,0.36,365,,passed
 flow_fade,ATOMUSDT,1m,1.275,1.044,0.83,235,31,0.42,180,,filtered
 spike_bb,BTCUSDT,1m,1.273,1.232,0.83,12,31,0.65,180,,filtered
 crash_revert,LTCUSDT,15m,1.268,1.134,1.17,38,22,0.18,365,,filtered
@@ -59,6 +58,7 @@ bb_vol,OPUSDT,1m,1.207,1.011,0.79,2149,31,0.13,180,,filtered
 funding_revert,SUIUSDT,5m,1.202,1.014,1.14,1800,47,0.45,365,,passed
 spike_bb,DOGEUSDT,5m,1.179,1.068,1.12,139,47,0.34,365,,filtered
 spike_follow,DOTUSDT,1m,1.164,1.044,0.76,136,31,0.23,180,,filtered
+streak_bb,LINKUSDT,5m,1.164,1.011,1.1,2338,47,0.53,365,,passed
 funding_revert,ARBUSDT,5m,1.162,1.014,1.1,1756,47,0.28,365,,passed
 bb_regime,ATOMUSDT,1m,1.152,1.007,0.75,2807,31,0.29,180,,filtered
 squeeze_pop,DOGEUSDT,15m,1.125,1.08,1.03,74,22,0.41,365,,filtered
@@ -156,6 +156,7 @@ spike_follow,DOTUSDT,5m,0.64,1.024,0.61,320,47,0.21,365,,filtered
 spike_bb,ADAUSDT,5m,0.639,1.026,0.61,195,47,0.34,365,,filtered
 crash_revert,BNBUSDT,15m,0.636,1.11,0.58,16,22,0.36,365,,filtered
 crash_revert,AVAXUSDT,5m,0.633,1.044,0.6,79,47,0.17,365,,filtered
+streak_bb,ATOMUSDT,5m,0.63,1.006,0.6,2601,47,0.3,365,,filtered
 crash_revert,DOGEUSDT,1m,0.623,1.147,0.41,12,31,0.45,180,,filtered
 bb_vol,DOTUSDT,15m,0.618,1.018,0.57,393,22,0.14,365,,filtered
 streak_reversion,NEARUSDT,5m,0.617,1.006,0.59,4593,47,0.36,365,,filtered
@@ -184,11 +185,13 @@ bb_fast,NEARUSDT,15m,0.501,1.011,0.46,1514,22,0.45,365,,filtered
 spike_revert,ADAUSDT,15m,0.501,1.027,0.46,109,22,0.32,365,,filtered
 crash_revert,AVAXUSDT,1m,0.494,1.082,0.32,16,31,0.52,180,,filtered
 spike_revert,DOGEUSDT,1m,0.493,1.05,0.32,62,31,0.45,180,,filtered
+streak_bb,FILUSDT,15m,0.493,1.009,0.45,665,22,0.59,365,,filtered
 bollinger_reversion,NEARUSDT,3m,0.491,1.007,0.47,2527,47,0.43,365,,filtered
 bb_vol,DOGEUSDT,5m,0.49,1.009,0.47,1247,47,0.17,365,,filtered
 level_fade,ARBUSDT,15m,0.488,1.01,0.45,979,22,0.32,365,,filtered
 spike_follow,FILUSDT,5m,0.485,1.014,0.46,495,47,0.23,365,,filtered
 bb_regime,DOTUSDT,1m,0.477,1.003,0.31,2312,31,0.23,180,,filtered
+streak_bb,UNIUSDT,5m,0.475,1.005,0.45,2720,47,0.36,365,,filtered
 bb_maker,LTCUSDT,15m,0.475,1.011,0.44,606,22,0.32,365,,filtered
 spike_follow,ETHUSDT,1m,0.474,1.031,0.31,61,31,0.32,180,,filtered
 wick_vol,NEARUSDT,5m,0.467,1.01,0.63,2822,47,0.13,730,,filtered
@@ -215,6 +218,7 @@ crash_revert,APTUSDT,15m,0.396,1.024,0.36,108,22,0.23,365,,filtered
 crash_revert,ETHUSDT,1m,0.394,1.076,0.26,8,31,0.65,180,,filtered
 funding_revert,OPUSDT,1m,0.394,1.005,0.26,710,31,0.39,180,,filtered
 bb_vol,LINKUSDT,15m,0.39,1.012,0.36,441,22,0.18,365,,filtered
+streak_bb,APTUSDT,15m,0.39,1.006,0.36,762,22,0.32,365,,filtered
 bb_vol,SUIUSDT,5m,0.387,1.007,0.37,1094,47,0.15,365,,filtered
 qr_revert,NEARUSDT,5m,0.386,1.004,0.37,2382,47,0.38,365,,filtered
 spike_revert,PEPEUSDT,1m,0.385,1.017,0.25,118,31,0.19,180,,filtered
@@ -224,6 +228,7 @@ bb_regime,DOTUSDT,5m,0.377,1.005,0.36,1303,47,0.21,365,,filtered
 crash_revert,DOTUSDT,5m,0.374,1.034,0.36,49,47,0.28,365,,filtered
 vol_burst_revert,BNBUSDT,15m,0.374,1.01,0.34,286,22,0.32,365,,filtered
 bb_fast,SUIUSDT,15m,0.372,1.009,0.34,1249,22,0.41,365,,filtered
+level_fade,APTUSDT,15m,0.365,1.007,0.67,3871,22,0.41,1460,,filtered
 wick_vol,ARBUSDT,15m,0.365,1.011,0.34,512,22,0.14,365,,filtered
 streak_bb,PEPEUSDT,5m,0.359,1.004,0.34,2687,47,0.34,365,,filtered
 vol_drift,NEARUSDT,5m,0.353,1.005,0.34,982,47,0.36,365,,filtered
@@ -466,10 +471,12 @@ volume_surge,FILUSDT,15m,-0.009,1.0,-0.01,745,22,0.27,365,,filtered
 bb_regime,LTCUSDT,5m,-0.01,1.0,-0.02,4461,47,0.23,1460,,filtered
 squeeze_pop,AVAXUSDT,5m,-0.01,1.0,-0.01,159,47,0.38,365,,filtered
 bb_vol,FILUSDT,5m,-0.012,1.0,-0.01,1150,47,0.11,365,,filtered
+streak_bb,NEARUSDT,15m,-0.017,1.0,-0.02,806,22,0.41,365,,filtered
 crash_revert,LTCUSDT,5m,-0.017,0.998,-0.02,40,47,0.3,365,,filtered
 bb_fast,SOLUSDT,15m,-0.021,0.999,-0.02,1295,22,0.36,365,,filtered
 qr_revert,APTUSDT,15m,-0.024,1.0,-0.02,717,22,0.5,365,,filtered
 spike_bb,OPUSDT,15m,-0.024,0.999,-0.02,180,22,0.23,365,,filtered
+streak_bb,LINKUSDT,15m,-0.028,1.0,-0.03,730,22,0.5,365,,filtered
 bb_regime,ADAUSDT,15m,-0.035,0.999,-0.03,311,22,0.36,365,,filtered
 spike_bb,AVAXUSDT,1m,-0.043,0.997,-0.03,67,31,0.45,180,,filtered
 bollinger_reversion,NEARUSDT,5m,-0.046,0.999,-0.04,1991,47,0.47,365,,filtered
@@ -477,10 +484,13 @@ bb_fast,AVAXUSDT,15m,-0.048,0.999,-0.04,1282,22,0.32,365,,filtered
 level_fade,LTCUSDT,5m,-0.049,0.999,-0.05,2782,47,0.38,365,,filtered
 bb_fast,ADAUSDT,5m,-0.049,0.999,-0.05,4387,47,0.36,365,,filtered
 qr_revert,LTCUSDT,15m,-0.051,0.999,-0.05,805,22,0.5,365,,filtered
+streak_bb,ADAUSDT,5m,-0.051,0.999,-0.1,9273,47,0.43,1460,,filtered
 wick_vol,PEPEUSDT,5m,-0.055,0.999,-0.05,1283,47,0.19,365,,filtered
+streak_bb,LTCUSDT,15m,-0.058,0.999,-0.05,772,22,0.32,365,,filtered
 spike_follow,LTCUSDT,5m,-0.059,0.996,-0.06,110,47,0.26,365,,filtered
 qr_revert,FILUSDT,15m,-0.067,0.999,-0.06,669,22,0.41,365,,filtered
 vol_burst_revert,SOLUSDT,1m,-0.067,1.0,-0.04,1864,31,0.39,180,,filtered
+streak_bb,DOTUSDT,5m,-0.068,0.999,-0.06,2659,47,0.38,365,,filtered
 spike_revert,ARBUSDT,5m,-0.071,0.997,-0.07,263,47,0.23,365,,filtered
 ema_snap,ARBUSDT,15m,-0.075,0.997,-0.07,538,22,0.55,365,,filtered
 spike_revert,LINKUSDT,15m,-0.079,0.995,-0.07,101,22,0.18,365,,filtered
@@ -539,6 +549,7 @@ bb_regime,ADAUSDT,5m,-0.184,0.998,-0.17,971,47,0.26,365,,filtered
 vol_burst_revert,OPUSDT,1m,-0.185,0.999,-0.12,1985,31,0.35,180,,filtered
 vol_burst_revert,LINKUSDT,5m,-0.185,0.997,-0.18,954,47,0.28,365,,filtered
 ema_snap,OPUSDT,5m,-0.191,0.996,-0.18,1850,47,0.4,365,,filtered
+streak_bb,BTCUSDT,15m,-0.194,0.997,-0.18,725,22,0.45,365,,filtered
 spike_bb,XRPUSDT,5m,-0.194,0.99,-0.18,152,47,0.28,365,,filtered
 funding_revert,PEPEUSDT,15m,-0.197,0.996,-0.18,391,22,0.41,365,,filtered
 bb_regime,LINKUSDT,15m,-0.197,0.996,-0.18,377,22,0.23,365,,filtered
@@ -595,6 +606,7 @@ streak_reversion,NEARUSDT,15m,-0.323,0.995,-0.3,1800,22,0.45,365,,filtered
 vol_pop,PEPEUSDT,5m,-0.33,0.993,-0.31,1279,47,0.38,365,,filtered
 spike_revert,ETHUSDT,1m,-0.332,0.954,-0.22,16,31,0.35,180,,filtered
 bb_regime,FILUSDT,1m,-0.333,0.998,-0.22,2263,31,0.35,180,,filtered
+streak_bb,APTUSDT,5m,-0.333,0.997,-0.32,2546,47,0.34,365,,filtered
 wick_vol,FILUSDT,15m,-0.334,0.99,-0.31,393,22,0.23,365,,filtered
 bb_maker,AVAXUSDT,5m,-0.341,0.996,-0.32,1589,47,0.38,365,,filtered
 bb_vol,APTUSDT,5m,-0.341,0.994,-0.32,1177,47,0.13,365,,filtered
@@ -632,6 +644,7 @@ streak_bb,AVAXUSDT,5m,-0.421,0.996,-0.4,2267,47,0.66,365,,filtered
 funding_revert,NEARUSDT,15m,-0.422,0.99,-0.78,1360,22,0.27,1460,,filtered
 bb_vol,PEPEUSDT,5m,-0.426,0.993,-0.4,1446,47,0.19,365,,filtered
 wick_vol,BTCUSDT,15m,-0.427,0.986,-0.39,453,22,0.32,365,,filtered
+streak_bb,OPUSDT,15m,-0.428,0.993,-0.39,734,22,0.41,365,,filtered
 qr_revert,ATOMUSDT,5m,-0.428,0.995,-0.41,2163,47,0.36,365,,filtered
 level_fade,NEARUSDT,15m,-0.433,0.992,-0.4,950,22,0.41,365,,filtered
 vol_burst_revert,NEARUSDT,1m,-0.434,0.997,-0.28,2133,31,0.26,180,,filtered
@@ -639,6 +652,7 @@ spike_bb,LTCUSDT,1m,-0.437,0.967,-0.28,30,31,0.35,180,,filtered
 spike_follow,LTCUSDT,1m,-0.443,0.957,-0.29,40,31,0.39,180,,filtered
 qr_revert,SUIUSDT,1m,-0.445,0.998,-0.29,3998,31,0.61,180,,filtered
 vwap_reversion,ATOMUSDT,15m,-0.446,0.986,-0.41,386,22,0.36,365,,filtered
+streak_bb,OPUSDT,5m,-0.448,0.996,-0.43,2435,47,0.38,365,,filtered
 crash_revert,UNIUSDT,1m,-0.45,0.958,-0.29,20,31,0.32,180,,filtered
 funding_revert,ADAUSDT,1m,-0.451,0.994,-0.29,696,31,0.29,180,,filtered
 streak_bb,ETHUSDT,5m,-0.46,0.995,-0.44,2457,47,0.4,365,,filtered
@@ -657,6 +671,7 @@ vwap_reversion,SOLUSDT,15m,-0.488,0.984,-0.45,374,22,0.5,365,,filtered
 bb_maker,DOGEUSDT,5m,-0.489,0.994,-0.46,1483,47,0.28,365,,filtered
 qr_revert,OPUSDT,1m,-0.491,0.998,-0.32,5140,31,0.45,180,,filtered
 qr_revert,UNIUSDT,15m,-0.492,0.99,-0.45,641,22,0.5,365,,filtered
+streak_bb,ETHUSDT,15m,-0.495,0.991,-0.45,858,22,0.45,365,,filtered
 bb_regime,OPUSDT,1m,-0.495,0.997,-0.32,2067,31,0.39,180,,filtered
 bollinger_reversion,SUIUSDT,15m,-0.498,0.986,-0.85,2022,19,0.47,1460,,filtered
 streak_vol,DOTUSDT,5m,-0.501,0.991,-0.48,1248,47,0.17,365,,filtered
@@ -665,6 +680,7 @@ vwap_reversion,DOGEUSDT,15m,-0.507,0.985,-0.47,539,22,0.23,365,,filtered
 squeeze_pop,SOLUSDT,15m,-0.514,0.962,-0.47,64,22,0.36,365,,filtered
 streak_vol,UNIUSDT,5m,-0.52,0.991,-0.49,1193,47,0.21,365,,filtered
 funding_revert,DOTUSDT,15m,-0.529,0.988,-0.49,393,22,0.27,365,,filtered
+streak_bb,SOLUSDT,15m,-0.532,0.991,-0.49,836,22,0.32,365,,filtered
 bb_regime,SUIUSDT,5m,-0.537,0.993,-0.51,1089,47,0.26,365,,filtered
 wick_vol,DOTUSDT,15m,-0.541,0.984,-0.5,465,22,0.23,365,,filtered
 crash_revert,ADAUSDT,1m,-0.543,0.857,-0.35,6,31,0.61,180,,filtered
@@ -765,6 +781,7 @@ spike_follow,ATOMUSDT,15m,-0.807,0.966,-0.74,159,22,0.23,365,,filtered
 bb_regime,ETHUSDT,15m,-0.807,0.982,-0.74,353,22,0.36,365,,filtered
 qr_revert,ADAUSDT,1m,-0.809,0.996,-0.53,4229,31,0.65,180,,filtered
 ema_snap,ADAUSDT,15m,-0.811,0.97,-0.74,577,22,0.41,365,,filtered
+streak_bb,SUIUSDT,15m,-0.814,0.986,-0.75,726,22,0.45,365,,filtered
 bb_maker,ETHUSDT,15m,-0.814,0.982,-0.75,523,22,0.27,365,,filtered
 bb_vol,ETHUSDT,5m,-0.816,0.987,-0.77,1223,47,0.15,365,,filtered
 bb_regime,BNBUSDT,15m,-0.821,0.981,-0.75,322,22,0.32,365,,filtered
@@ -798,6 +815,7 @@ ema_snap,AVAXUSDT,5m,-0.89,0.982,-0.85,1414,47,0.57,365,,filtered
 volume_surge,DOTUSDT,15m,-0.892,0.953,-0.82,719,22,0.18,365,,filtered
 vol_drift,OPUSDT,15m,-0.893,0.982,-0.82,282,22,0.36,365,,filtered
 bb_fast,FILUSDT,1m,-0.894,0.993,-0.58,6321,31,0.65,180,,filtered
+streak_bb,FILUSDT,5m,-0.895,0.991,-0.85,2215,47,0.4,365,,filtered
 funding_revert,BTCUSDT,5m,-0.896,0.989,-0.85,1900,47,0.23,365,,filtered
 squeeze_pop,FILUSDT,5m,-0.902,0.944,-0.86,85,47,0.4,365,,filtered
 spike_follow,ADAUSDT,5m,-0.907,0.964,-0.86,309,47,0.23,365,,filtered
@@ -809,6 +827,7 @@ bb_regime,DOGEUSDT,5m,-0.924,0.987,-0.88,1028,47,0.28,365,,filtered
 bb_regime,LTCUSDT,15m,-0.924,0.979,-0.85,354,22,0.27,365,,filtered
 streak_reversion,ATOMUSDT,5m,-0.931,0.991,-0.88,3924,47,0.36,365,,filtered
 ema_snap,XRPUSDT,15m,-0.932,0.966,-0.86,610,22,0.41,365,,filtered
+streak_bb,AVAXUSDT,15m,-0.934,0.984,-0.86,774,22,0.36,365,,filtered
 flow_fade,FILUSDT,15m,-0.938,0.976,-0.86,999,22,0.32,365,,filtered
 bb_vol,XRPUSDT,5m,-0.952,0.982,-0.9,1226,47,0.21,365,,filtered
 bb_vol,LTCUSDT,1m,-0.953,0.993,-0.62,2255,31,0.26,180,,filtered
@@ -830,9 +849,11 @@ funding_revert,UNIUSDT,15m,-0.992,0.975,-0.91,457,22,0.36,365,,filtered
 level_fade,SOLUSDT,15m,-0.992,0.98,-0.91,1030,22,0.36,365,,filtered
 squeeze_pop,LINKUSDT,5m,-0.995,0.952,-0.94,134,47,0.34,365,,filtered
 level_fade,FILUSDT,15m,-1.0,0.979,-0.92,943,22,0.36,365,,filtered
+streak_bb,DOGEUSDT,15m,-1.001,0.983,-0.92,733,22,0.41,365,,filtered
 funding_revert,UNIUSDT,1m,-1.005,0.988,-0.65,714,31,0.35,180,,filtered
 wick_vol,LTCUSDT,1m,-1.005,0.992,-0.66,2528,31,0.29,180,,filtered
 crash_revert,NEARUSDT,15m,-1.008,0.95,-0.93,112,22,0.23,365,,filtered
+streak_bb,BNBUSDT,15m,-1.009,0.982,-0.93,827,22,0.36,365,,filtered
 squeeze_pop,ARBUSDT,15m,-1.011,0.91,-0.93,37,22,0.32,365,,filtered
 level_fade,ATOMUSDT,15m,-1.011,0.982,-0.93,935,22,0.32,365,,filtered
 ema_snap,BNBUSDT,5m,-1.014,0.978,-0.96,1501,47,0.6,365,,filtered
@@ -842,6 +863,7 @@ ema_snap,ADAUSDT,5m,-1.024,0.979,-0.97,1592,47,0.57,365,,filtered
 vol_burst_revert,ATOMUSDT,1m,-1.026,0.994,-0.67,2178,31,0.26,180,,filtered
 vol_drift,XRPUSDT,15m,-1.027,0.975,-0.94,259,22,0.36,365,,filtered
 qr_revert,AVAXUSDT,5m,-1.035,0.988,-0.98,1912,47,0.4,365,,filtered
+streak_bb,ATOMUSDT,15m,-1.037,0.983,-0.95,730,22,0.36,365,,filtered
 funding_revert,SOLUSDT,15m,-1.039,0.973,-0.95,431,22,0.36,365,,filtered
 qr_revert,ADAUSDT,5m,-1.041,0.988,-0.99,1931,47,0.4,365,,filtered
 flow_fade,ADAUSDT,1m,-1.045,0.98,-0.68,610,31,0.58,180,,filtered
@@ -855,6 +877,7 @@ spike_revert,BNBUSDT,1m,-1.074,0.853,-0.7,15,31,0.42,180,,filtered
 flow_fade,DOTUSDT,15m,-1.077,0.968,-0.99,675,22,0.45,365,,filtered
 vwap_reversion,BNBUSDT,15m,-1.082,0.968,-0.99,462,22,0.45,365,,filtered
 streak_vol,DOGEUSDT,1m,-1.083,0.99,-0.71,2150,31,0.39,180,,filtered
+streak_bb,DOTUSDT,15m,-1.083,0.982,-0.99,654,22,0.45,365,,filtered
 squeeze_pop,PEPEUSDT,15m,-1.085,0.942,-1.0,81,22,0.5,365,,filtered
 bb_regime,SOLUSDT,5m,-1.087,0.985,-1.03,1185,47,0.19,365,,filtered
 funding_revert,NEARUSDT,1m,-1.089,0.986,-0.71,682,31,0.32,180,,filtered
@@ -882,6 +905,7 @@ spike_follow,UNIUSDT,15m,-1.164,0.956,-1.07,376,22,0.18,365,,filtered
 vwap_reversion,NEARUSDT,15m,-1.166,0.969,-1.07,656,22,0.45,365,,filtered
 spike_revert,ETHUSDT,5m,-1.168,0.917,-1.11,65,47,0.4,365,,filtered
 ema_snap,DOGEUSDT,5m,-1.168,0.975,-1.11,1673,47,0.43,365,,filtered
+streak_bb,ARBUSDT,15m,-1.168,0.98,-1.07,826,22,0.32,365,,filtered
 spike_revert,SOLUSDT,5m,-1.175,0.947,-1.12,159,47,0.28,365,,filtered
 level_fade,LINKUSDT,5m,-1.176,0.988,-1.12,2624,47,0.55,365,,filtered
 streak_vol,BNBUSDT,5m,-1.179,0.978,-1.12,1122,47,0.26,365,,filtered
@@ -1003,6 +1027,7 @@ streak_reversion,XRPUSDT,15m,-1.488,0.974,-1.37,1569,22,0.32,365,,filtered
 bollinger_reversion,DOTUSDT,3m,-1.489,0.98,-1.41,2446,47,0.57,365,,filtered
 funding_revert,SOLUSDT,5m,-1.495,0.982,-1.42,1816,47,0.32,365,,filtered
 flow_fade,ETHUSDT,5m,-1.495,0.968,-1.42,1368,47,0.51,365,,filtered
+streak_bb,XRPUSDT,15m,-1.496,0.974,-1.37,741,22,0.5,365,,filtered
 bollinger_reversion,LINKUSDT,15m,-1.498,0.962,-1.38,716,22,0.5,365,,filtered
 ema_snap,LTCUSDT,1m,-1.498,0.985,-0.98,2944,31,0.77,180,,filtered
 bb_vol,XRPUSDT,1m,-1.5,0.988,-0.98,2331,31,0.19,180,,filtered
@@ -1019,6 +1044,7 @@ funding_revert,AVAXUSDT,5m,-1.522,0.981,-1.44,1736,47,0.23,365,,filtered
 streak_reversion,APTUSDT,15m,-1.527,0.975,-1.4,1776,22,0.27,365,,filtered
 bb_fast,DOTUSDT,5m,-1.53,0.978,-1.45,3753,47,0.32,365,,filtered
 wick_reversion,PEPEUSDT,15m,-1.533,0.975,-1.41,5663,22,0.36,365,,filtered
+streak_bb,ADAUSDT,15m,-1.542,0.974,-1.42,712,22,0.45,365,,filtered
 bb_maker,XRPUSDT,15m,-1.542,0.965,-1.42,525,22,0.27,365,,filtered
 squeeze_pop,BNBUSDT,5m,-1.544,0.939,-1.47,211,47,0.36,365,,filtered
 funding_revert,DOGEUSDT,1m,-1.547,0.982,-1.01,764,31,0.45,180,,filtered
@@ -1038,6 +1064,7 @@ ema_cross,PEPEUSDT,15m,-1.604,0.974,-1.47,986,22,0.32,365,,filtered
 bb_maker,XRPUSDT,1m,-1.604,0.989,-1.05,2273,31,0.55,180,,filtered
 vol_drift,ATOMUSDT,5m,-1.62,0.982,-1.54,816,47,0.45,365,,filtered
 vwap_reversion,AVAXUSDT,5m,-1.621,0.97,-1.54,1241,47,0.62,365,,filtered
+streak_bb,UNIUSDT,15m,-1.624,0.971,-1.49,834,22,0.36,365,,filtered
 vwap_reversion,XRPUSDT,15m,-1.628,0.947,-1.5,481,22,0.45,365,,filtered
 spike_follow,BNBUSDT,1m,-1.63,0.73,-1.06,16,31,0.42,180,,filtered
 qr_revert,PEPEUSDT,1m,-1.633,0.991,-1.06,3931,31,0.61,180,,filtered
@@ -1171,6 +1198,7 @@ spike_follow,ETHUSDT,5m,-2.191,0.9,-2.08,226,47,0.26,365,,filtered
 ema_cross,SOLUSDT,15m,-2.194,0.964,-2.02,1017,22,0.27,365,,filtered
 bb_fast,XRPUSDT,5m,-2.196,0.967,-2.08,3337,47,0.4,365,,filtered
 flow_fade,BTCUSDT,15m,-2.196,0.936,-2.02,666,22,0.36,365,,filtered
+streak_bb,PEPEUSDT,15m,-2.204,0.962,-2.02,806,22,0.27,365,,filtered
 qr_revert,XRPUSDT,1m,-2.214,0.988,-1.44,4321,31,0.52,180,,filtered
 vol_drift,APTUSDT,1m,-2.214,0.989,-1.44,1622,31,0.48,180,,filtered
 wick_vol,LINKUSDT,1m,-2.228,0.983,-1.45,2454,31,0.58,180,,filtered
