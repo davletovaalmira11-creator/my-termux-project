@@ -116,8 +116,8 @@
    "reason": "rotated out"
   }
  ],
- "updated": "2026-11-08T15:55:36Z",
- "runs": 49,
+ "updated": "2026-11-08T15:59:50Z",
+ "runs": 50,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -196,7 +196,7 @@
   "open": 0
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-08 15:54:00",
+  "bb_maker-NEARUSDT-1m": "2026-11-08 15:58:00",
   "spike_revert-SUIUSDT-15m": "2026-11-08 15:30:00",
   "wick_vol-AVAXUSDT-15m": "2026-11-08 15:30:00",
   "wick_vol-OPUSDT-15m": "2026-11-08 15:30:00"
@@ -205,8 +205,8 @@
   "total": 1448,
   "low_trades": 229,
   "low_folds": 0,
-  "low_pf": 1156,
-  "low_t": 59,
+  "low_pf": 1157,
+  "low_t": 58,
   "no_params": 0,
   "admitted": 4
  },

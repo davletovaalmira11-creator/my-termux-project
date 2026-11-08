@@ -202,7 +202,6 @@ bb_maker,LINKUSDT,15m,0.241,1.005,0.22,533,22,0.36,365,,filtered
 streak_vol,PEPEUSDT,5m,0.225,1.004,0.21,1110,47,0.17,365,,filtered
 spike_bb,APTUSDT,5m,0.223,1.009,0.21,197,47,0.4,365,,filtered
 streak_vol,ATOMUSDT,15m,0.223,1.007,0.2,323,22,0.32,365,,filtered
-spike_bb,FILUSDT,15m,0.222,1.011,0.41,759,22,0.27,1460,,filtered
 bb_regime,DOGEUSDT,15m,0.222,1.005,0.2,349,22,0.23,365,,filtered
 streak_bb,NEARUSDT,1m,0.219,1.001,0.14,5236,31,0.45,180,,filtered
 wick_vol,ADAUSDT,5m,0.209,1.004,0.2,1213,47,0.28,365,,filtered
@@ -551,6 +550,7 @@ vol_drift,OPUSDT,15m,-0.893,0.982,-0.82,282,22,0.36,365,,filtered
 spike_follow,ADAUSDT,5m,-0.907,0.964,-0.86,309,47,0.23,365,,filtered
 bb_regime,DOGEUSDT,5m,-0.924,0.987,-0.88,1028,47,0.28,365,,filtered
 bb_regime,LTCUSDT,15m,-0.924,0.979,-0.85,354,22,0.27,365,,filtered
+spike_bb,FILUSDT,15m,-0.931,0.952,-1.21,387,22,0.23,730,,filtered
 streak_reversion,ATOMUSDT,5m,-0.931,0.991,-0.88,3924,47,0.36,365,,filtered
 bb_vol,XRPUSDT,5m,-0.952,0.982,-0.9,1226,47,0.21,365,,filtered
 bb_vol,LTCUSDT,1m,-0.953,0.993,-0.62,2255,31,0.26,180,,filtered
