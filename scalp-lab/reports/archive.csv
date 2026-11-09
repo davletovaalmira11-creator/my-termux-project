@@ -178,7 +178,6 @@ bb_fast,ADAUSDT,15m,0.562,1.016,0.52,875,22,0.5,365,,filtered
 crash_revert,LINKUSDT,15m,0.556,1.046,0.51,50,22,0.18,365,,filtered
 spike_bb,APTUSDT,15m,0.555,1.022,0.51,237,22,0.32,365,,filtered
 bb_regime,LINKUSDT,5m,0.551,1.007,0.52,1237,47,0.19,365,,filtered
-wick_vol,NEARUSDT,5m,0.545,1.011,1.03,5672,47,0.23,1460,,passed
 bb_regime,APTUSDT,15m,0.54,1.012,0.5,415,22,0.27,365,,filtered
 crash_revert,APTUSDT,1m,0.538,1.098,0.35,10,31,0.45,180,,filtered
 spike_follow,LINKUSDT,1m,0.523,1.048,0.34,58,31,0.35,180,,filtered
@@ -198,6 +197,7 @@ bb_regime,DOTUSDT,1m,0.477,1.003,0.31,2312,31,0.23,180,,filtered
 streak_bb,UNIUSDT,5m,0.475,1.005,0.45,2720,47,0.36,365,,filtered
 bb_maker,LTCUSDT,15m,0.475,1.011,0.44,606,22,0.32,365,,filtered
 spike_follow,ETHUSDT,1m,0.474,1.031,0.31,61,31,0.32,180,,filtered
+wick_vol,NEARUSDT,5m,0.467,1.01,0.63,2822,47,0.13,730,,filtered
 spike_bb,DOGEUSDT,15m,0.466,1.024,0.43,180,22,0.23,365,,filtered
 squeeze_pop,BTCUSDT,15m,0.463,1.034,0.43,83,22,0.32,365,,filtered
 streak_vol,ADAUSDT,15m,0.461,1.014,0.42,324,22,0.36,365,,filtered
@@ -614,7 +614,6 @@ spike_revert,ETHUSDT,1m,-0.332,0.954,-0.22,16,31,0.35,180,,filtered
 bb_regime,FILUSDT,1m,-0.333,0.998,-0.22,2263,31,0.35,180,,filtered
 streak_bb,APTUSDT,5m,-0.333,0.997,-0.32,2546,47,0.34,365,,filtered
 wick_vol,FILUSDT,15m,-0.334,0.99,-0.31,393,22,0.23,365,,filtered
-bb_regime,PEPEUSDT,15m,-0.341,0.992,-0.58,1440,19,0.26,1460,,filtered
 bb_maker,AVAXUSDT,5m,-0.341,0.996,-0.32,1589,47,0.38,365,,filtered
 bb_vol,APTUSDT,5m,-0.341,0.994,-0.32,1177,47,0.13,365,,filtered
 ema_snap,AVAXUSDT,15m,-0.342,0.988,-0.31,583,22,0.36,365,,filtered
@@ -752,6 +751,7 @@ bb_maker,ETHUSDT,5m,-0.701,0.991,-0.67,1744,47,0.28,365,,filtered
 spike_revert,BNBUSDT,15m,-0.702,0.961,-0.65,93,22,0.23,365,,filtered
 bb_vol,ETHUSDT,15m,-0.703,0.978,-0.65,514,22,0.14,365,,filtered
 wick_vol,XRPUSDT,5m,-0.704,0.986,-0.67,1346,47,0.17,365,,filtered
+bb_regime,PEPEUSDT,15m,-0.705,0.982,-0.92,662,22,0.27,730,,filtered
 vol_burst_revert,DOGEUSDT,15m,-0.705,0.983,-0.65,297,22,0.27,365,,filtered
 bb_maker,DOGEUSDT,15m,-0.706,0.984,-0.65,503,22,0.27,365,,filtered
 spike_follow,OPUSDT,15m,-0.708,0.974,-0.65,213,22,0.32,365,,filtered
