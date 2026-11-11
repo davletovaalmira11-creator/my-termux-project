@@ -163,7 +163,6 @@ streak_bb,ATOMUSDT,5m,0.63,1.006,0.6,2601,47,0.3,365,,filtered
 crash_revert,DOGEUSDT,1m,0.623,1.147,0.41,12,31,0.45,180,,filtered
 bb_vol,DOTUSDT,15m,0.618,1.018,0.57,393,22,0.14,365,,filtered
 streak_reversion,NEARUSDT,5m,0.617,1.006,0.59,4593,47,0.36,365,,filtered
-bb_fast,NEARUSDT,5m,0.617,1.009,0.83,8496,47,0.43,730,,filtered
 bb_vol,APTUSDT,15m,0.611,1.019,0.56,381,22,0.23,365,,filtered
 ema_snap,APTUSDT,5m,0.61,1.013,0.58,1739,47,0.34,365,,filtered
 bb_maker,OPUSDT,1m,0.596,1.003,0.39,3160,31,0.39,180,,filtered
@@ -178,7 +177,6 @@ bb_fast,ADAUSDT,15m,0.562,1.016,0.52,875,22,0.5,365,,filtered
 crash_revert,LINKUSDT,15m,0.556,1.046,0.51,50,22,0.18,365,,filtered
 spike_bb,APTUSDT,15m,0.555,1.022,0.51,237,22,0.32,365,,filtered
 bb_regime,LINKUSDT,5m,0.551,1.007,0.52,1237,47,0.19,365,,filtered
-wick_vol,NEARUSDT,5m,0.545,1.011,1.03,5672,47,0.23,1460,,passed
 bb_regime,APTUSDT,15m,0.54,1.012,0.5,415,22,0.27,365,,filtered
 crash_revert,APTUSDT,1m,0.538,1.098,0.35,10,31,0.45,180,,filtered
 spike_follow,LINKUSDT,1m,0.523,1.048,0.34,58,31,0.35,180,,filtered
@@ -198,6 +196,7 @@ bb_regime,DOTUSDT,1m,0.477,1.003,0.31,2312,31,0.23,180,,filtered
 streak_bb,UNIUSDT,5m,0.475,1.005,0.45,2720,47,0.36,365,,filtered
 bb_maker,LTCUSDT,15m,0.475,1.011,0.44,606,22,0.32,365,,filtered
 spike_follow,ETHUSDT,1m,0.474,1.031,0.31,61,31,0.32,180,,filtered
+wick_vol,NEARUSDT,5m,0.467,1.01,0.63,2822,47,0.13,730,,filtered
 spike_bb,DOGEUSDT,15m,0.466,1.024,0.43,180,22,0.23,365,,filtered
 squeeze_pop,BTCUSDT,15m,0.463,1.034,0.43,83,22,0.32,365,,filtered
 streak_vol,ADAUSDT,15m,0.461,1.014,0.42,324,22,0.36,365,,filtered
@@ -259,6 +258,7 @@ bb_maker,PEPEUSDT,15m,0.279,1.006,0.26,590,22,0.32,365,,filtered
 ema_snap,NEARUSDT,15m,0.273,1.009,0.25,701,22,0.5,365,,filtered
 qr_revert,DOTUSDT,5m,0.273,1.003,0.26,2141,47,0.32,365,,filtered
 qr_revert,APTUSDT,1m,0.271,1.001,0.18,3674,31,0.68,180,,filtered
+bb_fast,NEARUSDT,5m,0.262,1.004,0.5,15325,47,0.3,1460,,filtered
 bb_fast,LINKUSDT,15m,0.255,1.007,0.23,1010,22,0.5,365,,filtered
 bb_vol,ATOMUSDT,5m,0.253,1.005,0.24,1047,47,0.15,365,,filtered
 spike_revert,FILUSDT,5m,0.25,1.012,0.24,179,47,0.36,365,,filtered
