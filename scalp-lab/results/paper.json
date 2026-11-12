@@ -11,8 +11,8 @@
    "opened": "2026-11-12 13:40:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.44,
-   "last_ts": "2026-11-12 17:35:00",
-   "last_px": 0.1451
+   "last_ts": "2026-11-12 18:30:00",
+   "last_px": 0.1503
   },
   "streak_bb-LTCUSDT-5m": {
    "strategy": "streak_bb",
@@ -23,8 +23,8 @@
    "opened": "2026-11-12 15:55:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.07,
-   "last_ts": "2026-11-12 17:35:00",
-   "last_px": 49.55
+   "last_ts": "2026-11-12 18:30:00",
+   "last_px": 49.86
   }
  },
  "closed": [
@@ -1359,8 +1359,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-12T17:40:56Z",
- "runs": 162,
+ "updated": "2026-11-12T18:37:04Z",
+ "runs": 163,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -1425,8 +1425,8 @@
    "oos_sharpe": 2.07,
    "score": 2.07,
    "signal": -1.0,
-   "sig_last": "2026-11-12 17:35:00",
-   "sig_pct": 93.9
+   "sig_last": "2026-11-12 18:30:00",
+   "sig_pct": 94.44
   },
   {
    "key": "vol_burst_revert-ARBUSDT-5m",
@@ -1441,8 +1441,8 @@
    "oos_sharpe": 2.44,
    "score": 1.78,
    "signal": -1.0,
-   "sig_last": "2026-11-12 17:35:00",
-   "sig_pct": 36.28
+   "sig_last": "2026-11-12 18:30:00",
+   "sig_pct": 36.82
   },
   {
    "key": "bb_regime-NEARUSDT-1m",
@@ -1506,14 +1506,14 @@
   "open": 2
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-12 17:39:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-12 17:15:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-12 17:15:00",
-  "wick_vol-APTUSDT-15m": "2026-11-12 17:15:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-12 17:35:00",
-  "spike_bb-FILUSDT-15m": "2026-11-12 17:15:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-12 17:39:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-12 17:35:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-12 18:35:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-12 18:15:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-12 18:15:00",
+  "wick_vol-APTUSDT-15m": "2026-11-12 18:15:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-12 18:30:00",
+  "spike_bb-FILUSDT-15m": "2026-11-12 18:15:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-12 18:35:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-12 18:30:00"
  },
  "filter_stats": {
   "total": 1960,
