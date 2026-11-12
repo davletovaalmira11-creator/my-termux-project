@@ -11,8 +11,8 @@
    "opened": "2026-11-12 06:50:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.07,
-   "last_ts": "2026-11-12 11:35:00",
-   "last_px": 49.28
+   "last_ts": "2026-11-12 12:40:00",
+   "last_px": 49.14
   },
   "bb_maker-NEARUSDT-1m": {
    "strategy": "bb_maker",
@@ -23,8 +23,20 @@
    "opened": "2026-11-12 11:36:00",
    "fee_mode": "maker",
    "oos_sharpe": 3.34,
-   "last_ts": "2026-11-12 11:42:00",
-   "last_px": 3.446
+   "last_ts": "2026-11-12 12:44:00",
+   "last_px": 3.434
+  },
+  "bb_regime-NEARUSDT-1m": {
+   "strategy": "bb_regime",
+   "symbol": "NEARUSDT",
+   "tf": "1m",
+   "signal": 1.0,
+   "entry": 3.428,
+   "opened": "2026-11-12 11:55:00",
+   "fee_mode": "maker",
+   "oos_sharpe": 2.94,
+   "last_ts": "2026-11-12 12:44:00",
+   "last_px": 3.434
   }
  },
  "closed": [
@@ -1261,8 +1273,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-12T11:43:50Z",
- "runs": 157,
+ "updated": "2026-11-12T12:45:49Z",
+ "runs": 158,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -1277,8 +1289,8 @@
    "oos_sharpe": 3.34,
    "score": 2.77,
    "signal": 1.0,
-   "sig_last": "2026-11-12 11:42:00",
-   "sig_pct": 47.72
+   "sig_last": "2026-11-12 12:44:00",
+   "sig_pct": 43.7
   },
   {
    "key": "vol_burst_revert-ARBUSDT-15m",
@@ -1327,8 +1339,8 @@
    "oos_sharpe": 2.07,
    "score": 2.07,
    "signal": 1.0,
-   "sig_last": "2026-11-12 11:35:00",
-   "sig_pct": 93.95
+   "sig_last": "2026-11-12 12:40:00",
+   "sig_pct": 94.29
   },
   {
    "key": "vol_burst_revert-ARBUSDT-5m",
@@ -1344,7 +1356,7 @@
    "score": 1.78,
    "signal": 0.0,
    "sig_last": "2026-11-12 09:15:00",
-   "sig_pct": 39.6
+   "sig_pct": 33.6
   },
   {
    "key": "bb_regime-NEARUSDT-1m",
@@ -1359,9 +1371,9 @@
    "fee_mode": "maker",
    "oos_sharpe": 2.94,
    "score": 1.63,
-   "signal": 0.0,
-   "sig_last": "2026-11-12 09:46:00",
-   "sig_pct": 38.97
+   "signal": 1.0,
+   "sig_last": "2026-11-12 12:44:00",
+   "sig_pct": 39.77
   },
   {
    "key": "spike_bb-FILUSDT-15m",
@@ -1405,17 +1417,17 @@
   "winrate": 62.5,
   "equity": 1306.02,
   "pnl_pct": 30.6,
-  "open": 2
+  "open": 3
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-12 11:42:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-12 11:15:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-12 11:15:00",
-  "wick_vol-APTUSDT-15m": "2026-11-12 11:15:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-12 11:35:00",
-  "spike_bb-FILUSDT-15m": "2026-11-12 11:15:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-12 11:42:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-12 11:35:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-12 12:44:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-12 12:30:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-12 12:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-12 12:30:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-12 12:40:00",
+  "spike_bb-FILUSDT-15m": "2026-11-12 12:30:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-12 12:44:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-12 12:40:00"
  },
  "filter_stats": {
   "total": 1960,
