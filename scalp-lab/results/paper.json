@@ -11,8 +11,8 @@
    "opened": "2026-11-13 03:45:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.67,
-   "last_ts": "2026-11-14 00:00:00",
-   "last_px": 0.1452
+   "last_ts": "2026-11-14 01:30:00",
+   "last_px": 0.1436
   },
   "streak_bb-LTCUSDT-5m": {
    "strategy": "streak_bb",
@@ -23,8 +23,8 @@
    "opened": "2026-11-14 00:00:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.07,
-   "last_ts": "2026-11-14 00:20:00",
-   "last_px": 49.53
+   "last_ts": "2026-11-14 01:40:00",
+   "last_px": 49.45
   }
  },
  "closed": [
@@ -1765,8 +1765,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-14T00:26:35Z",
- "runs": 191,
+ "updated": "2026-11-14T01:49:40Z",
+ "runs": 192,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -1797,8 +1797,8 @@
    "oos_sharpe": 2.67,
    "score": 2.67,
    "signal": 1.0,
-   "sig_last": "2026-11-14 00:00:00",
-   "sig_pct": 40.23
+   "sig_last": "2026-11-14 01:30:00",
+   "sig_pct": 40.75
   },
   {
    "key": "wick_vol-APTUSDT-15m",
@@ -1815,7 +1815,7 @@
    "score": 2.52,
    "signal": 0.0,
    "sig_last": "2026-11-13 07:30:00",
-   "sig_pct": 16.85
+   "sig_pct": 15.46
   },
   {
    "key": "streak_bb-LTCUSDT-5m",
@@ -1831,8 +1831,8 @@
    "oos_sharpe": 2.07,
    "score": 2.07,
    "signal": -1.0,
-   "sig_last": "2026-11-14 00:20:00",
-   "sig_pct": 95.04
+   "sig_last": "2026-11-14 01:40:00",
+   "sig_pct": 95.83
   },
   {
    "key": "vol_burst_revert-ARBUSDT-5m",
@@ -1912,14 +1912,14 @@
   "open": 2
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-14 00:25:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-14 00:00:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-14 00:00:00",
-  "wick_vol-APTUSDT-15m": "2026-11-14 00:00:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-14 00:20:00",
-  "spike_bb-FILUSDT-15m": "2026-11-14 00:00:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-14 00:25:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-14 00:20:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-14 01:48:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-14 01:30:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-14 01:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-14 01:30:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-14 01:40:00",
+  "spike_bb-FILUSDT-15m": "2026-11-14 01:30:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-14 01:48:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-14 01:40:00"
  },
  "filter_stats": {
   "total": 1960,
