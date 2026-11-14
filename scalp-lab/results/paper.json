@@ -1,6 +1,6 @@
 {
  "capital_start": 1000.0,
- "equity": 1313.0069886577585,
+ "equity": 1336.9827533030123,
  "positions": {
   "vol_burst_revert-ARBUSDT-15m": {
    "strategy": "vol_burst_revert",
@@ -11,8 +11,8 @@
    "opened": "2026-11-13 03:45:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.67,
-   "last_ts": "2026-11-14 06:15:00",
-   "last_px": 0.1416
+   "last_ts": "2026-11-14 07:30:00",
+   "last_px": 0.1387
   },
   "spike_revert-SUIUSDT-15m": {
    "strategy": "spike_revert",
@@ -23,20 +23,20 @@
    "opened": "2026-11-14 02:15:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.02,
-   "last_ts": "2026-11-14 06:15:00",
-   "last_px": 0.7835
+   "last_ts": "2026-11-14 07:30:00",
+   "last_px": 0.7684
   },
   "streak_bb-LTCUSDT-5m": {
    "strategy": "streak_bb",
    "symbol": "LTCUSDT",
    "tf": "5m",
-   "signal": -1.0,
-   "entry": 49.04,
-   "opened": "2026-11-14 06:15:00",
+   "signal": 1.0,
+   "entry": 48.12,
+   "opened": "2026-11-14 07:15:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.07,
-   "last_ts": "2026-11-14 06:30:00",
-   "last_px": 48.73
+   "last_ts": "2026-11-14 07:40:00",
+   "last_px": 48.1
   }
  },
  "closed": [
@@ -1831,10 +1831,24 @@
    "closed_ts": "2026-11-14 05:48:00",
    "fee_mode": "maker",
    "reason": "flat signal"
+  },
+  {
+   "key": "streak_bb-LTCUSDT-5m",
+   "strategy": "streak_bb",
+   "symbol": "LTCUSDT",
+   "tf": "5m",
+   "side": "short",
+   "entry": 49.04,
+   "exit": 48.12,
+   "pnl_pct": 1.826,
+   "opened": "2026-11-14 06:15:00",
+   "closed_ts": "2026-11-14 07:15:00",
+   "fee_mode": "maker",
+   "reason": "signal flip"
   }
  ],
- "updated": "2026-11-14T06:35:39Z",
- "runs": 197,
+ "updated": "2026-11-14T07:47:04Z",
+ "runs": 198,
  "tops": [
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -1865,8 +1879,8 @@
    "oos_sharpe": 2.67,
    "score": 2.67,
    "signal": 1.0,
-   "sig_last": "2026-11-14 06:15:00",
-   "sig_pct": 42.4
+   "sig_last": "2026-11-14 07:30:00",
+   "sig_pct": 42.83
   },
   {
    "key": "wick_vol-APTUSDT-15m",
@@ -1883,7 +1897,7 @@
    "score": 2.52,
    "signal": 0.0,
    "sig_last": "2026-11-13 07:30:00",
-   "sig_pct": 15.46
+   "sig_pct": 14.07
   },
   {
    "key": "streak_bb-LTCUSDT-5m",
@@ -1898,9 +1912,9 @@
    "fee_mode": "maker",
    "oos_sharpe": 2.07,
    "score": 2.07,
-   "signal": -1.0,
-   "sig_last": "2026-11-14 06:30:00",
-   "sig_pct": 95.24
+   "signal": 1.0,
+   "sig_last": "2026-11-14 07:40:00",
+   "sig_pct": 95.93
   },
   {
    "key": "vol_burst_revert-ARBUSDT-5m",
@@ -1967,27 +1981,27 @@
    "oos_sharpe": 2.02,
    "score": 1.31,
    "signal": 1.0,
-   "sig_last": "2026-11-14 06:15:00",
-   "sig_pct": 20.85
+   "sig_last": "2026-11-14 07:30:00",
+   "sig_pct": 21.29
   }
  ],
  "stats": {
-  "n_trades": 128,
-  "wins": 77,
-  "winrate": 60.2,
-  "equity": 1313.01,
-  "pnl_pct": 31.3,
+  "n_trades": 129,
+  "wins": 78,
+  "winrate": 60.5,
+  "equity": 1336.98,
+  "pnl_pct": 33.7,
   "open": 3
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-14 06:34:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-14 06:15:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-14 06:15:00",
-  "wick_vol-APTUSDT-15m": "2026-11-14 06:15:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-14 06:30:00",
-  "spike_bb-FILUSDT-15m": "2026-11-14 06:15:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-14 06:34:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-14 06:30:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-14 07:45:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-14 07:30:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-14 07:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-14 07:30:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-14 07:40:00",
+  "spike_bb-FILUSDT-15m": "2026-11-14 07:30:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-14 07:46:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-14 07:40:00"
  },
  "filter_stats": {
   "total": 1960,
