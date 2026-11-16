@@ -163,7 +163,6 @@ streak_bb,ATOMUSDT,5m,0.63,1.006,0.6,2601,47,0.3,365,,filtered
 crash_revert,DOGEUSDT,1m,0.623,1.147,0.41,12,31,0.45,180,,filtered
 bb_vol,DOTUSDT,15m,0.618,1.018,0.57,393,22,0.14,365,,filtered
 streak_reversion,NEARUSDT,5m,0.617,1.006,0.59,4593,47,0.36,365,,filtered
-bb_fast,NEARUSDT,5m,0.617,1.009,0.83,8496,47,0.43,730,,filtered
 bb_vol,APTUSDT,15m,0.611,1.019,0.56,381,22,0.23,365,,filtered
 ema_snap,APTUSDT,5m,0.61,1.013,0.58,1739,47,0.34,365,,filtered
 bb_maker,OPUSDT,1m,0.596,1.003,0.39,3160,31,0.39,180,,filtered
@@ -259,6 +258,7 @@ bb_maker,PEPEUSDT,15m,0.279,1.006,0.26,590,22,0.32,365,,filtered
 ema_snap,NEARUSDT,15m,0.273,1.009,0.25,701,22,0.5,365,,filtered
 qr_revert,DOTUSDT,5m,0.273,1.003,0.26,2141,47,0.32,365,,filtered
 qr_revert,APTUSDT,1m,0.271,1.001,0.18,3674,31,0.68,180,,filtered
+bb_fast,NEARUSDT,5m,0.262,1.004,0.5,15325,47,0.3,1460,,filtered
 bb_fast,LINKUSDT,15m,0.255,1.007,0.23,1010,22,0.5,365,,filtered
 bb_vol,ATOMUSDT,5m,0.253,1.005,0.24,1047,47,0.15,365,,filtered
 spike_revert,FILUSDT,5m,0.25,1.012,0.24,179,47,0.36,365,,filtered
