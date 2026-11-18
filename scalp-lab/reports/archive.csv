@@ -212,6 +212,7 @@ spike_bb,BNBUSDT,15m,0.437,1.034,0.4,67,22,0.32,365,,filtered
 bollinger_reversion,ATOMUSDT,15m,0.428,1.014,0.39,477,22,0.68,365,,filtered
 spike_bb,ETHUSDT,5m,0.418,1.026,0.4,84,47,0.4,365,,filtered
 vol_burst_revert,SUIUSDT,5m,0.416,1.006,0.4,921,47,0.26,365,,filtered
+bb_vol,LTCUSDT,15m,0.413,1.013,0.54,777,22,0.23,730,,filtered
 flow_fade,ATOMUSDT,15m,0.412,1.013,0.38,604,22,0.59,365,,filtered
 bb_regime,AVAXUSDT,5m,0.41,1.006,0.39,1119,47,0.32,365,,filtered
 bb_vol,PEPEUSDT,15m,0.401,1.013,0.37,452,22,0.18,365,,filtered
@@ -316,7 +317,6 @@ bb_maker,SOLUSDT,15m,0.102,1.002,0.09,519,22,0.36,365,,filtered
 qr_revert,PEPEUSDT,15m,0.093,1.002,0.09,753,22,0.41,365,,filtered
 ema_snap,OPUSDT,15m,0.091,1.003,0.08,594,22,0.36,365,,filtered
 funding_revert,ATOMUSDT,5m,0.091,1.001,0.09,1890,47,0.28,365,,filtered
-bb_vol,LTCUSDT,15m,0.09,1.003,0.17,1654,22,0.23,1460,,filtered
 ema_snap,SUIUSDT,5m,0.089,1.002,0.08,1949,47,0.4,365,,filtered
 bb_maker,ARBUSDT,15m,0.087,1.002,0.08,646,22,0.59,365,,filtered
 ema_snap,LTCUSDT,5m,0.086,1.002,0.08,1805,47,0.47,365,,filtered
