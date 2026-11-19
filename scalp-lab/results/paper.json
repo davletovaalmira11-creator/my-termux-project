@@ -1,6 +1,6 @@
 {
  "capital_start": 1000.0,
- "equity": 964.987511978421,
+ "equity": 969.7733758856443,
  "positions": {
   "vol_burst_revert-ARBUSDT-15m": {
    "strategy": "vol_burst_revert",
@@ -11,8 +11,8 @@
    "opened": "2026-11-18 05:45:00",
    "fee_mode": "maker",
    "oos_sharpe": 3.08,
-   "last_ts": "2026-11-18 23:15:00",
-   "last_px": 0.1272
+   "last_ts": "2026-11-19 00:15:00",
+   "last_px": 0.1271
   },
   "streak_bb-LTCUSDT-5m": {
    "strategy": "streak_bb",
@@ -23,8 +23,8 @@
    "opened": "2026-11-18 17:25:00",
    "fee_mode": "maker",
    "oos_sharpe": 1.89,
-   "last_ts": "2026-11-18 23:30:00",
-   "last_px": 43.99
+   "last_ts": "2026-11-19 00:35:00",
+   "last_px": 44.17
   },
   "bb_maker-NEARUSDT-1m": {
    "strategy": "bb_maker",
@@ -35,20 +35,8 @@
    "opened": "2026-11-18 23:33:00",
    "fee_mode": "maker",
    "oos_sharpe": 3.34,
-   "last_ts": "2026-11-18 23:36:00",
-   "last_px": 3.303
-  },
-  "bb_regime-NEARUSDT-1m": {
-   "strategy": "bb_regime",
-   "symbol": "NEARUSDT",
-   "tf": "1m",
-   "signal": -1.0,
-   "entry": 3.297,
-   "opened": "2026-11-18 23:34:00",
-   "fee_mode": "maker",
-   "oos_sharpe": 2.56,
-   "last_ts": "2026-11-18 23:36:00",
-   "last_px": 3.303
+   "last_ts": "2026-11-19 00:40:00",
+   "last_px": 3.328
   }
  },
  "closed": [
@@ -3607,10 +3595,24 @@
    "closed_ts": "2026-11-18 23:34:00",
    "fee_mode": "maker",
    "reason": "signal flip"
+  },
+  {
+   "key": "bb_regime-NEARUSDT-1m",
+   "strategy": "bb_regime",
+   "symbol": "NEARUSDT",
+   "tf": "1m",
+   "side": "short",
+   "entry": 3.297,
+   "exit": 3.279,
+   "pnl_pct": 0.496,
+   "opened": "2026-11-18 23:34:00",
+   "closed_ts": "2026-11-19 00:21:00",
+   "fee_mode": "maker",
+   "reason": "flat signal"
   }
  ],
- "updated": "2026-11-18T23:37:38Z",
- "runs": 298,
+ "updated": "2026-11-19T00:41:50Z",
+ "runs": 299,
  "tops": [
   {
    "key": "wick_vol-APTUSDT-15m",
@@ -3642,8 +3644,8 @@
    "oos_sharpe": 3.08,
    "score": 3.08,
    "signal": -1.0,
-   "sig_last": "2026-11-18 23:15:00",
-   "sig_pct": 16.68
+   "sig_last": "2026-11-19 00:15:00",
+   "sig_pct": 17.03
   },
   {
    "key": "bb_maker-NEARUSDT-1m",
@@ -3658,8 +3660,8 @@
    "oos_sharpe": 3.34,
    "score": 2.77,
    "signal": -1.0,
-   "sig_last": "2026-11-18 23:36:00",
-   "sig_pct": 39.77
+   "sig_last": "2026-11-19 00:40:00",
+   "sig_pct": 36.02
   },
   {
    "key": "bb_regime-NEARUSDT-1m",
@@ -3674,9 +3676,9 @@
    "fee_mode": "maker",
    "oos_sharpe": 2.56,
    "score": 2.36,
-   "signal": -1.0,
-   "sig_last": "2026-11-18 23:36:00",
-   "sig_pct": 42.24
+   "signal": 0.0,
+   "sig_last": "2026-11-19 00:20:00",
+   "sig_pct": 39.22
   },
   {
    "key": "funding_revert-SUIUSDT-1m",
@@ -3724,8 +3726,8 @@
    "oos_sharpe": 1.89,
    "score": 1.84,
    "signal": -1.0,
-   "sig_last": "2026-11-18 23:30:00",
-   "sig_pct": 95.73
+   "sig_last": "2026-11-19 00:35:00",
+   "sig_pct": 96.38
   },
   {
    "key": "spike_bb-FILUSDT-15m",
@@ -3747,22 +3749,22 @@
   }
  ],
  "stats": {
-  "n_trades": 254,
-  "wins": 147,
-  "winrate": 57.9,
-  "equity": 964.99,
-  "pnl_pct": -3.5,
-  "open": 4
+  "n_trades": 255,
+  "wins": 148,
+  "winrate": 58.0,
+  "equity": 969.77,
+  "pnl_pct": -3.02,
+  "open": 3
  },
  "seen": {
-  "bb_maker-NEARUSDT-1m": "2026-11-18 23:36:00",
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-18 23:15:00",
-  "wick_vol-APTUSDT-15m": "2026-11-18 23:15:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-18 23:30:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-18 23:36:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-18 23:30:00",
-  "funding_revert-SUIUSDT-1m": "2026-11-18 23:36:00",
-  "spike_bb-FILUSDT-15m": "2026-11-18 23:15:00"
+  "bb_maker-NEARUSDT-1m": "2026-11-19 00:40:00",
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-19 00:15:00",
+  "wick_vol-APTUSDT-15m": "2026-11-19 00:15:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-19 00:35:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-19 00:40:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-19 00:35:00",
+  "funding_revert-SUIUSDT-1m": "2026-11-19 00:40:00",
+  "spike_bb-FILUSDT-15m": "2026-11-19 00:15:00"
  },
  "filter_stats": {
   "total": 1960,
