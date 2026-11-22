@@ -11,8 +11,8 @@
    "opened": "2026-11-22 22:20:00",
    "fee_mode": "maker",
    "oos_sharpe": 1.89,
-   "last_ts": "2026-11-22 22:25:00",
-   "last_px": 39.84
+   "last_ts": "2026-11-22 23:25:00",
+   "last_px": 40.09
   }
  },
  "closed": [
@@ -4217,8 +4217,8 @@
    "reason": "signal flip"
   }
  ],
- "updated": "2026-11-22T22:30:33Z",
- "runs": 386,
+ "updated": "2026-11-22T23:30:11Z",
+ "runs": 387,
  "tops": [
   {
    "key": "wick_vol-APTUSDT-15m",
@@ -4231,8 +4231,8 @@
     "w": 0.5
    },
    "fee_mode": "maker",
-   "oos_sharpe": 3.38,
-   "score": 3.38,
+   "oos_sharpe": 2.83,
+   "score": 2.83,
    "signal": 0.0,
    "sig_last": "2026-11-20 19:30:00",
    "sig_pct": 9.47
@@ -4247,8 +4247,8 @@
     "vz": 6.0
    },
    "fee_mode": "maker",
-   "oos_sharpe": 3.08,
-   "score": 3.08,
+   "oos_sharpe": 2.76,
+   "score": 2.76,
    "signal": 0.0,
    "sig_last": "2026-11-22 09:30:00",
    "sig_pct": 39.36
@@ -4312,11 +4312,11 @@
     "n_streak": 3
    },
    "fee_mode": "maker",
-   "oos_sharpe": 1.89,
-   "score": 1.84,
+   "oos_sharpe": 1.88,
+   "score": 1.82,
    "signal": 1.0,
-   "sig_last": "2026-11-22 22:25:00",
-   "sig_pct": 99.01
+   "sig_last": "2026-11-22 23:25:00",
+   "sig_pct": 98.31
   },
   {
    "key": "spike_revert-SUIUSDT-15m",
@@ -4363,21 +4363,21 @@
   "open": 1
  },
  "seen": {
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-22 22:00:00",
-  "wick_vol-APTUSDT-15m": "2026-11-22 22:00:00",
-  "funding_revert-SUIUSDT-1m": "2026-11-22 22:29:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-22 22:25:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-22 22:15:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-22 22:25:00",
-  "spike_bb-FILUSDT-15m": "2026-11-22 22:15:00",
-  "funding_revert-ARBUSDT-1m": "2026-11-22 22:28:00"
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-22 23:00:00",
+  "wick_vol-APTUSDT-15m": "2026-11-22 23:00:00",
+  "funding_revert-SUIUSDT-1m": "2026-11-22 23:28:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-22 23:25:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-22 23:15:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-22 23:25:00",
+  "spike_bb-FILUSDT-15m": "2026-11-22 23:15:00",
+  "funding_revert-ARBUSDT-1m": "2026-11-22 23:28:00"
  },
  "filter_stats": {
   "total": 1960,
   "low_trades": 344,
   "low_folds": 0,
-  "low_pf": 1520,
-  "low_t": 86,
+  "low_pf": 1521,
+  "low_t": 85,
   "no_params": 0,
   "admitted": 8
  },
