@@ -1,6 +1,6 @@
 {
  "capital_start": 1000.0,
- "equity": 828.0869125913265,
+ "equity": 835.471390796441,
  "positions": {
   "streak_bb-LTCUSDT-5m": {
    "strategy": "streak_bb",
@@ -11,63 +11,11 @@
    "opened": "2026-11-23 03:20:00",
    "fee_mode": "maker",
    "oos_sharpe": 1.89,
-   "last_ts": "2026-11-23 05:45:00",
-   "last_px": 40.72
-  },
-  "bb_maker-NEARUSDT-1m": {
-   "strategy": "bb_maker",
-   "symbol": "NEARUSDT",
-   "tf": "1m",
-   "signal": -1.0,
-   "entry": 3.031,
-   "opened": "2026-11-23 05:25:00",
-   "fee_mode": "maker",
-   "oos_sharpe": 3.01,
-   "last_ts": "2026-11-23 05:50:00",
-   "last_px": 3.02
-  },
-  "bb_regime-NEARUSDT-1m": {
-   "strategy": "bb_regime",
-   "symbol": "NEARUSDT",
-   "tf": "1m",
-   "signal": -1.0,
-   "entry": 3.031,
-   "opened": "2026-11-23 05:25:00",
-   "fee_mode": "maker",
-   "oos_sharpe": 2.56,
-   "last_ts": "2026-11-23 05:50:00",
-   "last_px": 3.02
+   "last_ts": "2026-11-23 06:55:00",
+   "last_px": 40.61
   }
  },
  "closed": [
-  {
-   "key": "streak_bb-LTCUSDT-5m",
-   "strategy": "streak_bb",
-   "symbol": "LTCUSDT",
-   "tf": "5m",
-   "side": "short",
-   "entry": 50.95,
-   "exit": 50.9,
-   "pnl_pct": 0.0481,
-   "opened": "2026-11-11 00:00:00",
-   "closed_ts": "2026-11-11 06:15:00",
-   "fee_mode": "maker",
-   "reason": "signal flip"
-  },
-  {
-   "key": "bb_maker-NEARUSDT-1m",
-   "strategy": "bb_maker",
-   "symbol": "NEARUSDT",
-   "tf": "1m",
-   "side": "long",
-   "entry": 3.597,
-   "exit": 3.634,
-   "pnl_pct": 0.9786,
-   "opened": "2026-11-11 06:44:00",
-   "closed_ts": "2026-11-11 08:00:00",
-   "fee_mode": "maker",
-   "reason": "flat signal"
-  },
   {
    "key": "streak_bb-LTCUSDT-5m",
    "strategy": "streak_bb",
@@ -4239,11 +4187,55 @@
    "closed_ts": "2026-11-23 03:20:00",
    "fee_mode": "maker",
    "reason": "signal flip"
+  },
+  {
+   "key": "bb_maker-NEARUSDT-1m",
+   "strategy": "bb_maker",
+   "symbol": "NEARUSDT",
+   "tf": "1m",
+   "side": "short",
+   "entry": 3.031,
+   "exit": 3.016,
+   "pnl_pct": 0.4449,
+   "opened": "2026-11-23 05:25:00",
+   "closed_ts": "2026-11-23 06:04:00",
+   "fee_mode": "maker",
+   "reason": "flat signal"
+  },
+  {
+   "key": "bb_regime-NEARUSDT-1m",
+   "strategy": "bb_regime",
+   "symbol": "NEARUSDT",
+   "tf": "1m",
+   "side": "short",
+   "entry": 3.031,
+   "exit": 3.016,
+   "pnl_pct": 0.4449,
+   "opened": "2026-11-23 05:25:00",
+   "closed_ts": "2026-11-23 06:04:00",
+   "fee_mode": "maker",
+   "reason": "flat signal"
   }
  ],
- "updated": "2026-11-23T05:51:45Z",
- "runs": 392,
+ "updated": "2026-11-23T07:00:43Z",
+ "runs": 393,
  "tops": [
+  {
+   "key": "vol_burst_revert-ARBUSDT-15m",
+   "strategy": "vol_burst_revert",
+   "symbol": "ARBUSDT",
+   "tf": "15m",
+   "params": {
+    "h": 120,
+    "vz": 6.0
+   },
+   "fee_mode": "maker",
+   "oos_sharpe": 3.08,
+   "score": 3.08,
+   "signal": 0.0,
+   "sig_last": "2026-11-22 09:30:00",
+   "sig_pct": 28.84
+  },
   {
    "key": "wick_vol-APTUSDT-15m",
    "strategy": "wick_vol",
@@ -4260,22 +4252,6 @@
    "signal": 0.0,
    "sig_last": "2026-11-20 19:30:00",
    "sig_pct": 7.91
-  },
-  {
-   "key": "vol_burst_revert-ARBUSDT-15m",
-   "strategy": "vol_burst_revert",
-   "symbol": "ARBUSDT",
-   "tf": "15m",
-   "params": {
-    "h": 120,
-    "vz": 6.0
-   },
-   "fee_mode": "maker",
-   "oos_sharpe": 2.76,
-   "score": 2.76,
-   "signal": 0.0,
-   "sig_last": "2026-11-22 09:30:00",
-   "sig_pct": 28.84
   },
   {
    "key": "funding_revert-ARBUSDT-1m",
@@ -4305,9 +4281,9 @@
    "fee_mode": "maker",
    "oos_sharpe": 3.01,
    "score": 2.49,
-   "signal": -1.0,
-   "sig_last": "2026-11-23 05:50:00",
-   "sig_pct": 51.41
+   "signal": 0.0,
+   "sig_last": "2026-11-23 06:03:00",
+   "sig_pct": 51.86
   },
   {
    "key": "funding_revert-SUIUSDT-1m",
@@ -4338,25 +4314,9 @@
    "fee_mode": "maker",
    "oos_sharpe": 2.56,
    "score": 2.36,
-   "signal": -1.0,
-   "sig_last": "2026-11-23 05:50:00",
-   "sig_pct": 44.6
-  },
-  {
-   "key": "vol_burst_revert-ARBUSDT-5m",
-   "strategy": "vol_burst_revert",
-   "symbol": "ARBUSDT",
-   "tf": "5m",
-   "params": {
-    "h": 120,
-    "vz": 6.0
-   },
-   "fee_mode": "maker",
-   "oos_sharpe": 2.4,
-   "score": 1.9,
    "signal": 0.0,
-   "sig_last": "2026-11-21 13:30:00",
-   "sig_pct": 27.2
+   "sig_last": "2026-11-23 06:03:00",
+   "sig_pct": 45.05
   },
   {
    "key": "streak_bb-LTCUSDT-5m",
@@ -4369,30 +4329,46 @@
     "n_streak": 3
    },
    "fee_mode": "maker",
-   "oos_sharpe": 1.88,
-   "score": 1.82,
+   "oos_sharpe": 1.89,
+   "score": 1.84,
    "signal": -1.0,
-   "sig_last": "2026-11-23 05:45:00",
-   "sig_pct": 99.06
+   "sig_last": "2026-11-23 06:55:00",
+   "sig_pct": 98.76
+  },
+  {
+   "key": "vol_burst_revert-ARBUSDT-5m",
+   "strategy": "vol_burst_revert",
+   "symbol": "ARBUSDT",
+   "tf": "5m",
+   "params": {
+    "h": 120,
+    "vz": 6.0
+   },
+   "fee_mode": "maker",
+   "oos_sharpe": 2.44,
+   "score": 1.78,
+   "signal": 0.0,
+   "sig_last": "2026-11-21 13:30:00",
+   "sig_pct": 27.2
   }
  ],
  "stats": {
   "n_trades": 300,
   "wins": 168,
   "winrate": 56.0,
-  "equity": 828.09,
-  "pnl_pct": -17.19,
-  "open": 3
+  "equity": 835.47,
+  "pnl_pct": -16.45,
+  "open": 1
  },
  "seen": {
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-23 05:30:00",
-  "wick_vol-APTUSDT-15m": "2026-11-23 05:30:00",
-  "funding_revert-SUIUSDT-1m": "2026-11-23 05:50:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-23 05:45:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-23 05:45:00",
-  "funding_revert-ARBUSDT-1m": "2026-11-23 05:49:00",
-  "bb_maker-NEARUSDT-1m": "2026-11-23 05:50:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-23 05:50:00"
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-23 06:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-23 06:30:00",
+  "funding_revert-SUIUSDT-1m": "2026-11-23 06:59:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-23 06:55:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-23 06:55:00",
+  "funding_revert-ARBUSDT-1m": "2026-11-23 06:58:00",
+  "bb_maker-NEARUSDT-1m": "2026-11-23 06:59:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-23 06:59:00"
  },
  "filter_stats": {
   "total": 1960,
