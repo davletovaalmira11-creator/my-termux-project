@@ -11,8 +11,8 @@
    "opened": "2026-11-25 14:55:00",
    "fee_mode": "maker",
    "oos_sharpe": 1.89,
-   "last_ts": "2026-11-26 03:15:00",
-   "last_px": 43.6
+   "last_ts": "2026-11-26 04:25:00",
+   "last_px": 43.96
   }
  },
  "closed": [
@@ -4217,8 +4217,8 @@
    "reason": "flat signal"
   }
  ],
- "updated": "2026-11-26T03:20:34Z",
- "runs": 453,
+ "updated": "2026-11-26T04:30:55Z",
+ "runs": 454,
  "tops": [
   {
    "key": "vol_burst_revert-ARBUSDT-15m",
@@ -4312,8 +4312,8 @@
     "vz": 6.0
    },
    "fee_mode": "maker",
-   "oos_sharpe": 2.4,
-   "score": 1.9,
+   "oos_sharpe": 2.49,
+   "score": 1.97,
    "signal": 0.0,
    "sig_last": "2026-11-26 01:00:00",
    "sig_pct": 35.78
@@ -4332,8 +4332,8 @@
    "oos_sharpe": 1.89,
    "score": 1.84,
    "signal": -1.0,
-   "sig_last": "2026-11-26 03:15:00",
-   "sig_pct": 98.91
+   "sig_last": "2026-11-26 04:25:00",
+   "sig_pct": 98.96
   },
   {
    "key": "spike_bb-FILUSDT-15m",
@@ -4363,21 +4363,21 @@
   "open": 1
  },
  "seen": {
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-26 03:00:00",
-  "wick_vol-APTUSDT-15m": "2026-11-26 03:00:00",
-  "funding_revert-SUIUSDT-1m": "2026-11-26 03:19:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-26 03:15:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-26 03:15:00",
-  "funding_revert-ARBUSDT-1m": "2026-11-26 03:18:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-26 03:00:00",
-  "spike_bb-FILUSDT-15m": "2026-11-26 03:00:00"
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-26 04:00:00",
+  "wick_vol-APTUSDT-15m": "2026-11-26 04:15:00",
+  "funding_revert-SUIUSDT-1m": "2026-11-26 04:29:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-26 04:25:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-26 04:25:00",
+  "funding_revert-ARBUSDT-1m": "2026-11-26 04:29:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-26 04:15:00",
+  "spike_bb-FILUSDT-15m": "2026-11-26 04:15:00"
  },
  "filter_stats": {
   "total": 1960,
   "low_trades": 344,
   "low_folds": 0,
-  "low_pf": 1521,
-  "low_t": 85,
+  "low_pf": 1520,
+  "low_t": 86,
   "no_params": 0,
   "admitted": 8
  },
