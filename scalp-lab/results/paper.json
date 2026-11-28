@@ -1,35 +1,21 @@
 {
  "capital_start": 1000.0,
- "equity": 675.7485661626168,
+ "equity": 673.1333994750333,
  "positions": {
   "streak_bb-LTCUSDT-5m": {
    "strategy": "streak_bb",
    "symbol": "LTCUSDT",
    "tf": "5m",
-   "signal": -1.0,
-   "entry": 44.51,
-   "opened": "2026-11-27 22:50:00",
+   "signal": 1.0,
+   "entry": 44.66,
+   "opened": "2026-11-28 03:25:00",
    "fee_mode": "maker",
    "oos_sharpe": 1.89,
-   "last_ts": "2026-11-28 03:10:00",
-   "last_px": 44.95
+   "last_ts": "2026-11-28 04:15:00",
+   "last_px": 44.73
   }
  },
  "closed": [
-  {
-   "key": "streak_bb-LTCUSDT-5m",
-   "strategy": "streak_bb",
-   "symbol": "LTCUSDT",
-   "tf": "5m",
-   "side": "short",
-   "entry": 45.2,
-   "exit": 44.65,
-   "pnl_pct": 1.1668,
-   "opened": "2026-11-16 02:25:00",
-   "closed_ts": "2026-11-16 05:40:00",
-   "fee_mode": "maker",
-   "reason": "signal flip"
-  },
   {
    "key": "bb_regime-NEARUSDT-1m",
    "strategy": "bb_regime",
@@ -4215,10 +4201,24 @@
    "closed_ts": "2026-11-28 03:14:00",
    "fee_mode": "maker",
    "reason": "rotated out"
+  },
+  {
+   "key": "streak_bb-LTCUSDT-5m",
+   "strategy": "streak_bb",
+   "symbol": "LTCUSDT",
+   "tf": "5m",
+   "side": "short",
+   "entry": 44.51,
+   "exit": 44.66,
+   "pnl_pct": -0.387,
+   "opened": "2026-11-27 22:50:00",
+   "closed_ts": "2026-11-28 03:25:00",
+   "fee_mode": "maker",
+   "reason": "signal flip"
   }
  ],
- "updated": "2026-11-28T03:17:09Z",
- "runs": 495,
+ "updated": "2026-11-28T04:24:25Z",
+ "runs": 496,
  "tops": [
   {
    "key": "vol_burst_revert-ARBUSDT-15m",
@@ -4234,7 +4234,7 @@
    "score": 3.08,
    "signal": 0.0,
    "sig_last": "2026-11-24 20:15:00",
-   "sig_pct": 39.53
+   "sig_pct": 29.02
   },
   {
    "key": "wick_vol-APTUSDT-15m",
@@ -4331,9 +4331,9 @@
    "fee_mode": "maker",
    "oos_sharpe": 1.89,
    "score": 1.84,
-   "signal": -1.0,
-   "sig_last": "2026-11-28 03:10:00",
-   "sig_pct": 98.36
+   "signal": 1.0,
+   "sig_last": "2026-11-28 04:15:00",
+   "sig_pct": 99.01
   },
   {
    "key": "spike_bb-FILUSDT-15m",
@@ -4356,21 +4356,21 @@
  ],
  "stats": {
   "n_trades": 300,
-  "wins": 175,
-  "winrate": 58.3,
-  "equity": 675.75,
-  "pnl_pct": -32.43,
+  "wins": 174,
+  "winrate": 58.0,
+  "equity": 673.13,
+  "pnl_pct": -32.69,
   "open": 1
  },
  "seen": {
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-28 03:00:00",
-  "wick_vol-APTUSDT-15m": "2026-11-28 03:00:00",
-  "funding_revert-SUIUSDT-1m": "2026-11-28 03:15:00",
-  "funding_revert-ARBUSDT-1m": "2026-11-28 03:14:00",
-  "streak_bb-LTCUSDT-5m": "2026-11-28 03:10:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-28 03:00:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-28 03:10:00",
-  "spike_bb-FILUSDT-15m": "2026-11-28 03:00:00"
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-28 04:00:00",
+  "wick_vol-APTUSDT-15m": "2026-11-28 04:00:00",
+  "funding_revert-SUIUSDT-1m": "2026-11-28 04:22:00",
+  "funding_revert-ARBUSDT-1m": "2026-11-28 04:22:00",
+  "streak_bb-LTCUSDT-5m": "2026-11-28 04:15:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-28 04:00:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-28 04:15:00",
+  "spike_bb-FILUSDT-15m": "2026-11-28 04:00:00"
  },
  "filter_stats": {
   "total": 1960,
