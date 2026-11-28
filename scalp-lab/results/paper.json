@@ -11,8 +11,8 @@
    "opened": "2026-11-28 05:43:00",
    "fee_mode": "maker",
    "oos_sharpe": 3.01,
-   "last_ts": "2026-11-28 05:43:00",
-   "last_px": 3.012
+   "last_ts": "2026-11-28 06:46:00",
+   "last_px": 3.037
   },
   "bb_regime-NEARUSDT-1m": {
    "strategy": "bb_regime",
@@ -23,8 +23,8 @@
    "opened": "2026-11-28 05:44:00",
    "fee_mode": "maker",
    "oos_sharpe": 2.56,
-   "last_ts": "2026-11-28 05:44:00",
-   "last_px": 3.012
+   "last_ts": "2026-11-28 06:46:00",
+   "last_px": 3.037
   }
  },
  "closed": [
@@ -4229,8 +4229,8 @@
    "reason": "rotated out"
   }
  ],
- "updated": "2026-11-28T05:45:20Z",
- "runs": 497,
+ "updated": "2026-11-28T06:47:51Z",
+ "runs": 498,
  "tops": [
   {
    "key": "vol_burst_revert-ARBUSDT-15m",
@@ -4294,8 +4294,8 @@
    "oos_sharpe": 3.01,
    "score": 2.49,
    "signal": 1.0,
-   "sig_last": "2026-11-28 05:43:00",
-   "sig_pct": 41.4
+   "sig_last": "2026-11-28 06:46:00",
+   "sig_pct": 43.59
   },
   {
    "key": "funding_revert-SUIUSDT-1m",
@@ -4327,8 +4327,8 @@
    "oos_sharpe": 2.56,
    "score": 2.36,
    "signal": 1.0,
-   "sig_last": "2026-11-28 05:44:00",
-   "sig_pct": 32.86
+   "sig_last": "2026-11-28 06:46:00",
+   "sig_pct": 35.01
   },
   {
    "key": "spike_revert-SUIUSDT-15m",
@@ -4373,14 +4373,14 @@
   "open": 2
  },
  "seen": {
-  "vol_burst_revert-ARBUSDT-15m": "2026-11-28 05:15:00",
-  "wick_vol-APTUSDT-15m": "2026-11-28 05:15:00",
-  "funding_revert-SUIUSDT-1m": "2026-11-28 05:43:00",
-  "funding_revert-ARBUSDT-1m": "2026-11-28 05:43:00",
-  "spike_revert-SUIUSDT-15m": "2026-11-28 05:30:00",
-  "vol_burst_revert-ARBUSDT-5m": "2026-11-28 05:40:00",
-  "bb_maker-NEARUSDT-1m": "2026-11-28 05:43:00",
-  "bb_regime-NEARUSDT-1m": "2026-11-28 05:44:00"
+  "vol_burst_revert-ARBUSDT-15m": "2026-11-28 06:30:00",
+  "wick_vol-APTUSDT-15m": "2026-11-28 06:30:00",
+  "funding_revert-SUIUSDT-1m": "2026-11-28 06:46:00",
+  "funding_revert-ARBUSDT-1m": "2026-11-28 06:46:00",
+  "spike_revert-SUIUSDT-15m": "2026-11-28 06:30:00",
+  "vol_burst_revert-ARBUSDT-5m": "2026-11-28 06:40:00",
+  "bb_maker-NEARUSDT-1m": "2026-11-28 06:46:00",
+  "bb_regime-NEARUSDT-1m": "2026-11-28 06:46:00"
  },
  "filter_stats": {
   "total": 1960,
